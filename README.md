@@ -8,7 +8,7 @@ Smart-Stay is a property booking system developed using ASP.NET Core MVC and SQL
 - View featured properties
 - Property details
 - Booking system
-- User authentication (coming soon)
+- User authentication
 
 ## Technologies Used
 
