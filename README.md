@@ -1,4 +1,4 @@
-# Smart-Stay rec
+# Smart-Stay
 
 Smart-Stay is a property booking system developed using ASP.NET Core MVC and SQL Server.
 
