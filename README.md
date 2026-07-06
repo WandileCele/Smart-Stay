@@ -36,7 +36,7 @@ Smart-Stay
 
 1. Clone the repository
 
-git clone https://github.com/yourusername/Smart-Stay.git
+git clone [https://github.com/yourusername/Smart-Stay.git](https://github.com/WandileCele/Smart-Stay.git)
 
 2. Open the solution in Visual Studio.
 
