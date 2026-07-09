@@ -16,10 +16,17 @@
 
         <div class="buttons">
 
-            <a href="/Account/Register" class="btn">SIGN IN</a>
+            <a asp-area="Identity"
+               asp-page="/Account/Register"
+               class="btn">
+                SIGN IN
+            </a>
 
-            <a href="/Account/Login" class="btn">LOGIN</a>
-
+            <a asp-area="Identity"
+               asp-page="/Account/Login"
+               class="btn">
+                LOGIN
+            </a>
         </div>
 
     </nav>
@@ -37,7 +44,7 @@
 
             <button>
 
-                <i class="fa-solid fa-magnifying-glass"></i>
+                🔍
 
             </button>
 
