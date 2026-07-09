@@ -1,8 +1,297 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Smart Stay";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero">
+
+    <nav>
+
+        <div class="logo">
+
+            <img src="~/images/download (3).jpg" />
+
+            <h1>SMART STAY</h1>
+
+        </div>
+
+        <div class="buttons">
+
+            <a asp-area="Identity"
+               asp-page="/Account/Register"
+               class="btn">
+                SIGN IN
+            </a>
+
+            <a asp-area="Identity"
+               asp-page="/Account/Login"
+               class="btn">
+                LOGIN
+            </a>
+        </div>
+
+    </nav>
+
+    <div class="hero-content">
+
+        <h2>
+            FIND THE PERFECT ACCOMMODATION IN PORT ELIZABETH
+        </h2>
+
+        <div class="search-box">
+
+            <input type="text"
+                   placeholder="Search Property e.g Sarah Bartman">
+
+            <button>
+
+                🔍
+
+            </button>
+
+        </div>
+
+        <div class="filters">
+
+            <select>
+
+                <option>Filter by location</option>
+
+                <option>Walmer</option>
+
+                <option>Humewood</option>
+
+                <option>Summerstrand</option>
+
+            </select>
+
+            <select>
+
+                <option>Filter by price</option>
+
+                <option>R2000-R3000</option>
+
+                <option>R3000-R5000</option>
+
+                <option>R5000+</option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    
 </div>
+<section class="popular">
+
+    <div class="title">
+
+        <h2>POPULAR ACCOMMODATION</h2>
+
+        <a href="#">VIEW ALL</a>
+
+    </div>
+
+    <div class="cards">
+
+        <!-- Card 1 -->
+
+        <div class="card">
+            <img src="~/images/download (1).jpg" />
+
+
+            <h3>WESTVILLE PROPERTY</h3>
+
+            <p>12 Bedrooms &nbsp; 6 Bathrooms</p>
+
+            <p><i class="fa-solid fa-location-dot"></i> Walmer</p>
+
+            <h4>R6200/PM</h4>
+
+            <div class="stars">
+
+                ★★☆☆☆
+
+            </div>
+
+            <div class="icons">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <i class="fa-solid fa-phone"></i>
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+            </div>
+
+        </div>
+
+        <!-- Card 2 -->
+
+        <div class="card">
+            <img src="~/images/download (2).jpg" />
+
+
+            <h3>OCEAN VIEW PROPERTY</h3>
+
+            <p>6 Bedrooms &nbsp; 3 Bathrooms</p>
+
+            <p><i class="fa-solid fa-location-dot"></i> Summerstrand</p>
+
+            <h4>R5200/PM</h4>
+
+            <div class="stars">
+
+                ★★★★☆
+
+            </div>
+
+            <div class="icons">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <i class="fa-solid fa-phone"></i>
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+            </div>
+
+        </div>
+
+        <!-- Card 3 -->
+
+        <div class="card">
+            <img src="~/images/timeless elegance meets sustainability_ invest in novaspace passive housing today.jpg" />
+
+
+            <h3>LABORIA RESIDENCE</h3>
+
+            <p>26 Bedrooms &nbsp; 13 Bathrooms</p>
+
+            <p><i class="fa-solid fa-location-dot"></i> Humewood</p>
+
+            <h4>R5200/PM</h4>
+
+            <div class="stars">
+
+                ★★★★☆
+
+            </div>
+
+            <div class="icons">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <i class="fa-solid fa-phone"></i>
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+   <div class=" cards2">
+        <!-- Card 4-->
+
+        <div class="card">
+            <img src="~/images/라선시 라진구역 신해동에서 새집들이 진행.jpg" />
+
+
+            <h3>OCEAN VIEW PROPERTY</h3>
+
+            <p>6Bedrooms &nbsp; 3 Bathrooms</p>
+
+            <p><i class="fa-solid fa-location-dot"></i> Summerstrand</p>
+
+            <h4>R5000/PM</h4>
+
+            <div class="stars">
+
+                ★★★★☆
+
+            </div>
+
+            <div class="icons">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <i class="fa-solid fa-phone"></i>
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+            </div>
+
+        </div>
+
+        <!-- Card 5-->
+
+        <div class="card">
+            <img src="~/images/lenox.jpg" />
+
+
+            <h3>OCEAN VIEW PROPERTY</h3>
+
+            <p>6Bedrooms &nbsp; 3 Bathrooms</p>
+
+            <p><i class="fa-solid fa-location-dot"></i> Summerstrand</p>
+
+            <h4>R5000/PM</h4>
+
+            <div class="stars">
+
+                ★★★★☆
+
+            </div>
+
+            <div class="icons">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <i class="fa-solid fa-phone"></i>
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+            </div>
+
+        </div>
+
+
+        <!-- Card 6-->
+
+        <div class="card">
+            <img src="~/images/download (2).jpg" />
+
+
+            <h3>OCEAN VIEW PROPERTY</h3>
+
+            <p>6Bedrooms &nbsp; 3 Bathrooms</p>
+
+            <p><i class="fa-solid fa-location-dot"></i> Summerstrand</p>
+
+            <h4>R5000/PM</h4>
+
+            <div class="stars">
+
+                ★★★★☆
+
+            </div>
+
+            <div class="icons">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <i class="fa-solid fa-phone"></i>
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+            </div>
+
+        </div>
+
+
+   </div>
+
+</section>
+

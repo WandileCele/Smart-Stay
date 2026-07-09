@@ -1,0 +1,161 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<html>
+<head>
+    <title>Sign Up - Smart Stay</title>
+
+    <link rel="stylesheet" href="~/css/register.css" asp-append-version="true" />
+
+</head>
+
+<body>
+    <div class="register-container">
+
+        <div class="left-panel">
+            <div class="logo-section">
+                <img src="~/images/download (3).jpg" class="logo" />
+                <h1>SMART STAY</h1>
+            </div>
+
+            <h1 class="title">REGISTER ACCOUNT</h1>
+
+            <div class="role-selection">
+
+                <label class="role-card active">
+                    <input type="radio" name="Role" value="Tenant" checked hidden />
+                    👤 TENANT
+                </label>
+
+                <label class="role-card">
+                    <input type="radio" name="Role" value="Landlord" hidden />
+                    🏠 LANDLORD
+                </label>
+
+                <label class="role-card">
+                    <input type="radio" name="Role" value="Admin" hidden />
+                    ⚙ ADMIN
+                </label>
+
+            </div>
+
+            <form method="post">
+
+                <div class="field-title">
+                    <span>Name</span>
+                    <span class="required">*Required</span>
+                </div>
+
+                <div class="input-box">
+                    <span class="icon">👤</span>
+                    <input type="text"
+                           placeholder="Enter your full name"
+                           required />
+                </div>
+
+                <div class="field-title">
+                    <span>Email Address</span>
+                    <span class="required">*Required</span>
+                </div>
+
+                <div class="input-box">
+                    <span class="icon">✉</span>
+                    <input type="email"
+                           placeholder="Enter your email"
+                           required />
+                </div>
+
+                <div class="email-error">
+                    ⚠ This email is already registered! try to login
+                </div>
+
+                <div class="field-title">
+                    <span>Phone number</span>
+                    <span class="required">*Required</span>
+                </div>
+
+                <div class="input-box">
+                    <span class="icon">📞</span>
+                    <input type="text"
+                           placeholder="Phone number e.g 0786739991"
+                           required />
+                </div>
+
+                <div class="field-title">
+                    <span>Password</span>
+                    <span class="required">*Required</span>
+                </div>
+
+                <div class="input-box">
+                    <span class="icon">🔒</span>
+                    <input type="password"
+                           placeholder="Enter a strong password"
+                           required />
+                    <span class="eye">👁</span>
+                </div>
+
+                <div class="field-title">
+                    <span>Confirm Password</span>
+                    <span class="required">*Required</span>
+                </div>
+
+                <div class="input-box">
+                    <span class="icon">🔒</span>
+                    <input type="password"
+                           placeholder="confirm password"
+                           required />
+                    <span class="eye">👁</span>
+                </div>
+
+                <button class="register-btn">
+                    Register Account
+                </button>
+
+            </form>
+
+            <div class="login-link">
+                Already have an account?
+                <a asp-area="Identity"
+                   asp-page="/Account/Login">
+                    Log in
+                </a>
+            </div>
+
+            <div class="success-message">
+                🔔 Account created successfully<br />
+                redirecting to login...
+            </div>
+
+        </div>
+
+        <div class="right-panel">
+
+            <div class="overlay">
+
+                <h1>SMART STAY</h1>
+
+                <p>YOUR TRUSTED RENTAL PARTNER</p>
+
+                <br>
+
+                <h3>Easy property listing</h3>
+                <h3>24/7 customer support</h3>
+                <h3>Instant help seamless renting</h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

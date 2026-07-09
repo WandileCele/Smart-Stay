@@ -1,0 +1,116 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    height: 100vh;
+}
+
+.login-container {
+    display: flex;
+    height: 100vh;
+}
+
+.left-panel {
+    width: 40%;
+    padding: 50px;
+    background: white;
+}
+
+.right-panel {
+    width: 60%;
+    background-image: url('../images/timeless elegance meets sustainability_ invest in novaspace passive housing today (1).jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+    color: white;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.logo {
+    width: 60px;
+    margin-right: 15px;
+}
+
+.logo-section h1 {
+    color: #4169E1;
+}
+
+.left-panel h2 {
+    color: #4169E1;
+    margin-bottom: 10px;
+}
+
+.left-panel p {
+    margin-bottom: 20px;
+}
+
+form {
+    margin-top: 30px;
+}
+
+label {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #4169E1;
+    font-weight: bold;
+}
+
+input[type=text],
+input[type=password] {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+    .options a {
+        color: red;
+        text-decoration: none;
+    }
+
+button {
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    background: #5A86F0;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.signup {
+    text-align: center;
+    margin-top: 30px;
+}
+
+    .signup a {
+        color: red;
+        text-decoration: none;
+        font-weight: bold;
+    }
