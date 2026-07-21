@@ -1,0 +1,228 @@
+﻿@model Smart_Stay.Models.LandlordDashboardViewModel
+
+@{
+    ViewData["Title"] = "Landlord Dashboard";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/LanlordDashboard.css" asp-append-version="true" />
+}
+
+<div class="dashboard">
+    <div class="sidebar-container">
+
+        <button class="menu-toggle" onclick="toggleMenu()">
+            ☰
+        </button>
+
+
+        <div class="sidebar" id="sidebar">
+
+            <h3>Landlord Menu</h3>
+
+           <a href="#properties">
+           <i class="bi bi-house-gear-fill"></i>
+              Update Property
+           </a> 
+
+
+            <a asp-controller="Applications"
+               asp-action="Index">
+                📄 Manage Applications
+            </a>
+
+
+            <a asp-controller="Landlord"
+               asp-action="Profile">
+                👤 Update Profile
+            </a>
+
+
+        </div>
+
+    </div>
+    <div class="top-bar">
+
+    <form asp-area="Identity"
+          asp-page="/Account/Logout"
+          method="post">
+
+        <button type="submit" class="logout-btn">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+        </button>
+
+    </form>
+
+</div>
+
+    <div class="dashboard-header">
+
+        <h2>Welcome back, @Model.FirstName 🏡!</h2>
+
+        <div class="statistics">
+
+            <div class="stat-card">
+                <h3>@Model.TotalProperties</h3>
+                <p>Total Properties</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>@Model.TotalApplications</h3>
+                <p>Total Applications</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>@Model.AvailableProperties</h3>
+                <p>Available Properties</p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <a asp-controller="Properties"
+       asp-action="Create"
+       class="btn btn-primary">
+
+        Add Property
+
+    </a>
+
+
+    <hr />
+
+
+    <div id="properties" class="property-container">
+
+
+        @foreach (var property in Model.Properties)
+        {
+
+            <div class="property-card">
+
+
+                <h3>@property.Title</h3>
+
+
+                <p>
+                    <strong>Location📍:</strong>
+                    @property.Location
+                </p>
+
+
+                <p>
+                    @property.Bedrooms Bedrooms 🛏️ |
+                    @property.Bathrooms Bathrooms 🛁
+                </p>
+
+
+                <p>
+                    <strong>Price 💰:</strong>
+                    R @property.Price.ToString("N2") / Month
+                </p>
+
+
+                <p>
+                    <strong>Status 🔃:</strong>
+                    @property.Status
+                </p>
+
+
+                <p>
+                    <strong>Applications 🔢:</strong>
+                    @property.ApplicationCount
+                </p>
+
+
+
+                <div class="card-buttons">
+
+
+                    <a asp-controller="Properties"
+                       asp-action="Details"
+                       asp-route-id="@property.PropertyID"
+                       class="btn btn-info">
+
+                        View
+
+                    </a>
+                    <a asp-controller="Properties"
+                       asp-action="Edit"
+                       asp-route-id="@property.PropertyID"
+                       class="btn btn-primary">
+
+                        Update Property
+
+                    </a>
+
+                    <form asp-controller="Properties"
+                          asp-action="Delete"
+                          asp-route-id="@property.PropertyID"
+                          method="post"
+                          class="delete-form"
+                          onsubmit="return confirm('Are you sure you want to delete this property?');">
+
+                        <button type="submit"
+                                class="delete-btn"
+                                title="Delete Property">
+
+                            <i class="bi bi-trash3"></i>
+
+                        </button>
+
+                    </form>
+                      @if (property.Status == "Approved" ||
+                       property.Status == "Available" ||
+                       property.Status == "Occupied" ||
+                        property.Status == "Under Maintenance")
+                      {
+                       <form asp-controller="Properties"
+                        asp-action="UpdateStatus"
+                        asp-route-id="@property.PropertyID"
+                        method="get">
+
+                       <button type="submit"
+                       class="btn btn-status">
+                       Update Status
+                       </button>
+
+                       </form>
+                      }
+                       else if (property.Status == "Pending")
+                      {
+                      <button class="btn btn-warning" disabled>
+                       Waiting for Admin Approval
+                       </button>
+                       }
+                       else if (property.Status == "Rejected")
+                       {
+                       <button class="btn btn-danger" disabled>
+                         Rejected by Admin
+                       </button>
+                       }
+
+
+                </div>
+
+
+            </div>
+                }
+    </div>
+
+
+</div
+@section Scripts {
+
+<script>
+
+function toggleMenu()
+{
+    var sidebar = document.getElementById("sidebar");
+
+    sidebar.classList.toggle("show");
+}
+
+</script>
+
+}

@@ -1,0 +1,87 @@
+﻿@model Smart_Stay.Models.PropertyCreateViewModel
+
+@{
+    ViewData["Title"] = "Add Property";
+}
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Location"></label>
+        <input asp-for="Location" class="form-control" />
+        <span asp-validation-for="Location"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PropertyType"></label>
+        <input asp-for="PropertyType" class="form-control" />
+        <span asp-validation-for="PropertyType"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Bedrooms"></label>
+        <input asp-for="Bedrooms" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Bathrooms"></label>
+        <input asp-for="Bathrooms" class="form-control" />
+    </div>
+
+    <hr />
+
+    <h4>Property Images</h4>
+    <div class="form-group">
+        <label>Upload Property Images (Minimum 3)</label>
+        <input asp-for="PropertyImages"
+               type="file"
+               multiple
+               class="form-control"
+               accept=".jpg,.jpeg,.png" />
+        <small class="form-text text-muted">
+            ⚠️ Please select all your photos at once (hold Ctrl or Cmd while clicking to select multiple). Selecting files one at a time will replace your previous selection.
+        </small>
+        <span asp-validation-for="PropertyImages"
+              class="text-danger"></span>
+    </div>
+
+    <hr />
+
+    <h4>Supporting Documents</h4>
+
+    <div class="form-group">
+
+        <label>Affidavit (PDF)</label>
+
+        <input asp-for="Affidavit"
+               type="file"
+               class="form-control"
+               accept=".pdf" />
+
+        <span asp-validation-for="Affidavit"
+              class="text-danger"></span>
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Add Property
+    </button>
+
+</form>

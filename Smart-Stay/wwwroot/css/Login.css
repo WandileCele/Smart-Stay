@@ -2,115 +2,212 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
-    height: 100vh;
+    min-height: 100vh;
+    background: linear-gradient(-45deg, #f2f2f2, #e8e8e8, #f7f7f7, #f2f2f2);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
 }
 
-.login-container {
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.login-wrapper {
     display: flex;
-    height: 100vh;
-}
-
-.left-panel {
-    width: 40%;
-    padding: 50px;
+    max-width: 1200px;
+    width: 92%;
+    min-height: 90vh;
+    margin: 40px auto;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
     background: white;
 }
 
-.right-panel {
-    width: 60%;
-    background-image: url('../images/timeless elegance meets sustainability_ invest in novaspace passive housing today (1).jpg');
-    background-size: cover;
-    background-position: center;
-    position: relative;
+.login-left {
+    flex: 1;
+    padding: 40px;
 }
 
-.overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    text-align: center;
-    color: white;
-}
-
-.logo-section {
+.logo-row {
     display: flex;
     align-items: center;
-    margin-bottom: 40px;
+    gap: 10px;
+    margin-bottom: 30px;
 }
 
-.logo {
-    width: 60px;
-    margin-right: 15px;
+    .logo-row i {
+        background: #4a6cf7;
+        color: white;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 20px;
+    }
+
+    .logo-row span {
+        color: #4a6cf7;
+        font-weight: bold;
+        font-size: 20px;
+        letter-spacing: 1px;
+    }
+
+h2 {
+    margin-bottom: 5px;
 }
 
-.logo-section h1 {
-    color: #4169E1;
-}
-
-.left-panel h2 {
-    color: #4169E1;
-    margin-bottom: 10px;
-}
-
-.left-panel p {
-    margin-bottom: 20px;
-}
-
-form {
-    margin-top: 30px;
+.subtext {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 14px;
 }
 
 label {
     display: block;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    color: #4169E1;
     font-weight: bold;
+    color: #333;
+    margin-bottom: 6px;
+    font-size: 14px;
 }
 
-input[type=text],
-input[type=password] {
-    width: 100%;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+.required {
+    color: red;
+    font-weight: normal;
+    font-size: 12px;
+    float: right;
 }
 
-.options {
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+    .input-group i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 10px 40px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .input-group .toggle-eye {
+        left: auto;
+        right: 12px;
+        cursor: pointer;
+    }
+
+.row-between {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 13px;
 }
 
-    .options a {
-        color: red;
+    .row-between a {
+        color: #e74c3c;
         text-decoration: none;
     }
 
-button {
+.btn-login {
     width: 100%;
-    margin-top: 30px;
-    padding: 15px;
-    border: none;
-    border-radius: 30px;
-    background: #5A86F0;
+    padding: 12px;
+    background: #4a6cf7;
     color: white;
-    font-size: 22px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
     cursor: pointer;
 }
 
-.signup {
+    .btn-login:hover {
+        background: #3a5ce0;
+    }
+
+.signup-text {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 15px;
+    font-size: 13px;
 }
 
-    .signup a {
-        color: red;
+    .signup-text a {
+        color: #e74c3c;
         text-decoration: none;
-        font-weight: bold;
     }
+
+.login-right {
+    flex: 1;
+    position: relative;
+    background: url('../images/timeless elegance meets sustainability_ invest in novaspace passive housing today (1).jpg') center/cover no-repeat;
+}
+
+    .login-right::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+    }
+
+.right-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    z-index: 2;
+}
+
+    .right-text h3 {
+        font-size: 22px;
+        letter-spacing: 1px;
+    }
+
+    .right-text p {
+        font-size: 12px;
+        letter-spacing: 1px;
+        margin-top: 5px;
+    }
+
+.error-box {
+    background: #fdecea;
+    color: #c0392b;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+@media (max-width: 700px) {
+    .login-wrapper {
+        flex-direction: column;
+        margin: 20px;
+    }
+
+    .login-right {
+        min-height: 200px;
+    }
+}

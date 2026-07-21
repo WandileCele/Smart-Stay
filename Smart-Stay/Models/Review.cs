@@ -1,17 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Smart_Stay.Models
+namespace Smart_Stay.Models;
+
+public partial class Review
 {
-    public class Review
-    {
-        [Key]
-        public int reviewID { get; set; }
-        public int propertyID { get; set; }
-        public Property Property { get; set }
-        public int tenantID { get; set; }
-        public Tenant Tenant { get; set; }
-        public string comment { get; set; }
-        public int rating { get; set; }
-        public DateOnly reviewDate { get; set; }
-    }
+    public int ReviewId { get; set; }
+
+    public int PropertyId { get; set; }
+
+    public int TenantId { get; set; }
+
+    public string Comment { get; set; } = null!;
+
+    public byte Rating { get; set; }
+
+    public DateOnly ReviewDate { get; set; }
+
+    public virtual Property Property { get; set; } = null!;
+
+    public virtual Tenant Tenant { get; set; } = null!;
 }

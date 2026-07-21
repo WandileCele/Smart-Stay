@@ -1,0 +1,159 @@
+﻿@model Smart_Stay.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Smart Stay - Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/register.css" />
+</head>
+<body>
+
+    <div class="register-wrapper">
+        <div class="register-left">
+            <h2 class="title">REGISTER ACCOUNT</h2>
+
+            @if (ViewBag.Success == true)
+            {
+                <div class="success-box">
+                    ✅ Account created successfully! Redirecting to login...
+                </div>
+                <script>
+                    setTimeout(function () {
+                        window.location.href = '@Url.Action("Login", "Account")';
+                    }, 2000);
+                </script>
+            }
+            else
+            {
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="field-error">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <p>@error.ErrorMessage</p>
+                        }
+                    </div>
+                }
+
+                <form asp-controller="Account" asp-action="Register" method="post">
+                    <div class="role-toggle">
+                        <label>
+                            <input type="radio" name="Role" value="Tenant" checked />
+                            <span><i class="fa-solid fa-user"></i> TENANT</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="Role" value="Landlord" />
+                            <span><i class="fa-solid fa-house"></i> LANDLORD</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="Role" value="Admin" />
+                            <span><i class="fa-solid fa-user-tie"></i> ADMIN</span>
+                        </label>
+                    </div>
+
+                    <label class="field-label">Name <span class="required">*Required</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" name="FullName" placeholder="Enter your full name" required />
+                    </div>
+
+                    <label class="field-label">Email Address <span class="required">*Required</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" name="Email" placeholder="Enter your email" required value="@Model?.Email" />
+                    </div>
+                    @if (ViewBag.EmailTaken == true)
+                    {
+                        <div class="field-error">⚠ This email is already registered! Try to login.</div>
+                    }
+
+                    <label class="field-label">Phone Number <span class="required">*Required</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="text" name="PhoneNo" placeholder="Phone number e.g 0786739981" required />
+                    </div>
+
+                    <div id="tenantFields" style="display:none;">
+                        <label class="field-label">Employment Status</label>
+                        <div class="input-group">
+                            <i class="fa-solid fa-briefcase"></i>
+                            <select name="EmploymentStatus" style="width:100%; padding:10px 40px; border:1px solid #ccc; border-radius:4px; font-size:14px;">
+                                <option value="Employed">Employed</option>
+                                <option value="Self-employed">Self-employed</option>
+                                <option value="Unemployed">Unemployed</option>
+                                <option value="Student">Student</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="landlordFields" style="display:none;">
+                        <p style="font-size:13px; color:#666; margin-bottom:15px;">
+                            <i class="fa-solid fa-circle-info"></i> Your landlord account will be reviewed and verified by our team before you can list properties.
+                        </p>
+                    </div>
+
+                    <label class="field-label">Password <span class="required">*Required</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" name="Password" id="passwordField" placeholder="Enter a strong password" required />
+                        <i class="fa-solid fa-eye toggle-eye" onclick="toggleField('passwordField')"></i>
+                    </div>
+
+                    <label class="field-label">Confirm Password <span class="required">*Required</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" name="ConfirmPassword" id="confirmField" placeholder="Confirm password" required />
+                        <i class="fa-solid fa-eye toggle-eye" onclick="toggleField('confirmField')"></i>
+                    </div>
+
+                    <button type="submit" class="btn-register">Register Account</button>
+                </form>
+
+                <p class="login-text">
+                    Already have an account? <a asp-controller="Account" asp-action="Login">Log in</a>
+                </p>
+            }
+        </div>
+
+        <div class="register-right">
+            <div class="right-content">
+                <div class="right-brand">
+                    <h3>SMART STAY</h3>
+                    <p>YOUR TRUSTED RENTAL PARTNER</p>
+                </div>
+                <div class="right-features">
+                    <p>Easy property listing</p>
+                    <p>24/7 customer support</p>
+                    <p>Instant help seamless renting</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleField(id) {
+            const field = document.getElementById(id);
+            field.type = field.type === 'password' ? 'text' : 'password';
+        }
+
+        function toggleRoleFields() {
+            const role = document.querySelector('input[name="Role"]:checked').value;
+            document.getElementById('tenantFields').style.display = role === 'Tenant' ? 'block' : 'none';
+            document.getElementById('landlordFields').style.display = role === 'Landlord' ? 'block' : 'none';
+        }
+
+        document.querySelectorAll('input[name="Role"]').forEach(function (radio) {
+            radio.addEventListener('change', toggleRoleFields);
+        });
+
+        document.addEventListener('DOMContentLoaded', toggleRoleFields);
+    </script>
+
+</body>
+</html>

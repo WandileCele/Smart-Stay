@@ -1,0 +1,159 @@
+﻿@model Smart_Stay.Models.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+@section Styles {
+
+    <link rel="stylesheet"
+          href="~/css/AdminSidebar.css"
+          asp-append-version="true" />
+
+}
+
+<partial name="_AdminSidebar" />
+
+<div class="top-bar">
+
+    <form asp-area="Identity"
+          asp-page="/Account/Logout"
+          method="post">
+
+        <button type="submit" class="logout-btn">
+
+            <i class="bi bi-box-arrow-right"></i>
+
+            Logout
+
+        </button>
+
+    </form>
+
+</div>
+
+<div class="dashboard-header">
+
+    <h2>Welcome back, @Model.FirstName 👨‍💼!</h2>
+
+    <div class="statistics">
+
+        <div class="stat-card">
+
+            <h3>@Model.PendingApplications</h3>
+
+            <p>Pending Applications</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>@Model.ApprovedApplications</h3>
+
+            <p>Approved Applications</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>@Model.RejectedApplications</h3>
+
+            <p>Rejected Applications</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<hr />
+
+<div class="table-container">
+
+    <table class="admin-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Property</th>
+
+                <th>Landlord</th>
+
+                <th>Location</th>
+
+                <th>Price</th>
+
+                <th>Date</th>
+
+                <th>Status</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.Applications)
+            {
+
+                <tr>
+
+                    <td>@item.PropertyTitle</td>
+
+                    <td>@item.LandlordName</td>
+
+                    <td>@item.Location</td>
+
+                    <td>R @item.Price.ToString("N2")</td>
+
+                    <td>@item.ApplicationDate</td>
+
+                    <td>
+
+                        @if (item.ApplicationStatus == "Pending")
+                        {
+                            <span class="status pending">
+
+                                Pending
+
+                            </span>
+                        }
+                        else if (item.ApplicationStatus == "Approved")
+                        {
+                            <span class="status approved">
+
+                                Approved
+
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status rejected">
+
+                                Rejected
+
+                            </span>
+                        }
+
+                    </td>
+
+                    <td class="actions">
+                        <a asp-action="ApplicationDetails"
+                           asp-route-id="@item.ListingApplicationId"
+                           class="approve-btn">
+                            🔍 View
+                        </a>
+                    </td>
+
+                </tr>
+
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

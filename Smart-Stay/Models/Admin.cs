@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Smart_Stay.Models
+namespace Smart_Stay.Models;
+
+public partial class Admin
 {
-    public class Admin
-    {
-        [Key]
-        public int userID { get; set; }
-    }
+    public int UserId { get; set; }
+
+    public virtual ICollection<ListingApplication> ListingApplications { get; set; } = new List<ListingApplication>();
+
+    public virtual User User { get; set; } = null!;
 }

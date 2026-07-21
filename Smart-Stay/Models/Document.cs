@@ -1,17 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Smart_Stay.Models
+namespace Smart_Stay.Models;
+
+public partial class Document
 {
-    public class Document
-    {
-        [Key]
-        public int documentID {  get; set; }
-        public int listingApplicationID {  get; set; }
-        public ListingApplication ListingApplication { get; set; }
-        public int rentalApplicationID { get; set; }
-        public RentalApplication RentalApplication { get; set; }
-        public string document_type { get; set; }
-        public DateOnly upload_date { get; set; }
-        public string documentPath { get; set; }
-    }
+    public int DocumentId { get; set; }
+
+    public int? ListingApplication { get; set; }
+
+    public int? RentalApplicationId { get; set; }
+
+    public string DocumentType { get; set; } = null!;
+
+    public DateOnly UploadDate { get; set; }
+
+    public string DocumentPath { get; set; } = null!;
+
+    public virtual ListingApplication? ListingApplicationNavigation { get; set; }
+
+    public virtual RentalApplication RentalApplication { get; set; } = null!;
 }

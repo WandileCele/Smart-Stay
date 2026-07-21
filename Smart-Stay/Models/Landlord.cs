@@ -1,11 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Smart_Stay.Models
+namespace Smart_Stay.Models;
+
+public partial class Landlord
 {
-    public class Landlord
-    {
-        [Key]
-        public int userID { get; set; }
-        public string verification_Status { get; set; }
-    }
+    public int UserId { get; set; }
+
+    public string VerificationStatus { get; set; } = null!;
+
+    public virtual ICollection<ListingApplication> ListingApplications { get; set; } = new List<ListingApplication>();
+
+    public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
+
+    public virtual ICollection<RentalApplication> RentalApplications { get; set; } = new List<RentalApplication>();
+
+    public virtual User User { get; set; } = null!;
 }

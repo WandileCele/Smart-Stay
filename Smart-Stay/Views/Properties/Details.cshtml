@@ -1,0 +1,82 @@
+﻿@model Smart_Stay.Models.Property
+
+@{
+    ViewData["Title"] = "Property Details";
+}
+
+
+<h1>@Model.Title</h1>
+
+
+@if (!string.IsNullOrEmpty(Model.ImagePath))
+{
+    <img src="@Model.ImagePath"
+         alt="Property Image"
+         style="width:400px;height:250px;object-fit:cover;" />
+}
+else
+{
+    <p>No image available</p>
+}
+
+
+<hr />
+
+
+<h3>Property Information</h3>
+
+<p>
+    <strong>Description:</strong>
+    @Model.Description
+</p>
+
+
+<p>
+    <strong>Location:</strong>
+    @Model.Location
+</p>
+
+
+<p>
+    <strong>Price:</strong>
+    R @Model.Price / Month
+</p>
+
+
+<p>
+    <strong>Type:</strong>
+    @Model.PropertyType
+</p>
+
+
+<p>
+    <strong>Bedrooms:</strong>
+    @Model.Bedrooms
+</p>
+
+
+<p>
+    <strong>Bathrooms:</strong>
+    @Model.Bathrooms
+</p>
+
+
+<p>
+    <strong>Status:</strong>
+    @Model.Status
+</p>
+
+
+<p>
+    <strong>Total Applications:</strong>
+    @Model.RentalApplications.Count()
+</p>
+
+
+<a asp-controller="Landlord"
+   asp-action="Dashboard"
+   class="btn btn-secondary">
+
+    Back to Dashboard
+
+</a>

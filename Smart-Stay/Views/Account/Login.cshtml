@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Smart Stay - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <div class="login-left">
+            <div class="logo-row">
+                <i class="fa-solid fa-house"></i>
+                <span>SMART STAY</span>
+            </div>
+
+            <h2>Welcome back</h2>
+            <p class="subtext">Log in to access your rental account</p>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="error-box">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <p>@error.ErrorMessage</p>
+                    }
+                </div>
+            }
+
+            <form asp-controller="Account" asp-action="Login" method="post">
+                <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+                <label>Email <span class="required">*Required</span></label>
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" name="email" placeholder="Enter your email" required />
+                </div>
+
+                <label>Password <span class="required">*Required</span></label>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password" id="passwordField" placeholder="Enter your password" required />
+                    <i class="fa-solid fa-eye toggle-eye" onclick="togglePassword()"></i>
+                </div>
+
+                <div class="row-between">
+                    <label style="font-weight:normal; display:flex; align-items:center; gap:5px;">
+                        <input type="checkbox" name="rememberMe" style="width:auto;" /> Remember me
+                    </label>
+                    <a href="#">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn-login">Log in</button>
+            </form>
+
+            <p class="signup-text">
+                Don't you have an account? <a href="#">Sign up for free</a>
+            </p>
+        </div>
+
+        <div class="login-right">
+            <div class="right-text">
+                <h3>SMART STAY</h3>
+                <p>YOUR TRUSTED RENTAL PARTNER</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const field = document.getElementById('passwordField');
+            field.type = field.type === 'password' ? 'text' : 'password';
+        }
+    </script>
+
+</body>
+</html>

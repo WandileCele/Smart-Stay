@@ -1,20 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Smart_Stay.Models
+namespace Smart_Stay.Models;
+
+public partial class RentalApplication
 {
-    public class RentalApplication
-    {
-        [Key]
-        public int rentalApplication {  get; set; }
-        public int tenantID { get; set; }
-        public Tenant Tenant { get; set; }
-        public DateOnly application_date { get; set; }
-        public string rentalApplicationStatus { get; set; }
-        public string id_Number { get; set; }
-        public int landlordID { get; set; }
-        public Landlord Landlord { get; set; }
-        public int propertyID { get; set; }
-        public Property Property { get; set; }
-    }
+    public int RentalApplicationId { get; set; }
+
+    public int TenantId { get; set; }
+
+    public DateOnly ApplicationDate { get; set; }
+
+    public string RentalApplicationStatus { get; set; } = null!;
+
+    public string IdNumber { get; set; } = null!;
+
+    public int? LandlordId { get; set; }
+
+    public int PropertyId { get; set; }
+
+    public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
+
+    public virtual Landlord? Landlord { get; set; }
+
+    public virtual Property Property { get; set; } = null!;
+
+    public virtual Tenant Tenant { get; set; } = null!;
 }
