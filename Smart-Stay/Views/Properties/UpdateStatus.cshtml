@@ -1,0 +1,42 @@
+﻿@model Smart_Stay.Models.PropertyStatusViewModel
+
+@{
+    ViewData["Title"] = "Update Status";
+}
+
+
+<h2>Update Property Status</h2>
+
+
+<form asp-action="UpdateStatus" method="post">
+
+    <input asp-for="PropertyId" type="hidden" />
+
+
+    <div>
+        <label>Status</label>
+
+        <select asp-for="Status">
+
+            <option value="Available">
+                Available
+            </option>
+
+            <option value="Occupied">
+                Occupied
+            </option>
+
+            <option value="Maintenance">
+                Maintenance
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <button type="submit">
+        Save Status
+    </button>
+
+</form>

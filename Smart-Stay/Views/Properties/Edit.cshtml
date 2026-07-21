@@ -1,0 +1,68 @@
+﻿@model Smart_Stay.Models.PropertyEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Property";
+}
+
+<h1>Edit Property</h1>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+    <input type="hidden" asp-for="PropertyId" />
+
+    <div>
+        <label>Title</label>
+        <input asp-for="Title" />
+    </div>
+
+    <div>
+        <label>Description</label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+
+    <div>
+        <label>Location</label>
+        <input asp-for="Location" />
+    </div>
+
+    <div>
+        <label>Price</label>
+        <input asp-for="Price" />
+    </div>
+
+    <div>
+        <label>Property Type</label>
+        <input asp-for="PropertyType" />
+    </div>
+
+    <div>
+        <label>Bedrooms</label>
+        <input asp-for="Bedrooms" />
+    </div>
+
+    <div>
+        <label>Bathrooms</label>
+        <input asp-for="Bathrooms" />
+    </div>
+
+    <div>
+        <label>Current Image</label>
+
+        @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+        {
+            <img src="@Model.ExistingImagePath" width="200" />
+        }
+
+    </div>
+
+    <div>
+        <label>Upload New Image (optional)</label>
+        <input asp-for="ImageFile" type="file" />
+    </div>
+
+
+    <button type="submit">
+        Save Changes
+    </button>
+
+</form>

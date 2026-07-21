@@ -1,0 +1,62 @@
+﻿@model Smart_Stay.Models.ListingApplicationReviewViewModel
+@{
+    ViewData["Title"] = "Application Details";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/AdminSidebar.css" asp-append-version="true" />
+}
+
+<partial name="_AdminSidebar" />
+
+<div class="review-container" style="padding: 30px;">
+    <h2>Review Listing Application</h2>
+    <hr />
+
+    <div class="property-details" style="margin-bottom: 25px;">
+        <h3>@Model.Title</h3>
+        <p><strong>Landlord:</strong> @Model.LandlordName</p>
+        <p><strong>Description:</strong> @Model.Description</p>
+        <p><strong>Location:</strong> @Model.Location</p>
+        <p><strong>Price:</strong> R @Model.Price.ToString("N2")</p>
+        <p><strong>Property Type:</strong> @Model.PropertyType</p>
+        <p><strong>Bedrooms:</strong> @(Model.Bedrooms?.ToString() ?? "N/A")</p>
+        <p><strong>Bathrooms:</strong> @(Model.Bathrooms?.ToString() ?? "N/A")</p>
+        <p><strong>Application Date:</strong> @Model.ApplicationDate</p>
+        <p><strong>Status:</strong> @Model.ApplicationStatus</p>
+    </div>
+
+    <div class="affidavit-section" style="margin-bottom: 25px;">
+        <h4>Affidavit</h4>
+        @if (!string.IsNullOrEmpty(Model.AffidavitPath))
+        {
+            <a href="@Model.AffidavitPath" target="_blank">View Affidavit</a>
+        }
+        else
+        {
+            <p>No affidavit uploaded.</p>
+        }
+    </div>
+
+    <div class="images-section" style="margin-bottom: 25px;">
+        <h4>Property Images</h4>
+        @if (Model.ImagePaths != null && Model.ImagePaths.Any())
+        {
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                @foreach (var imagePath in Model.ImagePaths)
+                {
+                    <img src="@imagePath" alt="Property Image" style="width: 200px; height: 150px; object-fit: cover; border-radius: 6px;" />
+                }
+            </div>
+        }
+        else
+        {
+            <p>No images uploaded.</p>
+        }
+    </div>
+
+    <div class="actions">
+        <a asp-action="Approve" asp-route-id="@Model.ListingApplicationId" class="approve-btn">✔ Approve</a>
+        <a asp-action="Reject" asp-route-id="@Model.ListingApplicationId" class="reject-btn">✖ Reject</a>
+    </div>
+</div>

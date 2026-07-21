@@ -2,158 +2,215 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.register-container {
-    display: flex;
+body {
     min-height: 100vh;
+    background: linear-gradient(-45deg, #f2f2f2, #e8e8e8, #f7f7f7, #f2f2f2);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
 }
 
-.left-panel {
-    width: 40%;
-    padding: 40px;
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.register-wrapper {
+    display: flex;
+    max-width: 1200px;
+    width: 92%;
+    min-height: 90vh;
+    margin: 40px auto;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
     background: white;
 }
 
-.right-panel {
-    width: 60%;
-    background-image: url('../images/timeless elegance meets sustainability_ invest in novaspace passive housing today (1).jpg');
-    background-size: cover;
-    background-position: center;
-    position: relative;
+.register-left {
+    flex: 1;
+    padding: 35px;
 }
 
-
-
-.title {
-    color: #3157D8;
-    margin-bottom: 25px;
+h2.title {
+    color: #4a6cf7;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
 }
 
-.overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    color: white;
-    text-align: center;
-}
-
-    .overlay h1 {
-        font-size: 50px;
-    }
-
-    .overlay p {
-        font-size: 18px;
-        margin-top: 10px;
-    }
-
-    .overlay h3 {
-        margin-top: 15px;
-    }
-
-.role-selection {
+.role-toggle {
     display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 8px;
+    margin-bottom: 20px;
 }
-.role-box {
-    border: 2px solid gray;
-    padding: 15px 20px;
-    cursor: pointer;
+
+    .role-toggle label {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 10px 5px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .role-toggle input {
+        display: none;
+    }
+
+    .role-toggle label:has(input:checked) {
+        border-color: #4a6cf7;
+        background: #eef2ff;
+    }
+
+label.field-label {
+    display: block;
     font-weight: bold;
+    color: #333;
+    margin-bottom: 6px;
+    font-size: 14px;
 }
-.field-title {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    font-size: 22px;
-    color: #3155D4;
-    font-weight: bold;
-}
-.active {
-    border: 2px solid #4B82F0;
-}
+
 .required {
     color: red;
-    font-size: 18px;
-}
-.input-box {
-    border: 2px solid #cfcfcf;
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    margin-bottom: 10px;
-}
-.form-group {
-    margin-bottom: 15px;
-}
-.icon {
-    font-size: 25px;
-    margin-right: 10px;
+    font-weight: normal;
+    font-size: 12px;
+    float: right;
 }
 
-.eye {
-    margin-left: auto;
-    cursor: pointer;
-    font-size: 24px;
+.input-group {
+    position: relative;
+    margin-bottom: 8px;
 }
 
-.input-box input {
-    border: none;
-    outline: none;
-    width: 100%;
-    font-size: 18px;
-}
-
-.email-error {
-    color: red;
-    font-size: 15px;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-.register-btn {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 30px;
-    background: #5D8DF6;
-    color: white;
-    font-size: 20px;
-    margin-top: 20px;
-}
-
-.login-link {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 25px;
-}
-    .login-link a {
-        color: #3155D4;
-        text-decoration: none;
-        font-weight: bold;
+    .input-group i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
     }
 
-.success-message {
+    .input-group input {
+        width: 100%;
+        padding: 10px 40px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .input-group .toggle-eye {
+        left: auto;
+        right: 12px;
+        cursor: pointer;
+    }
+
+.field-error {
+    color: #c0392b;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.btn-register {
+    width: 100%;
+    padding: 12px;
+    background: #4a6cf7;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+    .btn-register:hover {
+        background: #3a5ce0;
+    }
+
+.login-text {
     text-align: center;
     margin-top: 15px;
-    color: green;
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 13px;
 }
-.logo-section {
+
+    .login-text a {
+        color: #e74c3c;
+        text-decoration: none;
+    }
+
+.success-box {
+    text-align: center;
+    color: #27ae60;
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+.register-right {
+    flex: 1;
+    position: relative;
+    background: url('../images/timeless elegance meets sustainability_ invest in novaspace passive housing today (1).jpg') center/cover no-repeat;
+}
+
+    .register-right::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+    }
+
+.right-content {
+    position: absolute;
+    inset: 0;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 40px;
+    gap: 40px;
+    padding: 30px 20px;
+    color: white;
+    z-index: 2;
+    text-align: center;
+}
+.right-brand h3 {
+    font-size: 20px;
+    letter-spacing: 1px;
 }
 
-.logo {
-    width: 60px;
-    margin-right: 15px;
+.right-brand p {
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-top: 5px;
 }
 
-.logo-section h1 {
-    color: #4169E1;
+.right-features p {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+@media (max-width: 700px) {
+    .register-wrapper {
+        flex-direction: column;
+        margin: 20px;
+    }
+
+    .register-right {
+        min-height: 200px;
+    }
 }
