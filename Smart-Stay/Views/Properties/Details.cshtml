@@ -1,82 +1,74 @@
-﻿@model Smart_Stay.Models.Property
-
+﻿@model Smart_Stay.Models.PropertyDetailsViewModel
 @{
     ViewData["Title"] = "Property Details";
 }
-
-
-<h1>@Model.Title</h1>
-
-
-@if (!string.IsNullOrEmpty(Model.ImagePath))
-{
-    <img src="@Model.ImagePath"
-         alt="Property Image"
-         style="width:400px;height:250px;object-fit:cover;" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/PropertyDetails.css" asp-append-version="true" />
 }
-else
-{
-    <p>No image available</p>
+<div class="pd-wrap">
+    <h1 class="pd-title">@Model.Property.Title</h1>
+    <p class="pd-sub">@Model.Property.Location &middot; @Model.Property.PropertyType</p>
+    @if (Model.ImagePaths.Any())
+    {
+        <img id="pdImage" class="pd-image" src="@Model.ImagePaths[0]" alt="@Model.Property.Title" />
+    }
+    else
+    {
+        <div class="pd-noimg">No images available</div>
+    }
+    @if (Model.ImagePaths.Count > 1)
+    {
+        <div class="pd-slidebar">
+            <button type="button" id="pdPrev" class="pd-navbtn">&laquo; Prev</button>
+            <span id="pdCounter" class="pd-counter">1 / @Model.ImagePaths.Count</span>
+            <button type="button" id="pdNext" class="pd-navbtn">Next &raquo;</button>
+        </div>
+    }
+    <div class="pd-info">
+        <p><strong>Description:</strong> @Model.Property.Description</p>
+        <p><strong>Price:</strong> <span class="pd-price">R @Model.Property.Price / Month</span></p>
+        <p><strong>Bedrooms:</strong> @Model.Property.Bedrooms</p>
+        <p><strong>Bathrooms:</strong> @Model.Property.Bathrooms</p>
+        <p><strong>Status:</strong> @Model.Property.Status</p>
+        <p><strong>Total Applications:</strong> @Model.Property.RentalApplications.Count()</p>
+    </div>
+    <div class="pd-buttons">
+        <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">
+            Apply
+        </a>
+
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Landlord" asp-action="Dashboard" class="pd-cta-outline">
+                Back to Dashboard
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Home" asp-action="Index" class="pd-cta-outline">
+                Back to Listings
+            </a>
+        }
+    </div>
+
+</div>
+@section Scripts {
+    <script>
+        const pdImages = @Html.Raw(Json.Serialize(Model.ImagePaths));
+        let pdIndex = 0;
+        const pdImgEl = document.getElementById("pdImage");
+        const pdCounterEl = document.getElementById("pdCounter");
+        function pdRender() {
+            pdImgEl.src = pdImages[pdIndex];
+            pdCounterEl.textContent = (pdIndex + 1) + " / " + pdImages.length;
+        }
+        document.getElementById("pdPrev")?.addEventListener("click", () => {
+            pdIndex = (pdIndex - 1 + pdImages.length) % pdImages.length;
+            pdRender();
+        });
+        document.getElementById("pdNext")?.addEventListener("click", () => {
+            pdIndex = (pdIndex + 1) % pdImages.length;
+            pdRender();
+        });
+    </script>
 }
-
-
-<hr />
-
-
-<h3>Property Information</h3>
-
-<p>
-    <strong>Description:</strong>
-    @Model.Description
-</p>
-
-
-<p>
-    <strong>Location:</strong>
-    @Model.Location
-</p>
-
-
-<p>
-    <strong>Price:</strong>
-    R @Model.Price / Month
-</p>
-
-
-<p>
-    <strong>Type:</strong>
-    @Model.PropertyType
-</p>
-
-
-<p>
-    <strong>Bedrooms:</strong>
-    @Model.Bedrooms
-</p>
-
-
-<p>
-    <strong>Bathrooms:</strong>
-    @Model.Bathrooms
-</p>
-
-
-<p>
-    <strong>Status:</strong>
-    @Model.Status
-</p>
-
-
-<p>
-    <strong>Total Applications:</strong>
-    @Model.RentalApplications.Count()
-</p>
-
-
-<a asp-controller="Landlord"
-   asp-action="Dashboard"
-   class="btn btn-secondary">
-
-    Back to Dashboard
-
-</a>

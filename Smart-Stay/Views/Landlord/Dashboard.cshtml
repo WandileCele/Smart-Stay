@@ -1,4 +1,19 @@
-﻿@model Smart_Stay.Models.LandlordDashboardViewModel
+﻿
+@model Smart_Stay.Models.LandlordDashboardViewModel
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+        <strong>Success!</strong> @TempData["SuccessMessage"]
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+
+    </div>
+}
 
 @{
     ViewData["Title"] = "Landlord Dashboard";
@@ -42,8 +57,8 @@
     </div>
     <div class="top-bar">
 
-    <form asp-area="Identity"
-          asp-page="/Account/Logout"
+   <form asp-controller="Account"
+          asp-action="Logout"
           method="post">
 
         <button type="submit" class="logout-btn">
@@ -222,6 +237,15 @@ function toggleMenu()
 
     sidebar.classList.toggle("show");
 }
+ setTimeout(function () {
+
+        var alert = document.querySelector(".alert");
+
+        if (alert) {
+            bootstrap.Alert.getOrCreateInstance(alert).close();
+        }
+
+    }, 4000);
 
 </script>
 

@@ -18,21 +18,33 @@ namespace Smart_Stay.Controllers
             _environment = environment;
         }
 
-       
+
         public async Task<IActionResult> Details(int id)
         {
             var property = await _context.Properties
                 .Include(p => p.RentalApplications)
                 .FirstOrDefaultAsync(p => p.PropertyId == id);
 
-
             if (property == null)
             {
                 return NotFound();
             }
 
+            var imagePaths = await _context.Documents
+                .Where(d => d.DocumentType == "Image"
+                         && d.ListingApplicationNavigation.PropertyId == id)
+                .OrderBy(d => d.DocumentId)
+                .Select(d => d.DocumentPath)
+                .Take(3)
+                .ToListAsync();
 
-            return View(property);
+            var model = new PropertyDetailsViewModel
+            {
+                Property = property,
+                ImagePaths = imagePaths
+            };
+
+            return View(model);
         }
 
         [Authorize]
@@ -89,9 +101,6 @@ namespace Smart_Stay.Controllers
                 return NotFound();
             }
 
-
-            // Update property details
-
             property.Title = model.Title;
             property.Description = model.Description;
             property.Location = model.Location;
@@ -100,8 +109,6 @@ namespace Smart_Stay.Controllers
             property.Bedrooms = model.Bedrooms;
             property.Bathrooms = model.Bathrooms;
 
-
-            // If a new image was uploaded
             if (model.ImageFile != null)
             {
                 string uploadsFolder = Path.Combine(
@@ -191,7 +198,6 @@ namespace Smart_Stay.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-         
         public async Task<IActionResult> Delete(int id)
         {
             var property = await _context.Properties
@@ -205,50 +211,39 @@ namespace Smart_Stay.Controllers
                 return NotFound();
             }
 
+           
+            var listingIds = property.ListingApplications
+                .Select(l => l.ListingApplicationId)
+                .ToList();
 
-            // Delete documents linked to rental applications
-            var rentalApplicationIds = property.RentalApplications
+            var listingDocuments = await _context.Documents
+                .Where(d => d.ListingApplication != null &&
+                            listingIds.Contains(d.ListingApplication.Value))
+                .ToListAsync();
+
+            _context.Documents.RemoveRange(listingDocuments);
+
+          
+            var rentalIds = property.RentalApplications
                 .Select(r => r.RentalApplicationId)
                 .ToList();
 
+            var rentalDocuments = await _context.Documents
+                .Where(d => d.RentalApplicationId != null &&
+                            rentalIds.Contains(d.RentalApplicationId.Value))
+                .ToListAsync();
 
-            var documents = await _context.Documents
-           .Where(d => rentalApplicationIds.Contains(d.RentalApplicationId.Value))
-           .ToListAsync();
+            _context.Documents.RemoveRange(rentalDocuments);
+            _context.Reviews.RemoveRange(property.Reviews);
+            _context.RentalApplications.RemoveRange(property.RentalApplications);
 
-            if (documents.Any())
-            {
-                _context.Documents.RemoveRange(documents);
-            }
+           
+            _context.ListingApplications.RemoveRange(property.ListingApplications);
 
-
-            // Delete reviews
-            if (property.Reviews.Any())
-            {
-                _context.Reviews.RemoveRange(property.Reviews);
-            }
-
-
-            // Delete rental applications
-            if (property.RentalApplications.Any())
-            {
-                _context.RentalApplications.RemoveRange(property.RentalApplications);
-            }
-
-
-            // Delete listing applications
-            if (property.ListingApplications.Any())
-            {
-                _context.ListingApplications.RemoveRange(property.ListingApplications);
-            }
-
-
-            // Delete property
+          
             _context.Properties.Remove(property);
 
-
             await _context.SaveChangesAsync();
-
 
             return RedirectToAction("Dashboard", "Landlord");
         }
@@ -289,7 +284,7 @@ namespace Smart_Stay.Controllers
             {
                 PropertyId = property.PropertyId,
                 LandlordId = landlordId,
-                AdminId = 3, // Replace later with your actual admin selection logic
+                AdminId = 3, 
                 ApplicationStatus = "Pending",
                 ApplicationDate = DateOnly.FromDateTime(DateTime.Now)
             };
@@ -297,7 +292,6 @@ namespace Smart_Stay.Controllers
             _context.ListingApplications.Add(listingApplication);
             await _context.SaveChangesAsync();
 
-            // Folder for uploads
             string uploadFolder = Path.Combine(_environment.WebRootPath, "uploads");
 
             if (!Directory.Exists(uploadFolder))
@@ -327,7 +321,6 @@ namespace Smart_Stay.Controllers
                 });
             }
 
-            // Save Property Images
             foreach (var image in model.PropertyImages)
             {
                 string imageName = Guid.NewGuid() + Path.GetExtension(image.FileName);

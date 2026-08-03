@@ -1,0 +1,147 @@
+﻿ 
+.pd-wrap {
+    --blue: #1857D6;
+    --text: #222;
+    --muted: #666;
+    --border: #E3E6EA;
+    width: 80%;
+    margin: 30px auto;
+    padding: 32px 40px 48px;
+    font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+    font-size: 1.1rem;
+    color: var(--text);
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+}
+
+.pd-back {
+    display: inline-block;
+    margin-bottom: 16px;
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+    .pd-back:hover {
+        text-decoration: underline;
+    }
+
+.pd-title {
+    font-size: 2.7rem;
+    margin: 0 0 4px;
+    color: var(--text);
+}
+
+.pd-sub {
+    color: var(--muted);
+    margin: 0 0 20px;
+    font-size: 1.15rem;
+}
+
+.pd-image {
+    width: 100%;
+    max-width: 700px;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display: block;
+}
+
+.pd-noimg {
+    width: 100%;
+    max-width: 700px;
+    height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F5F5F5;
+    color: var(--muted);
+    border-radius: 6px;
+}
+
+.pd-slidebar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 12px;
+    max-width: 700px;
+}
+
+.pd-navbtn {
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--blue);
+    padding: 9px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.05rem;
+}
+
+    .pd-navbtn:hover {
+        background: #F0F4FF;
+    }
+
+.pd-counter {
+    color: var(--muted);
+    font-size: 1.05rem;
+}
+
+.pd-info {
+    margin-top: 28px;
+}
+
+    .pd-info p {
+        margin: 8px 0;
+        line-height: 1.5;
+        font-size: 1.05rem;
+    }
+
+    .pd-info strong {
+        color: var(--text);
+    }
+
+.pd-price {
+    color: var(--blue);
+    font-weight: 600;
+}
+
+.pd-buttons {
+    display: flex;
+    gap: 14px;
+    margin-top: 24px;
+}
+
+.pd-cta {
+    display: inline-block;
+    background: var(--blue);
+    color: #fff;
+    padding: 14px 30px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+    .pd-cta:hover {
+        background: #123F9E;
+        color: #fff;
+    }
+
+.pd-cta-outline {
+    display: inline-block;
+    background: #fff;
+    color: var(--blue);
+    border: 1px solid var(--blue);
+    padding: 13px 30px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+    .pd-cta-outline:hover {
+        background: #F0F4FF;
+        color: var(--blue);
+    }
