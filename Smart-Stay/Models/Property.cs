@@ -22,6 +22,7 @@ public partial class Property
     public DateOnly DateListed { get; set; }
 
     public string Status { get; set; } = null!;
+
     public string? ImagePath { get; set; }
 
     public int? Bedrooms { get; set; }

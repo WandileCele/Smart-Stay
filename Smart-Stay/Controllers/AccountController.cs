@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Smart_Stay.Data;
@@ -11,6 +12,11 @@ namespace Smart_Stay.Controllers
     public class AccountController : Controller
     {
         private readonly SmartDbContext _context;
+
+        // PasswordHasher<T> works with any plain class - it's not tied
+        // to ASP.NET Identity's IdentityUser. It handles salting,
+        // hashing, and safe (constant-time) verification for us.
+        private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
 
         public AccountController(SmartDbContext context)
         {
@@ -31,7 +37,64 @@ namespace Smart_Stay.Controllers
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == email);
 
-            if (user == null || user.Password != password)
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Invalid email or password.");
+                ViewData["ReturnUrl"] = returnUrl;
+                return View();
+            }
+
+            bool passwordValid = false;
+
+
+            // ============================================================
+            // VERIFY PASSWORD
+            //
+            // Normal case: user.Password holds a proper hash, and
+            // VerifyHashedPassword checks it safely.
+            //
+            // Legacy case: if this user was created before hashing was
+            // added, user.Password may still be plaintext. That isn't a
+            // valid hash format, so VerifyHashedPassword throws. We
+            // catch that, fall back to a one-time plaintext comparison,
+            // and if it matches, silently re-hash and save so this
+            // account is migrated going forward.
+            // ============================================================
+
+            var verificationResult = PasswordVerificationResult.Failed;
+
+            try
+            {
+                verificationResult = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
+            }
+            catch (FormatException)
+            {
+                verificationResult = PasswordVerificationResult.Failed;
+            }
+
+            if (verificationResult == PasswordVerificationResult.Success ||
+                verificationResult == PasswordVerificationResult.SuccessRehashNeeded)
+            {
+                passwordValid = true;
+
+                if (verificationResult == PasswordVerificationResult.SuccessRehashNeeded)
+                {
+                    user.Password = _passwordHasher.HashPassword(user, password);
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else if (user.Password == password)
+            {
+                // Legacy plaintext match - migrate to a proper hash now.
+                passwordValid = true;
+
+                user.Password = _passwordHasher.HashPassword(user, password);
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+            }
+
+            if (!passwordValid)
             {
                 ModelState.AddModelError("", "Invalid email or password.");
                 ViewData["ReturnUrl"] = returnUrl;
@@ -63,6 +126,10 @@ namespace Smart_Stay.Controllers
             if (user.Role == "Admin")
             {
                 return RedirectToAction("Dashboard", "Admin");
+            }
+            if (user.Role == "Tenant")
+            {
+                return RedirectToAction("Dashboard", "Tenant");
             }
 
             return RedirectToAction("Index", "Home");
@@ -116,10 +183,13 @@ namespace Smart_Stay.Controllers
                 SurName = surName,
                 Email = model.Email,
                 PhoneNo = model.PhoneNo,
-                Password = model.Password,
+                Password = "", // set below, after the hasher has a user instance to work with
                 Role = model.Role,
                 DateRegistered = DateOnly.FromDateTime(DateTime.Now)
             };
+
+            // Hash the password before it ever touches the database.
+            newUser.Password = _passwordHasher.HashPassword(newUser, model.Password);
 
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
@@ -151,7 +221,7 @@ namespace Smart_Stay.Controllers
             await _context.SaveChangesAsync();
 
             ViewBag.Success = true;
-          
+
             return View(new RegisterViewModel());
         }
 

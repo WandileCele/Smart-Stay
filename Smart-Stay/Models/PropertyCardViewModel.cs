@@ -12,8 +12,9 @@
         public int Bathrooms { get; set; }
         public string ImagePath { get; set; }
         public string Status { get; set; } = string.Empty;
-
         public int ApplicationCount { get; set; }
+        public double? AverageRating { get; set; }
+        public int ReviewCount { get; set; }
     }
 
 }

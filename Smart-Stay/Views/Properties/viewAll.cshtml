@@ -1,0 +1,648 @@
+﻿@model List<Smart_Stay.Models.PropertyCardViewModel>
+
+@{
+    ViewData["Title"] = "All Properties";
+}
+
+@section Styles {
+
+    <style>
+
+        /* =========================================================
+                   PAGE
+                ========================================================= */
+
+        .browse-page {
+            padding: 35px 45px 60px;
+            max-width: 1500px;
+            margin: auto;
+        }
+
+
+        /* =========================================================
+                   HEADER
+                ========================================================= */
+
+        .browse-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+            .browse-header h1 {
+                font-size: 32px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .browse-header p {
+                color: #777;
+                font-size: 16px;
+            }
+
+
+        /* =========================================================
+                   SEARCH AREA
+                ========================================================= */
+
+        .property-search {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+
+        .search-input {
+            flex: 1;
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+        }
+
+
+            .search-input input {
+                flex: 1;
+                border: none;
+                outline: none;
+                padding: 13px 16px;
+                font-size: 15px;
+            }
+
+
+            .search-input button {
+                border: none;
+                background: #0087c9;
+                color: white;
+                padding: 0 20px;
+                cursor: pointer;
+                font-size: 17px;
+            }
+
+
+        .property-search select {
+            padding: 13px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            min-width: 180px;
+            outline: none;
+            cursor: pointer;
+        }
+
+
+        .filter-button {
+            padding: 13px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #0087c9;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+
+            .filter-button:hover {
+                background: #006fa6;
+            }
+
+
+        /* =========================================================
+                   PROPERTY GRID
+                ========================================================= */
+
+        .browse-property-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+
+        /* =========================================================
+                   PROPERTY LINK
+                ========================================================= */
+
+        .browse-property-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+
+        /* =========================================================
+                   PROPERTY CARD
+                ========================================================= */
+
+        .browse-property-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            height: 100%;
+        }
+
+
+            .browse-property-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.14);
+            }
+
+
+        /* =========================================================
+                   IMAGE
+                ========================================================= */
+
+        .property-image {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background: #eef3f5;
+        }
+
+
+            .property-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+
+        .no-image {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: #aaa;
+        }
+
+
+        /* =========================================================
+                   CARD CONTENT
+                ========================================================= */
+
+        .property-card-content {
+            padding: 20px;
+        }
+
+
+            .property-card-content h3 {
+                font-size: 21px;
+                font-weight: 700;
+                margin-bottom: 8px;
+                color: #222;
+            }
+
+
+        .property-details {
+            color: #777;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+
+        .property-location {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+
+        .property-card-content h4 {
+            color: #0087c9;
+            font-size: 19px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+                   RATINGS
+                ========================================================= */
+
+        .property-rating {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            min-height: 24px;
+        }
+
+
+        .star {
+            font-size: 18px;
+            color: #ccc;
+        }
+
+
+            .star.filled {
+                color: #f5b301;
+            }
+
+
+        .stars {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1px;
+        }
+
+
+        .rating-number {
+            margin-left: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+
+        .review-count {
+            font-size: 13px;
+            color: #888;
+        }
+
+
+        .no-reviews {
+            font-size: 13px;
+            color: #999;
+            margin-left: 5px;
+        }
+
+
+        /* =========================================================
+                   NO RESULTS
+                ========================================================= */
+
+        .no-results {
+            text-align: center;
+            padding: 70px 20px;
+        }
+
+
+            .no-results h2 {
+                font-size: 25px;
+                margin-bottom: 10px;
+            }
+
+
+            .no-results p {
+                color: #777;
+            }
+
+
+        /* =========================================================
+                   RESPONSIVE
+                ========================================================= */
+
+        @@media (max-width: 1100px) {
+
+            .browse-property-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .property-search {
+                flex-wrap: wrap;
+            }
+
+            .search-input {
+                width: 100%;
+                flex: none;
+            }
+        }
+
+
+        @@media (max-width: 700px) {
+
+            .browse-page {
+                padding: 25px 20px;
+            }
+
+            .browse-property-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .property-search {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+                .property-search select {
+                    width: 100%;
+                }
+
+            .filter-button {
+                width: 100%;
+            }
+
+            .browse-header h1 {
+                font-size: 26px;
+            }
+        }
+
+    </style>
+}
+
+
+<div class="browse-page">
+
+
+    <!-- =========================================================
+         HEADER
+    ========================================================= -->
+
+    <div class="browse-header">
+
+        <h1>
+            Find Your Perfect Accommodation 🏠
+        </h1>
+
+        <p>
+            Browse available properties and find a place
+            that feels like home.
+        </p>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         SEARCH + FILTERS
+    ========================================================= -->
+
+    <form asp-controller="Properties"
+          asp-action="viewAll"
+          method="get"
+          class="property-search">
+
+
+        <!-- SEARCH -->
+
+        <div class="search-input">
+
+            <input type="text"
+                   name="search"
+                   value="@ViewBag.Search"
+                   placeholder="Search property or location..." />
+
+            <button type="submit">
+                🔍
+            </button>
+
+        </div>
+
+
+
+        <!-- LOCATION -->
+
+        <select name="location">
+
+            <option value="">
+                Filter by location
+            </option>
+
+            <option value="Walmer"
+                    selected="@(ViewBag.Location == "Walmer")">
+                Walmer
+            </option>
+
+            <option value="Humewood"
+                    selected="@(ViewBag.Location == "Humewood")">
+                Humewood
+            </option>
+
+            <option value="Summerstrand"
+                    selected="@(ViewBag.Location == "Summerstrand")">
+                Summerstrand
+            </option>
+
+            <option value="North End"
+                    selected="@(ViewBag.Location == "North End")">
+                North End
+            </option>
+
+            <option value="Newton Park"
+                    selected="@(ViewBag.Location == "Newton Park")">
+                Newton Park
+            </option>
+
+            <option value="Central"
+                    selected="@(ViewBag.Location == "Central")">
+                Central
+            </option>
+
+        </select>
+
+
+
+        <!-- PRICE -->
+
+        <select name="price">
+
+            <option value="">
+                Filter by price
+            </option>
+
+            <option value="2000-3000"
+                    selected="@(ViewBag.Price == "2000-3000")">
+                R2 000 - R3 000
+            </option>
+
+            <option value="3000-5000"
+                    selected="@(ViewBag.Price == "3000-5000")">
+                R3 000 - R5 000
+            </option>
+
+            <option value="5000+"
+                    selected="@(ViewBag.Price == "5000+")">
+                R5 000+
+            </option>
+
+        </select>
+
+
+
+        <!-- SEARCH BUTTON -->
+
+        <button type="submit"
+                class="filter-button">
+
+            Search
+
+        </button>
+
+    </form>
+
+
+
+    <!-- =========================================================
+         PROPERTY CARDS
+    ========================================================= -->
+    @if (Model != null && Model.Any())
+    {
+
+        <div class="browse-property-grid">
+
+            @foreach (var item in Model)
+            {
+
+                <a class="browse-property-link"
+                   asp-controller="Properties"
+                   asp-action="Details"
+                   asp-route-id="@item.PropertyID">
+
+
+                    <div class="browse-property-card">
+
+
+                        <!-- IMAGE -->
+
+                        <div class="property-image">
+
+                            @if (!string.IsNullOrEmpty(item.ImagePath))
+                            {
+                                <img src="@item.ImagePath"
+                                     alt="@item.Title" />
+                            }
+                            else
+                            {
+                                <div class="no-image">
+                                    🏠
+                                </div>
+                            }
+
+                        </div>
+
+
+
+                        <!-- CONTENT -->
+
+                        <div class="property-card-content">
+
+
+                            <h3>
+                                @item.Title
+                            </h3>
+
+
+                            <p class="property-details">
+
+                                @item.Bedrooms Bedrooms
+                                •
+                                @item.Bathrooms Bathrooms
+
+                            </p>
+
+
+                            <p class="property-location">
+
+                                <span>📍</span>
+                                @item.Location
+
+                            </p>
+
+
+                            <h4>
+
+                                R @item.Price.ToString("N0") / PM
+
+                            </h4>
+
+
+
+                            <!-- RATING -->
+
+                            <div class="property-rating">
+
+
+                                @if (item.ReviewCount == 0 ||
+                                                        !item.AverageRating.HasValue)
+                                {
+
+                                    <span class="stars">
+                                        ☆☆☆☆☆
+                                    </span>
+
+                                    <span class="no-reviews">
+                                        No reviews yet
+                                    </span>
+
+                                }
+                                else
+                                {
+
+                                    var roundedRating =
+                                    (int)Math.Round(
+                                    item.AverageRating.Value,
+                                    MidpointRounding.AwayFromZero);
+
+
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+
+                                        if (i <= roundedRating)
+                                        {
+                                            <span class="star filled">
+                                                ★
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="star">
+                                                ☆
+                                            </span>
+                                        }
+
+                                    }
+
+
+                                    <span class="rating-number">
+                                        @item.AverageRating.Value.ToString("0.0")
+                                    </span>
+
+                                    <span class="review-count">
+                                        (@item.ReviewCount)
+                                    </span>
+
+                                }
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            }
+
+        </div>
+
+    }
+    else
+    {
+
+        <!-- =====================================================
+             NO RESULTS
+        ====================================================== -->
+
+        <div class="no-results">
+
+            <h2>
+                No accommodations found 😕
+            </h2>
+
+            <p>
+                Try changing your search or filters.
+            </p>
+
+        </div>
+
+    }
+
+</div>

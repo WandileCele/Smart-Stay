@@ -25,24 +25,31 @@ namespace Smart_Stay.Controllers
     .Where(p => p.Status == "Available")
     .OrderByDescending(p => p.DateListed)
     .Take(3)
-    .Select(p => new PropertyCardViewModel
-    {
-        PropertyID = p.PropertyId,
-        Title = p.Title,
-        Location = p.Location,
-        Price = p.Price,
-        Bedrooms = p.Bedrooms ?? 0,
-        Bathrooms = p.Bathrooms ?? 0,
-        ImagePath = _context.ListingApplications
-    .Where(la => la.PropertyId == p.PropertyId)
-    .Join(
-        _context.Documents.Where(d => d.DocumentType == "Image"),
-        la => la.ListingApplicationId,
-        d => d.ListingApplication,
-        (la, d) => d.DocumentPath
-    )
-    .FirstOrDefault()
-    })
+   .Select(p => new PropertyCardViewModel
+   {
+       PropertyID = p.PropertyId,
+       Title = p.Title,
+       Location = p.Location,
+       Price = p.Price,
+       Bedrooms = p.Bedrooms ?? 0,
+       Bathrooms = p.Bathrooms ?? 0,
+
+       AverageRating = p.Reviews.Any()
+        ? p.Reviews.Average(r => (double)r.Rating)
+        : null,
+
+       ReviewCount = p.Reviews.Count(),
+
+       ImagePath = _context.ListingApplications
+        .Where(la => la.PropertyId == p.PropertyId)
+        .Join(
+            _context.Documents.Where(d => d.DocumentType == "Image"),
+            la => la.ListingApplicationId,
+            d => d.ListingApplication,
+            (la, d) => d.DocumentPath
+        )
+        .FirstOrDefault()
+   })
     .ToListAsync();
 
             return View(properties);

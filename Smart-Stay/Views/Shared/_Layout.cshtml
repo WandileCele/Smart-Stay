@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Smart_Stay</title>
-    
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Smart_Stay.styles.css" asp-append-version="true" />
@@ -13,8 +16,8 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    
-    
+
+
     <div class="container-fluid p-0">
         <main role="main">
             @RenderBody()
@@ -274,9 +277,112 @@
         </div>
 
     </footer>
+
+
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <!-- =====================================================
+             SESSION TIMEOUT WARNING MODAL
+
+             Shown after a period of inactivity. Counts down and
+             auto-logs-out if the user doesn't respond.
+        ====================================================== -->
+
+        <div class="modal fade"
+             id="sessionTimeoutModal"
+             tabindex="-1"
+             aria-hidden="true"
+             data-bs-backdrop="static"
+             data-bs-keyboard="false">
+
+            <div class="modal-dialog modal-dialog-centered">
+
+                <div class="modal-content">
+
+                    <div class="modal-header">
+
+                        <h5 class="modal-title">
+                            <i class="bi bi-clock-history"></i>
+                            Session Timing Out
+                        </h5>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        <p>
+                            You've been inactive for a while.
+                            For your security, you'll be logged
+                            out in
+                            <strong id="timeoutCountdown">60</strong>
+                            seconds.
+                        </p>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-primary"
+                                id="staySignedInBtn">
+
+                            Stay Signed In
+
+                        </button>
+
+
+                        <form asp-controller="Account"
+                              asp-action="Logout"
+                              method="post"
+                              class="m-0">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="btn btn-outline-secondary">
+
+                                Log Out Now
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Hidden form submitted automatically by JS when the
+             countdown reaches zero -->
+
+        <form id="autoLogoutForm"
+              asp-controller="Account"
+              asp-action="Logout"
+              method="post"
+              class="d-none">
+
+            @Html.AntiForgeryToken()
+
+        </form>
+    }
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <script src="~/js/idle-timeout.js"
+                asp-append-version="true"
+                data-idle-minutes="14"
+                data-warning-seconds="60"></script>
+    }
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

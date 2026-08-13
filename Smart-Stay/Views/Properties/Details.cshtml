@@ -36,12 +36,32 @@
         <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">
             Apply
         </a>
-
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
-            <a asp-controller="Landlord" asp-action="Dashboard" class="pd-cta-outline">
-                Back to Dashboard
-            </a>
+            if (User.IsInRole("Landlord"))
+            {
+                <a asp-controller="Landlord" asp-action="Dashboard" class="pd-cta-outline">
+                    Back to Dashboard
+                </a>
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="Admin" asp-action="Dashboard" class="pd-cta-outline">
+                    Back to Dashboard
+                </a>
+            }
+            else if (User.IsInRole("Tenant"))
+            {
+                <a asp-controller="Tenant" asp-action="Dashboard" class="pd-cta-outline">
+                    Back to Dashboard
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="Index" class="pd-cta-outline">
+                    Back to Listings
+                </a>
+            }
         }
         else
         {
@@ -50,7 +70,6 @@
             </a>
         }
     </div>
-
 </div>
 @section Scripts {
     <script>

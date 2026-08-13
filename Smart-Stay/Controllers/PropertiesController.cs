@@ -19,6 +19,147 @@ namespace Smart_Stay.Controllers
         }
 
 
+        // ============================================================
+        // VIEW ALL PROPERTIES (PUBLIC - no login required)
+        //
+        // Same card data, search, filters, and image logic as
+        // Tenant/BrowseProperties, but not behind [Authorize], so it
+        // can be linked from the public homepage's "VIEW ALL" link.
+        //
+        // IMPORTANT: images are pulled via the same
+        // ListingApplications -> Documents join used in
+        // Tenant/BrowseProperties, NOT via Property.ImagePath.
+        // ImagePath only gets set through the landlord Edit action,
+        // so relying on it here would show missing/incorrect images
+        // for properties that were never edited after creation.
+        // ============================================================
+
+        [HttpGet]
+        public async Task<IActionResult> viewAll(
+            string? search,
+            string? location,
+            string? price)
+        {
+            var query = _context.Properties
+                .Where(p => p.Status == "Available")
+                .AsQueryable();
+
+
+            // ========================================================
+            // SEARCH
+            // ========================================================
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim();
+
+                query = query.Where(p =>
+                    p.Title.Contains(search) ||
+                    p.Location.Contains(search));
+            }
+
+
+            // ========================================================
+            // LOCATION FILTER
+            // ========================================================
+
+            if (!string.IsNullOrWhiteSpace(location))
+            {
+                query = query.Where(p =>
+                    p.Location == location);
+            }
+
+
+            // ========================================================
+            // PRICE FILTER
+            // ========================================================
+
+            if (!string.IsNullOrWhiteSpace(price))
+            {
+                switch (price)
+                {
+                    case "2000-3000":
+
+                        query = query.Where(p =>
+                            p.Price >= 2000 &&
+                            p.Price <= 3000);
+
+                        break;
+
+
+                    case "3000-5000":
+
+                        query = query.Where(p =>
+                            p.Price >= 3000 &&
+                            p.Price <= 5000);
+
+                        break;
+
+
+                    case "5000+":
+
+                        query = query.Where(p =>
+                            p.Price >= 5000);
+
+                        break;
+                }
+            }
+
+
+            var properties = await query
+                .OrderByDescending(p => p.DateListed)
+                .Select(p => new PropertyCardViewModel
+                {
+                    PropertyID = p.PropertyId,
+
+                    Title = p.Title,
+
+                    Location = p.Location,
+
+                    Price = p.Price,
+
+                    Bedrooms = p.Bedrooms ?? 0,
+
+                    Bathrooms = p.Bathrooms ?? 0,
+
+                    ImagePath = _context.ListingApplications
+                        .Where(la => la.PropertyId == p.PropertyId)
+                        .Join(
+                            _context.Documents.Where(d => d.DocumentType == "Image"),
+                            la => la.ListingApplicationId,
+                            d => d.ListingApplication,
+                            (la, d) => d.DocumentPath
+                        )
+                        .FirstOrDefault() ?? "",
+
+                    Status = p.Status,
+
+                    ApplicationCount = p.RentalApplications.Count(),
+
+                    AverageRating = p.Reviews.Any()
+                        ? p.Reviews.Average(r => (double)r.Rating)
+                        : null,
+
+                    ReviewCount = p.Reviews.Count()
+                })
+                .ToListAsync();
+
+
+            // ========================================================
+            // SEND CURRENT FILTER VALUES BACK TO VIEW
+            // ========================================================
+
+            ViewBag.Search = search;
+
+            ViewBag.Location = location;
+
+            ViewBag.Price = price;
+
+
+            return View(properties);
+        }
+
+
         public async Task<IActionResult> Details(int id)
         {
             var property = await _context.Properties
@@ -211,7 +352,7 @@ namespace Smart_Stay.Controllers
                 return NotFound();
             }
 
-           
+
             var listingIds = property.ListingApplications
                 .Select(l => l.ListingApplicationId)
                 .ToList();
@@ -223,7 +364,7 @@ namespace Smart_Stay.Controllers
 
             _context.Documents.RemoveRange(listingDocuments);
 
-          
+
             var rentalIds = property.RentalApplications
                 .Select(r => r.RentalApplicationId)
                 .ToList();
@@ -237,10 +378,10 @@ namespace Smart_Stay.Controllers
             _context.Reviews.RemoveRange(property.Reviews);
             _context.RentalApplications.RemoveRange(property.RentalApplications);
 
-           
+
             _context.ListingApplications.RemoveRange(property.ListingApplications);
 
-          
+
             _context.Properties.Remove(property);
 
             await _context.SaveChangesAsync();
@@ -284,7 +425,7 @@ namespace Smart_Stay.Controllers
             {
                 PropertyId = property.PropertyId,
                 LandlordId = landlordId,
-                AdminId = 3, 
+                AdminId = 3,
                 ApplicationStatus = "Pending",
                 ApplicationDate = DateOnly.FromDateTime(DateTime.Now)
             };
@@ -299,7 +440,7 @@ namespace Smart_Stay.Controllers
                 Directory.CreateDirectory(uploadFolder);
             }
 
-            
+
             if (model.Affidavit != null)
             {
                 string affidavitName = Guid.NewGuid() + Path.GetExtension(model.Affidavit.FileName);
