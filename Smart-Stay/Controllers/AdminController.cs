@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Smart_Stay.Data;
 using Smart_Stay.Models;
+using System.Linq;
 using System.Security.Claims;
 
 
@@ -178,6 +179,166 @@ namespace Smart_Stay.Controllers
             };
 
             return View(model);
+        }
+
+        // ===============================
+        // MANAGE LANDLORDS
+        // ===============================
+
+        public async Task<IActionResult> ManageLandlords()
+        {
+            var landlords = await _context.Landlords
+                .Include(l => l.User)
+                .Include(l => l.Properties)
+                .ToListAsync();
+
+            return View(landlords);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteLandlord(int id)
+        {
+            var landlord = await _context.Landlords
+                .Include(l => l.User)
+                .FirstOrDefaultAsync(l => l.UserId == id);
+
+            if (landlord == null)
+            {
+                return NotFound();
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                // --------------------------------
+                // 1. Get landlord's properties
+                // --------------------------------
+
+                var properties = await _context.Properties
+                    .Where(p => p.LandlordId == id)
+                    .ToListAsync();
+
+                var propertyIds = properties
+                    .Select(p => p.PropertyId)
+                    .ToList();
+
+
+                // --------------------------------
+                // 2. Delete reviews for properties
+                // --------------------------------
+
+                if (propertyIds.Any())
+                {
+                    var reviews = await _context.Reviews
+                        .Where(r => propertyIds.Contains(r.PropertyId))
+                        .ToListAsync();
+
+                    _context.Reviews.RemoveRange(reviews);
+                }
+
+
+                // --------------------------------
+                // 3. Get listing applications
+                // --------------------------------
+
+                var listingApplications = await _context.ListingApplications
+                    .Where(a => a.LandlordId == id)
+                    .ToListAsync();
+
+                var listingApplicationIds = listingApplications
+                    .Select(a => a.ListingApplicationId)
+                    .ToList();
+
+
+                // --------------------------------
+                // 4. Delete documents belonging
+                //    to listing applications
+                // --------------------------------
+
+                if (listingApplicationIds.Any())
+                {
+                    var listingDocuments = await _context.Documents
+                        .Where(d =>
+                            d.ListingApplication != null &&
+                            listingApplicationIds.Contains(d.ListingApplication.Value))
+                        .ToListAsync();
+
+                    _context.Documents.RemoveRange(listingDocuments);
+                }
+
+                _context.ListingApplications.RemoveRange(listingApplications);
+
+
+                // --------------------------------
+                // 5. Get rental applications
+                // --------------------------------
+
+                var rentalApplications = await _context.RentalApplications
+                    .Where(r => r.LandlordId == id)
+                    .ToListAsync();
+
+                var rentalApplicationIds = rentalApplications
+                    .Select(r => r.RentalApplicationId)
+                    .ToList();
+
+
+                // --------------------------------
+                // 6. Delete rental documents
+                // --------------------------------
+
+                if (rentalApplicationIds.Any())
+                {
+                    var rentalDocuments = await _context.Documents
+                        .Where(d => d.RentalApplicationId.HasValue &&
+                                    rentalApplicationIds.Contains(d.RentalApplicationId.Value))
+                        .ToListAsync();
+
+                    _context.Documents.RemoveRange(rentalDocuments);
+                }
+
+                _context.RentalApplications.RemoveRange(rentalApplications);
+
+
+                // --------------------------------
+                // 7. Delete properties
+                // --------------------------------
+
+                _context.Properties.RemoveRange(properties);
+
+
+                // --------------------------------
+                // 8. Delete landlord
+                // --------------------------------
+
+                _context.Landlords.Remove(landlord);
+
+
+                // --------------------------------
+                // 9. Delete User account
+                // --------------------------------
+
+                _context.Users.Remove(landlord.User);
+
+
+                // --------------------------------
+                // 10. Save everything
+                // --------------------------------
+
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return RedirectToAction(nameof(ManageLandlords));
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+
+                throw;
+            }
         }
     }
 }
