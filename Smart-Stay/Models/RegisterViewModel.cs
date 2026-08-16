@@ -23,7 +23,6 @@ namespace Smart_Stay.Models
         [Required]
         public string ConfirmPassword { get; set; }
 
-        // Only used when Role == "Tenant"
         public string? EmploymentStatus { get; set; }
     }
 }

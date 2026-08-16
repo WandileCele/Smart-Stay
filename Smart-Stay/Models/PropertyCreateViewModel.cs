@@ -24,11 +24,9 @@ namespace Smart_Stay.Models
 
         public int? Bathrooms { get; set; }
 
-        // Property Images
         [Required(ErrorMessage = "Upload at least 3 images.")]
         public List<IFormFile> PropertyImages { get; set; } = new();
 
-        // Affidavit PDF
         [Required(ErrorMessage = "Affidavit is required.")]
         public IFormFile Affidavit { get; set; } = null!;
     }

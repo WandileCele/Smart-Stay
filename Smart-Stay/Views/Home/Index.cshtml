@@ -76,27 +76,97 @@
 </div>
 <section class="popular">
 
-    <div class="title">
+  <div class="title">
 
-        <h2>POPULAR ACCOMMODATION</h2>
+    <h2>POPULAR ACCOMMODATION</h2>
 
-        <a href="#">VIEW ALL</a>
+    <a asp-controller="Properties"
+       asp-action="viewAll">
 
-    </div>
+        VIEW ALL
 
+    </a>
+
+</div>
     <div class="cards">
+
+       
         @foreach (var item in Model)
         {
-            <a asp-controller="Property" asp-action="Details" asp-route-id="@item.PropertyID" style="text-decoration:none; color:inherit;">
+            <a class="property-link"
+               asp-controller="Properties"
+               asp-action="Details"
+               asp-route-id="@item.PropertyID">
+
                 <div class="card">
-                    <img src="~/@item.ImagePath" />
+
+                    <img src="@item.ImagePath" alt="@item.Title" />
+
                     <h3>@item.Title</h3>
-                    <p>@item.Bedrooms Bedrooms &nbsp; @item.Bathrooms Bathrooms</p>
-                    <p><i class="fa-solid fa-location-dot"></i> @item.Location</p>
-                    <h4>R@item.Price/PM</h4>
+
+                    <p>
+                        <i class="fa-solid fa-bed"></i>
+                        @item.Bedrooms Bedrooms
+                    </p>
+
+                    <p>
+                        <i class="fa-solid fa-bath"></i>
+                        @item.Bathrooms Bathrooms
+                    </p>
+
+                    <p>
+                        <i class="fa-solid fa-location-dot"></i>
+                        @item.Location
+                    </p>
+
+                    <h4>
+                        <i class="fa-solid fa-money-bill"></i>
+                        R @item.Price / PM
+                    </h4>
+
+                    <div class="rating">
+
+                        @if (item.AverageRating.HasValue)
+                        {
+                            var fullStars = (int)Math.Floor(item.AverageRating.Value);
+                            var hasHalfStar = item.AverageRating.Value - fullStars >= 0.5;
+
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= fullStars)
+                                {
+                                    <i class="fa-solid fa-star"></i>
+                                }
+                                else if (i == fullStars + 1 && hasHalfStar)
+                                {
+                                    <i class="fa-solid fa-star-half-stroke"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-regular fa-star"></i>
+                                }
+                            }
+
+                            <span>
+                                @item.AverageRating.Value.ToString("0.0")
+                                (@item.ReviewCount)
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="no-rating">
+                                ☆ No ratings yet
+                            </span>
+                        }
+
+                    </div>
+
                 </div>
+
             </a>
         }
+       
     </div>
+
 
 </section>

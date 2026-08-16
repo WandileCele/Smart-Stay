@@ -3,85 +3,228 @@
 @{
     ViewData["Title"] = "Add Property";
 }
-<form asp-action="Create" method="post" enctype="multipart/form-data">
 
-    <div class="form-group">
-        <label asp-for="Title"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title"></span>
+<link rel="stylesheet" href="~/css/Property.css" asp-append-version="true" />
+
+<div class="container mt-5">
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+            <strong>Success!</strong> @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+    <div class="property-card">
+
+        <div class="property-header">
+
+            <h2>Add New Property</h2>
+
+            <p>Complete the information below to list your property.</p>
+
+        </div>
+
+        <form asp-action="Create"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div class="mb-3">
+
+                <label asp-for="Title"></label>
+
+                <input asp-for="Title"
+                       class="form-control"
+                       placeholder="Enter property title" />
+
+                <span asp-validation-for="Title"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label asp-for="Description"></label>
+
+                <textarea asp-for="Description"
+                          rows="5"
+                          class="form-control"
+                          placeholder="Describe your property"></textarea>
+
+                <span asp-validation-for="Description"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label asp-for="Location"></label>
+
+                <input asp-for="Location"
+                       class="form-control"
+                       placeholder="City, Province" />
+
+                <span asp-validation-for="Location"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label asp-for="Price"></label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text">R</span>
+
+                    <input asp-for="Price"
+                           class="form-control"
+                           placeholder="0.00" />
+
+                </div>
+
+                <span asp-validation-for="Price"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label asp-for="PropertyType"></label>
+
+                <select asp-for="PropertyType"
+                        class="form-select">
+
+                    <option value="">Select Property Type</option>
+
+                    <option>Apartment</option>
+
+                    <option>House</option>
+
+                    <option>Flat</option>
+
+                    <option>Room</option>
+
+                    <option>Student Accommodation</option>
+
+                </select>
+
+                <span asp-validation-for="PropertyType"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+
+                        <label asp-for="Bedrooms"></label>
+
+                        <input asp-for="Bedrooms"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+
+                        <label asp-for="Bathrooms"></label>
+
+                        <input asp-for="Bathrooms"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="section-box">
+
+                <h4>📷 Property Images</h4>
+
+                <label>Upload at least 3 Images</label>
+
+                <input asp-for="PropertyImages"
+                       type="file"
+                       multiple
+                       class="form-control"
+                       accept=".jpg,.jpeg,.png" />
+
+                <small>
+
+                    Hold <strong>Ctrl</strong> while selecting multiple images.
+
+                </small>
+
+                <span asp-validation-for="PropertyImages"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="section-box mt-4">
+
+                <h4>📄 Supporting Documents</h4>
+
+                <label>Affidavit (PDF)</label>
+
+                <input asp-for="Affidavit"
+                       type="file"
+                       class="form-control"
+                       accept=".pdf" />
+
+                <span asp-validation-for="Affidavit"
+                      class="text-danger"></span>
+
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary btn-lg w-100 mt-4">
+
+                Add Property
+
+            </button>
+
+        </form>
+
     </div>
 
-    <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description"></span>
-    </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="Location"></label>
-        <input asp-for="Location" class="form-control" />
-        <span asp-validation-for="Location"></span>
-    </div>
+@section Scripts {
 
-    <div class="form-group">
-        <label asp-for="Price"></label>
-        <input asp-for="Price" class="form-control" />
-        <span asp-validation-for="Price"></span>
-    </div>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-    <div class="form-group">
-        <label asp-for="PropertyType"></label>
-        <input asp-for="PropertyType" class="form-control" />
-        <span asp-validation-for="PropertyType"></span>
-    </div>
+    <script>
 
-    <div class="form-group">
-        <label asp-for="Bedrooms"></label>
-        <input asp-for="Bedrooms" class="form-control" />
-    </div>
+        window.setTimeout(function () {
 
-    <div class="form-group">
-        <label asp-for="Bathrooms"></label>
-        <input asp-for="Bathrooms" class="form-control" />
-    </div>
+            var alert = document.querySelector(".alert");
 
-    <hr />
+            if (alert) {
 
-    <h4>Property Images</h4>
-    <div class="form-group">
-        <label>Upload Property Images (Minimum 3)</label>
-        <input asp-for="PropertyImages"
-               type="file"
-               multiple
-               class="form-control"
-               accept=".jpg,.jpeg,.png" />
-        <small class="form-text text-muted">
-            ⚠️ Please select all your photos at once (hold Ctrl or Cmd while clicking to select multiple). Selecting files one at a time will replace your previous selection.
-        </small>
-        <span asp-validation-for="PropertyImages"
-              class="text-danger"></span>
-    </div>
+                var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
 
-    <hr />
+                bsAlert.close();
 
-    <h4>Supporting Documents</h4>
+            }
 
-    <div class="form-group">
+        }, 4000);
 
-        <label>Affidavit (PDF)</label>
+    </script>
 
-        <input asp-for="Affidavit"
-               type="file"
-               class="form-control"
-               accept=".pdf" />
-
-        <span asp-validation-for="Affidavit"
-              class="text-danger"></span>
-
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        Add Property
-    </button>
-
-</form>
+}
