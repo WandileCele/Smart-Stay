@@ -24,51 +24,51 @@
     </nav>
 
     <div class="hero-content">
-
         <h2>
             FIND THE PERFECT ACCOMMODATION IN PORT ELIZABETH
         </h2>
 
-        <div class="search-box">
+        <form asp-controller="Properties"
+              asp-action="viewAll"
+              method="get"
+              class="hero-search">
 
-            <input type="text"
-                   placeholder="Search Property e.g Sarah Bartman">
+            <div class="search-input">
+                <input type="text"
+                       name="search"
+                       placeholder="Search Property e.g Sarah Bartman" />
+                <button type="submit">
+                    🔍
+                </button>
+            </div>
 
-            <button>
+            <div class="filters-row">
 
-                🔍
+                <select name="location">
+                    <option value="">Filter by location</option>
+                    <option value="Walmer">Walmer</option>
+                    <option value="Humewood">Humewood</option>
+                    <option value="Summerstrand">Summerstrand</option>
+                    <option value="North End">North End</option>
+                    <option value="Newton Park">Newton Park</option>
+                    <option value="Central">Central</option>
+                </select>
 
-            </button>
+                <select name="price">
+                    <option value="">Filter by price</option>
+                    <option value="2000-3000">R2 000 - R3 000</option>
+                    <option value="3000-5000">R3 000 - R5 000</option>
+                    <option value="5000+">R5 000+</option>
+                </select>
 
-        </div>
+                <button type="submit" class="filter-button">
+                    Search
+                </button>
 
-        <div class="filters">
+            </div>
 
-            <select>
-
-                <option>Filter by location</option>
-
-                <option>Walmer</option>
-
-                <option>Humewood</option>
-
-                <option>Summerstrand</option>
-
-            </select>
-
-            <select>
-
-                <option>Filter by price</option>
-
-                <option>R2000-R3000</option>
-
-                <option>R3000-R5000</option>
-
-                <option>R5000+</option>
-
-            </select>
-
-        </div>
+        </form>
+        
 
     </div>
 
@@ -96,7 +96,9 @@
             <a class="property-link"
                asp-controller="Properties"
                asp-action="Details"
-               asp-route-id="@item.PropertyID">
+               asp-route-id="@item.PropertyID"
+               asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
+                
 
                 <div class="card">
 
@@ -119,10 +121,10 @@
                         @item.Location
                     </p>
 
-                    <h4>
+                    <p id="money">
                         <i class="fa-solid fa-money-bill"></i>
-                        R @item.Price / PM
-                    </h4>
+                        R @item.Price.ToString("N2") / PM
+                    </p>
 
                     <div class="rating">
 

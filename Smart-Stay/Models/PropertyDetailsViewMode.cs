@@ -6,5 +6,7 @@ namespace Smart_Stay.Models
     {
         public Property Property { get; set; } = null!;
         public List<string> ImagePaths { get; set; } = new List<string>();
+
+        public string ReturnUrl { get; set; } = "/";
     }
 }

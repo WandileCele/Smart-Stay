@@ -26,7 +26,7 @@
     }
     <div class="pd-info">
         <p><strong>Description:</strong> @Model.Property.Description</p>
-        <p><strong>Price:</strong> <span class="pd-price">R @Model.Property.Price / Month</span></p>
+        <p><strong>Price:</strong> <span class="pd-price">R @Model.Property.Price.ToString("N2") / Month</span></p>
         <p><strong>Bedrooms:</strong> @Model.Property.Bedrooms</p>
         <p><strong>Bathrooms:</strong> @Model.Property.Bathrooms</p>
         <p><strong>Status:</strong> @Model.Property.Status</p>
@@ -36,39 +36,9 @@
         <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">
             Apply
         </a>
-        @if (User.Identity != null && User.Identity.IsAuthenticated)
-        {
-            if (User.IsInRole("Landlord"))
-            {
-                <a asp-controller="Landlord" asp-action="Dashboard" class="pd-cta-outline">
-                    Back to Dashboard
-                </a>
-            }
-            else if (User.IsInRole("Admin"))
-            {
-                <a asp-controller="Admin" asp-action="Dashboard" class="pd-cta-outline">
-                    Back to Dashboard
-                </a>
-            }
-            else if (User.IsInRole("Tenant"))
-            {
-                <a asp-controller="Tenant" asp-action="Dashboard" class="pd-cta-outline">
-                    Back to Dashboard
-                </a>
-            }
-            else
-            {
-                <a asp-controller="Home" asp-action="Index" class="pd-cta-outline">
-                    Back to Listings
-                </a>
-            }
-        }
-        else
-        {
-            <a asp-controller="Home" asp-action="Index" class="pd-cta-outline">
-                Back to Listings
-            </a>
-        }
+        <a href="@Model.ReturnUrl" class="pd-cta-outline">
+            Back
+        </a>
     </div>
 </div>
 @section Scripts {

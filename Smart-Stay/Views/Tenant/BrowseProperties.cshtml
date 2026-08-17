@@ -192,6 +192,7 @@
 
         .property-card-content {
             padding: 20px;
+            text-align:left;
         }
 
 
@@ -346,6 +347,28 @@
                 font-size: 26px;
             }
 
+            .browse-back-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 12px 24px;
+                border: none;
+                border-radius: 10px;
+                background: #0087c9;
+                color: white;
+                font-weight: 600;
+                font-size: 14px;
+                text-decoration: none;
+                cursor: pointer;
+                transition: 0.2s;
+                box-shadow: 0 3px 10px rgba(0, 135, 201, 0.25);
+            }
+
+                .browse-back-btn:hover {
+                    background: #006fa6;
+                    transform: translateY(-2px);
+                    box-shadow: 0 5px 14px rgba(0, 135, 201, 0.35);
+                }
         }
 
     </style>
@@ -354,7 +377,14 @@
 
 <div class="browse-page">
 
+        <div style="margin-bottom: 20px;">
+         
+            <a asp-controller="Tenant" asp-action="Dashboard" class="browse-back-btn">
+                &laquo; Back to Dashboard
+            </a>
+        </div>
 
+        <div class="browse-header">
     <!-- =========================================================
          HEADER
     ========================================================= -->
@@ -497,7 +527,8 @@
                 <a class="browse-property-link"
                    asp-controller="Properties"
                    asp-action="Details"
-                   asp-route-id="@item.PropertyID">
+                   asp-route-id="@item.PropertyID"
+                   asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
 
 
                     <div class="browse-property-card">

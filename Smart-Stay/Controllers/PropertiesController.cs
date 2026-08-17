@@ -159,8 +159,7 @@ namespace Smart_Stay.Controllers
             return View(properties);
         }
 
-
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, string? returnUrl)
         {
             var property = await _context.Properties
                 .Include(p => p.RentalApplications)
@@ -179,10 +178,18 @@ namespace Smart_Stay.Controllers
                 .Take(3)
                 .ToListAsync();
 
+            string? candidateReturnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
+
+            string safeReturnUrl = (!string.IsNullOrWhiteSpace(candidateReturnUrl)
+                                     && Url.IsLocalUrl(candidateReturnUrl))
+                ? candidateReturnUrl
+                : Url.Action("Index", "Home")!;
+
             var model = new PropertyDetailsViewModel
             {
                 Property = property,
-                ImagePaths = imagePaths
+                ImagePaths = imagePaths,
+                ReturnUrl = safeReturnUrl
             };
 
             return View(model);

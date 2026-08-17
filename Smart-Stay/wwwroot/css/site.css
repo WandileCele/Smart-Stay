@@ -253,3 +253,76 @@ nav {
 .fa-solid fa-money-bill{
     color:forestgreen;
 }
+#money{
+    color:green;
+}
+
+.hero-search {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 25px;
+    width: 100%;
+    max-width: 1100px;
+}
+
+    .hero-search .search-input {
+        display: flex;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        background: white;
+    }
+
+        .hero-search .search-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 13px 16px;
+            font-size: 15px;
+        }
+
+        .hero-search .search-input button {
+            border: none;
+            background: #0087c9;
+            color: white;
+            padding: 0 20px;
+            cursor: pointer;
+            font-size: 17px;
+        }
+
+    .hero-search .filters-row {
+        display: flex;
+        gap: 15px;
+    }
+
+    .hero-search select {
+        flex: 1;
+        padding: 13px 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background: white;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .hero-search .filter-button {
+        padding: 13px 25px;
+        border: none;
+        border-radius: 10px;
+        background: #0087c9;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .hero-search .filter-button:hover {
+            background: #006fa6;
+        }
+
+@media (max-width: 700px) {
+    .hero-search .filters-row {
+        flex-direction: column;
+    }
+}
