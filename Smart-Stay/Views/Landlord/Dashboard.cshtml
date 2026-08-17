@@ -154,14 +154,15 @@
                 <div class="card-buttons">
 
 
-                    <a asp-controller="Properties"
-                       asp-action="Details"
-                       asp-route-id="@property.PropertyID"
-                       class="btn btn-info">
+                  <a asp-controller="Properties"
+                    asp-action="Details"
+                    asp-route-id="@property.PropertyID"
+                    asp-route-returnUrl="@Url.Action("Dashboard", "Landlord")"
+                  class="btn btn-info">
+ 
+                   View
 
-                        View
-
-                    </a>
+                  </a>
                     <a asp-controller="Properties"
                        asp-action="Edit"
                        asp-route-id="@property.PropertyID"
