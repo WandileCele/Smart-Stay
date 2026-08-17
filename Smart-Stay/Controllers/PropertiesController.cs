@@ -17,23 +17,6 @@ namespace Smart_Stay.Controllers
             _context = context;
             _environment = environment;
         }
-
-
-        // ============================================================
-        // VIEW ALL PROPERTIES (PUBLIC - no login required)
-        //
-        // Same card data, search, filters, and image logic as
-        // Tenant/BrowseProperties, but not behind [Authorize], so it
-        // can be linked from the public homepage's "VIEW ALL" link.
-        //
-        // IMPORTANT: images are pulled via the same
-        // ListingApplications -> Documents join used in
-        // Tenant/BrowseProperties, NOT via Property.ImagePath.
-        // ImagePath only gets set through the landlord Edit action,
-        // so relying on it here would show missing/incorrect images
-        // for properties that were never edited after creation.
-        // ============================================================
-
         [HttpGet]
         public async Task<IActionResult> viewAll(
             string? search,

@@ -2,7 +2,6 @@
     ViewData["Title"] = "Login";
     Layout = null;
 }
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,19 +9,58 @@
     <title>Smart Stay - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="~/css/login.css" />
+
+    <style>
+        .global-loader {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .global-loader.active {
+                display: flex;
+            }
+
+        .loader-box {
+            text-align: center;
+        }
+
+            .loader-box .spinner {
+                width: 48px;
+                height: 48px;
+                border: 5px solid #ddd;
+                border-top: 5px solid #0087c9;
+                border-radius: 50%;
+                margin: 0 auto 15px;
+                animation: loginSpin 0.8s linear infinite;
+            }
+
+        @@keyframes loginSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #loader-text {
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
-
     <div class="login-wrapper">
         <div class="login-left">
             <div class="logo-row">
                 <i class="fa-solid fa-house"></i>
                 <span>SMART STAY</span>
             </div>
-
             <h2>Welcome back</h2>
             <p class="subtext">Log in to access your rental account</p>
-
             @if (!ViewData.ModelState.IsValid)
             {
                 <div class="error-box">
@@ -32,38 +70,31 @@
                     }
                 </div>
             }
-
-            <form asp-controller="Account" asp-action="Login" method="post">
+            <form asp-controller="Account" asp-action="Login" method="post" id="loginForm">
                 <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
-
                 <label>Email <span class="required">*Required</span></label>
                 <div class="input-group">
                     <i class="fa-solid fa-envelope"></i>
                     <input type="email" name="email" placeholder="Enter your email" required />
                 </div>
-
                 <label>Password <span class="required">*Required</span></label>
                 <div class="input-group">
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" name="password" id="passwordField" placeholder="Enter your password" required />
                     <i class="fa-solid fa-eye toggle-eye" onclick="togglePassword()"></i>
                 </div>
-
                 <div class="row-between">
                     <label style="font-weight:normal; display:flex; align-items:center; gap:5px;">
                         <input type="checkbox" name="rememberMe" style="width:auto;" /> Remember me
                     </label>
                     <a href="#">Forgot password?</a>
                 </div>
-
                 <button type="submit" class="btn-login">Log in</button>
             </form>
-
             <p class="signup-text">
                 Don't you have an account? <a href="#">Sign up for free</a>
             </p>
         </div>
-
         <div class="login-right">
             <div class="right-text">
                 <h3>SMART STAY</h3>
@@ -72,12 +103,34 @@
         </div>
     </div>
 
+    <div id="global-loader" class="global-loader">
+        <div class="loader-box">
+            <div class="spinner"></div>
+            <p id="loader-text">Logging in...</p>
+        </div>
+    </div>
+
     <script>
         function togglePassword() {
             const field = document.getElementById('passwordField');
             field.type = field.type === 'password' ? 'text' : 'password';
         }
-    </script>
 
+        (function () {
+            const form = document.getElementById("loginForm");
+            const loader = document.getElementById("global-loader");
+            const loaderText = document.getElementById("loader-text");
+            let patienceTimer = null;
+
+            form.addEventListener("submit", function () {
+                loaderText.textContent = "Logging in...";
+                loader.classList.add("active");
+
+                patienceTimer = setTimeout(function () {
+                    loaderText.textContent = "Please be patient...";
+                }, 6000);
+            });
+        })();
+    </script>
 </body>
 </html>
