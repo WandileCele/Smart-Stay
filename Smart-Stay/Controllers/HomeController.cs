@@ -60,5 +60,18 @@ namespace Smart_Stay.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        [HttpGet]
+        public IActionResult About(string? returnUrl)
+        {
+            string? candidateReturnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
+
+            string safeReturnUrl = (!string.IsNullOrWhiteSpace(candidateReturnUrl)
+                                     && Url.IsLocalUrl(candidateReturnUrl))
+                ? candidateReturnUrl
+                : Url.Action("Index", "Home")!;
+
+            ViewBag.ReturnUrl = safeReturnUrl;
+            return View();
+        }
     }
 }

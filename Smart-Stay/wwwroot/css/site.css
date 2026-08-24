@@ -320,9 +320,234 @@ nav {
         .hero-search .filter-button:hover {
             background: #006fa6;
         }
-
 @media (max-width: 700px) {
     .hero-search .filters-row {
         flex-direction: column;
     }
+}
+
+#typewriter {
+    color: #2563eb;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+    #typewriter::after {
+        content: "|";
+        color: #2563eb;
+        animation: blink 0.8s infinite;
+        margin-left: 2px;
+    }
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+
+    51%, 100% {
+        opacity: 0;
+    }
+}
+.about-wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .about-wrap::before,
+    .about-wrap::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        opacity: 0.15;
+        z-index: -1;
+        animation: blobFloat 12s ease-in-out infinite;
+    }
+
+    .about-wrap::before {
+        width: 300px;
+        height: 300px;
+        background: #2563eb;
+        top: -50px;
+        left: -100px;
+    }
+
+    .about-wrap::after {
+        width: 250px;
+        height: 250px;
+        background: #60a5fa;
+        bottom: 0;
+        right: -80px;
+        animation-delay: 3s;
+    }
+
+@keyframes blobFloat {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(30px, -20px);
+    }
+}
+
+.about-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 30px;
+    transition: color 0.2s ease, transform 0.2s ease;
+    opacity: 0;
+    animation: aboutFadeUp 0.6s ease forwards;
+}
+
+    .about-back:hover {
+        color: #2563eb;
+        transform: translateX(-4px);
+    }
+
+.about-intro {
+    text-align: center;
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: aboutFadeUp 0.6s ease forwards;
+    animation-delay: 0.15s;
+}
+
+.about-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.about-desc {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #555;
+    line-height: 1.7;
+}
+
+.about-team-heading {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: aboutFadeUp 0.6s ease forwards;
+    animation-delay: 0.35s;
+}
+
+@keyframes aboutFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.about-team {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+}
+
+/* Scroll-triggered reveal for each team card */
+.team-member {
+    text-align: center;
+    max-width: 240px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    perspective: 800px;
+}
+
+    .team-member.in-view {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+/* Gradient spinning ring around photo + tilt on hover */
+.team-photo-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 16px;
+    transition: transform 0.3s ease;
+}
+
+    .team-photo-wrap::before {
+        content: "";
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, #2563eb, #60a5fa, #2563eb);
+        animation: ringSpin 4s linear infinite;
+    }
+
+.team-photo {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    z-index: 1;
+    display: block;
+    margin: 0 auto;
+}
+
+@keyframes ringSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.team-member:hover .team-photo-wrap {
+    transform: rotateY(8deg) rotateX(4deg) scale(1.05);
+}
+
+
+.team-name {
+    position: relative;
+    display: inline-block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    transition: letter-spacing 0.25s ease;
+}
+
+    .team-name::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 0;
+        height: 2px;
+        background: #2563eb;
+        transition: width 0.3s ease;
+    }
+
+.team-member:hover .team-name {
+    letter-spacing: 1px;
+}
+.team-member:hover .team-name::after
+{
+        width: 100%;
+}
+
+.team-desc {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
 }

@@ -32,6 +32,35 @@
         <p><strong>Status:</strong> @Model.Property.Status</p>
         <p><strong>Total Applications:</strong> @Model.Property.RentalApplications.Count()</p>
     </div>
+    <div class="pd-reviews">
+        <h2 class="pd-reviews-title">Reviews (@Model.Property.Reviews.Count)</h2>
+
+        @if (Model.Property.Reviews.Any())
+        {
+            <div class="pd-reviews-list">
+                @foreach (var review in Model.Property.Reviews.OrderByDescending(r => r.ReviewDate))
+                {
+                    <div class="pd-review-item">
+                        <div class="pd-review-header">
+                            <span class="pd-review-rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <span class="@(i <= review.Rating ? "pd-star-filled" : "pd-star-empty")">&#9733;</span>
+                                }
+                            </span>
+                            <span class="pd-review-date">@review.ReviewDate.ToString("dd MMM yyyy")</span>
+                        </div>
+                        <p class="pd-review-comment">@review.Comment</p>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="pd-no-reviews">No reviews yet for this property.</p>
+        }
+    </div>
+
     <div class="pd-buttons">
         <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">
             Apply

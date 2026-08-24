@@ -144,9 +144,12 @@ namespace Smart_Stay.Controllers
 
         public async Task<IActionResult> Details(int id, string? returnUrl)
         {
+
             var property = await _context.Properties
-                .Include(p => p.RentalApplications)
-                .FirstOrDefaultAsync(p => p.PropertyId == id);
+            .Include(p => p.RentalApplications)
+            .Include(p => p.Reviews)
+            .ThenInclude(r => r.Tenant)
+            .FirstOrDefaultAsync(p => p.PropertyId == id);
 
             if (property == null)
             {

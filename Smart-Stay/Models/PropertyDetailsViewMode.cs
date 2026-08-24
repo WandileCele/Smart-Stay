@@ -8,5 +8,7 @@ namespace Smart_Stay.Models
         public List<string> ImagePaths { get; set; } = new List<string>();
 
         public string ReturnUrl { get; set; } = "/";
+
+        public List<Review> Reviews{ get; set; } = new();
     }
 }

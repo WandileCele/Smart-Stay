@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Code Expired";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Smart Stay - Expired</title>
+    <link rel="stylesheet" href="~/css/register.css" />
+</head>
+<body>
+    <div class="register-wrapper" style="display:flex; align-items:center; justify-content:center;">
+        <div class="register-left" style="text-align:center;">
+            <h2 class="title">⚠ Code Expired or Invalid</h2>
+            <p>@(ViewBag.CodeError ?? "Your verification code has expired. Your account was not created.")</p>
+            <a asp-controller="Account" asp-action="Register" class="btn-register" style="display:inline-block; text-decoration:none; margin-top:15px;">Register Again</a>
+        </div>
+    </div>
+</body>
+</html>
