@@ -128,7 +128,6 @@
         background: #123F9E;
         color: #fff;
     }
-
 .pd-cta-outline {
     display: inline-block;
     background: #fff;
@@ -140,8 +139,53 @@
     font-size: 1.15rem;
     font-weight: 600;
 }
-
-    .pd-cta-outline:hover {
+ .pd-cta-outline:hover {
         background: #F0F4FF;
         color: var(--blue);
     }
+
+.pd-reviews {
+    margin-top: 2rem;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 1.5rem;
+}
+
+.pd-reviews-title {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.pd-review-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.pd-review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+.pd-star-filled {
+    color: #f5a623;
+}
+
+.pd-star-empty {
+    color: #ddd;
+}
+
+.pd-review-date {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.pd-review-comment {
+    margin: 0;
+    color: #333;
+}
+
+.pd-no-reviews {
+    color: #777;
+    font-style: italic;
+}

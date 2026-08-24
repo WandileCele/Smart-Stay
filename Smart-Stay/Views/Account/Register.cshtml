@@ -18,16 +18,28 @@
         <div class="register-left">
             <h2 class="title">REGISTER ACCOUNT</h2>
 
-            @if (ViewBag.Success == true)
+            @if (ViewBag.AwaitingCode == true)
             {
-                <div class="success-box">
-                    ✅ Account created successfully! Redirecting to login...
-                </div>
-                <script>
-                    setTimeout(function () {
-                        window.location.href = '@Url.Action("Login", "Account")';
-                    }, 2000);
-                </script>
+                <h2 class="title">VERIFY YOUR EMAIL</h2>
+                <p>We sent a 4-digit code to <strong>@ViewBag.PendingEmail</strong>. Enter it below.</p>
+
+                @if (ViewBag.CodeError != null)
+                {
+                    <div class="field-error"><p>@ViewBag.CodeError</p></div>
+                }
+
+                <form asp-controller="Account" asp-action="VerifyCode" method="post">
+                    <input type="hidden" name="Token" value="@ViewBag.Token" />
+
+                    <label class="field-label">4-Digit Code <span class="required">*Required</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-key"></i>
+                        <input type="text" name="Code" maxlength="4" pattern="\d{4}" inputmode="numeric"
+                               placeholder="0000" required style="letter-spacing:6px; text-align:center;" />
+                    </div>
+
+                    <button type="submit" class="btn-register">Verify Code</button>
+                </form>
             }
             else
             {
@@ -101,9 +113,18 @@
                     <label class="field-label">Password <span class="required">*Required</span></label>
                     <div class="input-group">
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" name="Password" id="passwordField" placeholder="Enter a strong password" required />
+                        <input type="password" name="Password" id="passwordField"
+                               placeholder="Enter a strong password" required
+                               pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@@#$%^&amp;*(),.?&quot;:{}|&lt;&gt;]).{8,}$"
+                               title="At least 8 characters, 1 uppercase letter, 1 number, and 1 special character" />
                         <i class="fa-solid fa-eye toggle-eye" onclick="toggleField('passwordField')"></i>
                     </div>
+                    <ul id="pwdRules" class="pwd-rules">
+                        <li id="ruleLength">At least 8 characters</li>
+                        <li id="ruleUpper">1 uppercase letter</li>
+                        <li id="ruleNumber">1 number</li>
+                        <li id="ruleSpecial">1 special character</li>
+                    </ul>
 
                     <label class="field-label">Confirm Password <span class="required">*Required</span></label>
                     <div class="input-group">
@@ -111,6 +132,7 @@
                         <input type="password" name="ConfirmPassword" id="confirmField" placeholder="Confirm password" required />
                         <i class="fa-solid fa-eye toggle-eye" onclick="toggleField('confirmField')"></i>
                     </div>
+                    <p id="confirmError" class="field-error" style="display:none;">Passwords do not match</p>
 
                     <button type="submit" class="btn-register">Register Account</button>
                 </form>
@@ -153,6 +175,42 @@
         });
 
         document.addEventListener('DOMContentLoaded', toggleRoleFields);
+
+        // Password requirement checklist
+        const pwdField = document.getElementById('passwordField');
+        const rules = {
+            ruleLength: pwd => pwd.length >= 8,
+            ruleUpper: pwd => /[A-Z]/.test(pwd),
+            ruleNumber: pwd => /\d/.test(pwd),
+            ruleSpecial: pwd => /[!@@#$%^&*(),.?":{}|<>]/.test(pwd)
+        };
+
+        pwdField.addEventListener('input', function () {
+            const value = pwdField.value;
+            for (const [id, check] of Object.entries(rules)) {
+                const el = document.getElementById(id);
+                el.classList.toggle('valid', check(value));
+            }
+        });
+
+        // Confirm password match check
+        const confirmField = document.getElementById('confirmField');
+        const confirmError = document.getElementById('confirmError');
+
+        function checkPasswordsMatch() {
+            const match = pwdField.value === confirmField.value;
+            confirmError.style.display = (confirmField.value.length > 0 && !match) ? 'block' : 'none';
+            return match;
+        }
+
+        confirmField.addEventListener('input', checkPasswordsMatch);
+        pwdField.addEventListener('input', checkPasswordsMatch);
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (!checkPasswordsMatch()) {
+                e.preventDefault();
+            }
+        });
     </script>
 
 </body>

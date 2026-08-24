@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+}
+
+<div class="about-wrap">
+
+    <a href="@ViewBag.ReturnUrl" class="about-back">
+        <i class="bi bi-arrow-left"></i>
+        Back
+    </a>
+
+    <div class="about-intro">
+        <h1 class="about-title">ABOUT SMART STAY</h1>
+        <p class="about-desc">
+            Smart Stay is a rental accommodation platform built to help students
+            and visitors find trusted, affordable housing across Port Elizabeth.
+            Our goal is to make the search for a place to stay simple, transparent,
+            and stress-free — connecting tenants with verified landlords, real reviews,
+            and listings that are easy to browse and apply for, all in one place.
+        </p>
+    </div>
+
+    <h2 class="about-team-heading">MEET THE TEAM</h2>
+
+    <div class="about-team">
+
+        <div class="team-member">
+            <div class="team-photo-wrap">
+                <img src="~/images/team/wandile.jpg" alt="Wandile Cele" class="team-photo" />
+            </div>
+            <h3 class="team-name">Wandile Cele</h3>
+            <p class="team-desc">Contributed to the design and development of Smart Stay.</p>
+        </div>
+
+        <div class="team-member">
+            <div class="team-photo-wrap">
+                <img src="~/images/team/mpumelelo.jpg" alt="Ntombela Mpumelelo" class="team-photo" />
+            </div>
+            <h3 class="team-name">Ntombela Mpumelelo</h3>
+            <p class="team-desc">Contributed to the design and development of Smart Stay.</p>
+        </div>
+
+        <div class="team-member">
+            <div class="team-photo-wrap">
+                <img src="~/images/team/rotondwa.jpg" alt="Ratombo Rotondwa" class="team-photo" />
+            </div>
+            <h3 class="team-name">Ratombo Rotondwa</h3>
+            <p class="team-desc">Contributed to the design and development of Smart Stay.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("in-view");
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll(".team-member").forEach(el => observer.observe(el));
+</script>

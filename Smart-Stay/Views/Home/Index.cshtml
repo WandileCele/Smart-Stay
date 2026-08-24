@@ -25,7 +25,7 @@
 
     <div class="hero-content">
         <h2>
-            FIND THE PERFECT ACCOMMODATION IN PORT ELIZABETH
+            FIND THE PERFECT ACCOMMODATION IN <span id="typewriter"></span>
         </h2>
 
         <form asp-controller="Properties"
@@ -68,7 +68,7 @@
             </div>
 
         </form>
-        
+
 
     </div>
 
@@ -76,21 +76,21 @@
 </div>
 <section class="popular">
 
-  <div class="title">
+    <div class="title">
 
-    <h2>POPULAR ACCOMMODATION</h2>
+        <h2>POPULAR ACCOMMODATION</h2>
 
-    <a asp-controller="Properties"
-       asp-action="viewAll">
+        <a asp-controller="Properties"
+           asp-action="viewAll">
 
-        VIEW ALL
+            VIEW ALL
 
-    </a>
+        </a>
 
-</div>
+    </div>
     <div class="cards">
 
-       
+
         @foreach (var item in Model)
         {
             <a class="property-link"
@@ -98,7 +98,7 @@
                asp-action="Details"
                asp-route-id="@item.PropertyID"
                asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
-                
+
 
                 <div class="card">
 
@@ -167,8 +167,43 @@
 
             </a>
         }
-       
+
     </div>
 
 
 </section>
+
+<script>
+    const words = ["Walmer", "North End", "Humewood", "Summerstrand", "Newton Park", "Central"];
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const el = document.getElementById("typewriter");
+
+    function type() {
+        const currentWord = words[wordIndex];
+
+        if (isDeleting) {
+            charIndex--;
+        } else {
+            charIndex++;
+        }
+
+        el.textContent = currentWord.substring(0, charIndex);
+
+        let typeSpeed = isDeleting ? 50 : 100;
+
+        if (!isDeleting && charIndex === currentWord.length) {
+            typeSpeed = 1800;
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            wordIndex = (wordIndex + 1) % words.length;
+            typeSpeed = 300;
+        }
+
+        setTimeout(type, typeSpeed);
+    }
+
+    type();
+</script>

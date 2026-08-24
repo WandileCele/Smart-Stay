@@ -92,7 +92,8 @@
                 <button type="submit" class="btn-login">Log in</button>
             </form>
             <p class="signup-text">
-                Don't you have an account? <a href="#">Sign up for free</a>
+                Don't you have an account?
+                @Html.ActionLink("Sign up for free", "Register", "Account")
             </p>
         </div>
         <div class="login-right">
@@ -110,7 +111,7 @@
         </div>
     </div>
 
-    <script>
+   /* <script>
         function togglePassword() {
             const field = document.getElementById('passwordField');
             field.type = field.type === 'password' ? 'text' : 'password';

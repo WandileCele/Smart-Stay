@@ -30,6 +30,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddScoped<Smart_Stay.Services.IEmailService, Smart_Stay.Services.EmailService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
