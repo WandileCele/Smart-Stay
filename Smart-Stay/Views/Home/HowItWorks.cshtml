@@ -1,0 +1,494 @@
+﻿@{
+    ViewData["Title"] = "How It Works";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/how-it-works.css"
+          asp-append-version="true" />
+}
+
+<div class="how-it-works-page">
+
+    <!-- BACK BUTTON -->
+    <div class="how-back-container">
+        <button type="button"
+                class="how-back-btn"
+                onclick="history.back()">
+            <i class="bi bi-arrow-left"></i>
+            Back
+        </button>
+    </div>
+
+    <!-- HEADER -->
+    <div class="how-header">
+
+        <h1>How Smart Stay Works</h1>
+
+        <p>
+            Everything you need to know about using the Smart Stay platform.
+        </p>
+
+    </div>
+
+
+    <!-- ROLE SELECTOR -->
+    <div class="role-selector">
+
+        <button class="role-card active"
+                onclick="showRole('landlord', this)">
+
+            <div class="role-icon">
+                <i class="bi bi-house-door-fill"></i>
+            </div>
+
+            <h3>Landlord</h3>
+
+            <p>
+                List and manage your properties.
+            </p>
+
+        </button>
+
+
+        <button class="role-card"
+                onclick="showRole('tenant', this)">
+
+            <div class="role-icon">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <h3>Tenant</h3>
+
+            <p>
+                Find and apply for accommodation.
+            </p>
+
+        </button>
+
+
+        <button class="role-card"
+                onclick="showRole('admin', this)">
+
+            <div class="role-icon">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+
+            <h3>Admin</h3>
+
+            <p>
+                Manage and verify the platform.
+            </p>
+
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         LANDLORD
+    ====================================================== -->
+
+    <div id="landlord" class="role-content active">
+
+        <div class="role-title">
+
+            <div class="large-role-icon">
+                <i class="bi bi-house-door-fill"></i>
+            </div>
+
+            <div>
+                <h2>For Landlords</h2>
+
+                <p>
+                    List your property and connect with potential tenants.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-number">1</div>
+
+                <div class="step-content">
+
+                    <h3>Create an Account</h3>
+
+                    <p>
+                        Register for a Smart Stay account and select
+                        <strong>Landlord</strong> as your role.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">2</div>
+
+                <div class="step-content">
+
+                    <h3>Add Your Property</h3>
+
+                    <p>
+                        Add your property's information including the
+                        location, price, bedrooms, bathrooms and other
+                        important details.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">3</div>
+
+                <div class="step-content">
+
+                    <h3>Upload Documents</h3>
+
+                    <p>
+                        Upload the required property and verification
+                        documents for review.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">4</div>
+
+                <div class="step-content">
+
+                    <h3>Wait for Verification</h3>
+
+                    <p>
+                        An administrator reviews your information and
+                        submitted documents.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">5</div>
+
+                <div class="step-content">
+
+                    <h3>Manage Your Property</h3>
+
+                    <p>
+                        Once approved, you can manage your property,
+                        update its information and monitor applications.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TENANT
+    ====================================================== -->
+
+    <div id="tenant" class="role-content">
+
+        <div class="role-title">
+
+            <div class="large-role-icon">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div>
+
+                <h2>For Tenants</h2>
+
+                <p>
+                    Find accommodation that suits your needs.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-number">1</div>
+
+                <div class="step-content">
+
+                    <h3>Create an Account</h3>
+
+                    <p>
+                        Register as a tenant and verify your email address.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">2</div>
+
+                <div class="step-content">
+
+                    <h3>Browse Properties</h3>
+
+                    <p>
+                        Browse available accommodation and use the search
+                        and filtering options to find suitable properties.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">3</div>
+
+                <div class="step-content">
+
+                    <h3>View Property Details</h3>
+
+                    <p>
+                        View property photos, location, price, bedrooms,
+                        bathrooms and reviews.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">4</div>
+
+                <div class="step-content">
+
+                    <h3>Apply or Request a Viewing</h3>
+
+                    <p>
+                        Submit an application or request to view a property
+                        you're interested in.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">5</div>
+
+                <div class="step-content">
+
+                    <h3>Track Your Application</h3>
+
+                    <p>
+                        Monitor your application and viewing requests
+                        from your tenant dashboard.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ADMIN
+    ====================================================== -->
+
+    <div id="admin" class="role-content">
+
+        <div class="role-title">
+
+            <div class="large-role-icon">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+
+            <div>
+
+                <h2>For Administrators</h2>
+
+                <p>
+                    Manage users, properties and platform activity.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-number">1</div>
+
+                <div class="step-content">
+
+                    <h3>Access the Admin Dashboard</h3>
+
+                    <p>
+                        Log in using your administrator account to access
+                        the Smart Stay administration area.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">2</div>
+
+                <div class="step-content">
+
+                    <h3>Verify Landlords</h3>
+
+                    <p>
+                        Review landlord information and submitted
+                        verification documents.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">3</div>
+
+                <div class="step-content">
+
+                    <h3>Review Properties</h3>
+
+                    <p>
+                        Review submitted properties before they become
+                        available to tenants.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">4</div>
+
+                <div class="step-content">
+
+                    <h3>Manage Users</h3>
+
+                    <p>
+                        Monitor and manage registered landlords and tenants.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">5</div>
+
+                <div class="step-content">
+
+                    <h3>Manage the Platform</h3>
+
+                    <p>
+                        Oversee properties, applications and other
+                        Smart Stay activities.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOTTOM CTA -->
+
+    <div class="how-cta">
+
+        <h2>Ready to use Smart Stay?</h2>
+
+        <p>
+            Find your next home or list your property today.
+        </p>
+
+        <a asp-controller="Properties"
+           asp-action="ViewAll"
+           class="how-cta-btn">
+
+            Browse Properties
+
+        </a>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        function showRole(role, button) {
+
+            document.querySelectorAll(".role-content")
+                .forEach(function (section) {
+                    section.classList.remove("active");
+                });
+            document.querySelectorAll(".role-card")
+                .forEach(function (card) {
+                    card.classList.remove("active");
+                });
+
+            document.getElementById(role)
+                .classList.add("active");
+
+            button.classList.add("active");
+        }
+
+    </script>
+
+}

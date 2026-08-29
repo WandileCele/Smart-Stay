@@ -5,6 +5,7 @@
 }
 
 @section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
     <link rel="stylesheet"
           href="~/css/tenant-dashboard.css"
           asp-append-version="true" />
@@ -15,122 +16,41 @@
 
     <!-- =====================================================
          SIDEBAR
-         COLLAPSED BY DEFAULT
     ====================================================== -->
 
-    <aside class="tenant-sidebar collapsed"
-           id="tenantSidebar">
+    <div class="sidebar-container">
 
-        <h2>Tenant Menu</h2>
+        <button class="menu-toggle" onclick="toggleMenu()">
+            ☰
+        </button>
 
-        <nav class="tenant-navigation">
+        <div class="sidebar" id="sidebar">
 
-            <!-- DASHBOARD -->
+            <h3>Tenant Menu</h3>
 
-            <a asp-controller="Tenant"
-               asp-action="Dashboard"
-               class="tenant-nav-link active">
-
-                <span class="nav-icon">🏠</span>
-
-                <span class="nav-text">
-                    Dashboard
-                </span>
-
+            <a asp-controller="Tenant" asp-action="Dashboard">
+                <i class="bi bi-speedometer2"></i>
+                Dashboard
             </a>
 
-
-            <!-- MY APPLICATIONS -->
-
-            <a href="#applications"
-               class="tenant-nav-link">
-
-                <span class="nav-icon">📋</span>
-
-                <span class="nav-text">
-                    My Applications
-                </span>
-
+            <a href="#applications">
+                <i class="bi bi-file-earmark-text-fill"></i>
+                My Applications
             </a>
 
-
-            <!-- UPDATE PROFILE -->
-
-            <a asp-controller="Account"
-               asp-action="Profile"
-               class="tenant-nav-link">
-
-                <span class="nav-icon">👤</span>
-
-                <span class="nav-text">
-                    Update Profile
-                </span>
-
+            <a asp-controller="Tenant" asp-action="BrowseProperties">
+                <i class="bi bi-search"></i>
+                Browse Properties
             </a>
 
-
-            <!-- BROWSE PROPERTIES -->
-
-            <a asp-controller="Tenant"
-               asp-action="BrowseProperties"
-               class="tenant-nav-link">
-
-                <span class="nav-icon">🔍</span>
-
-                <span class="nav-text">
-                    Browse Properties
-                </span>
-
+            <a asp-controller="Account" asp-action="Profile">
+                <i class="bi bi-person-circle"></i>
+                Update Profile
             </a>
-
-        </nav>
-
-
-        <!-- =================================================
-             SIDEBAR LOGOUT
-        ================================================== -->
-
-        <div class="tenant-sidebar-bottom">
-
-            <form asp-controller="Account"
-                  asp-action="Logout"
-                  method="post">
-
-                @Html.AntiForgeryToken()
-
-                <button type="submit"
-                        class="tenant-nav-link logout-link">
-
-                    <span class="nav-icon">🚪</span>
-
-                    <span class="nav-text">
-                        Logout
-                    </span>
-
-                </button>
-
-            </form>
 
         </div>
 
-    </aside>
-
-
-    <!-- =====================================================
-         SIDEBAR TOGGLE BUTTON
-
-         Starts in the top-left corner because the sidebar
-         starts collapsed.
-    ====================================================== -->
-
-    <button class="sidebar-menu-button sidebar-closed"
-            id="sidebarToggle"
-            type="button"
-            aria-label="Toggle navigation">
-
-        ☰
-
-    </button>
+    </div>
 
 
     <!-- =====================================================
@@ -489,43 +409,10 @@
 
     <script>
 
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const sidebar =
-                document.getElementById("tenantSidebar");
-
-            const toggle =
-                document.getElementById("sidebarToggle");
-
-            const main =
-                document.getElementById("tenantMain");
-
-
-            toggle.addEventListener("click", function () {
-
-                /*
-                 * Open / close sidebar
-                 */
-
-                sidebar.classList.toggle("collapsed");
-
-
-                /*
-                 * Expand / reduce main content
-                 */
-
-                main.classList.toggle("expanded");
-
-
-                /*
-                 * Move toggle button
-                 */
-
-                toggle.classList.toggle("sidebar-closed");
-
-            });
-
-        });
+        function toggleMenu() {
+            var sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("show");
+        }
 
     </script>
 

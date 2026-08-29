@@ -1,0 +1,320 @@
+﻿/* =========================================================
+   TERMS PAGE
+========================================================= */
+
+.terms-page {
+    padding: 55px 40px 80px;
+    background: #f7f9fb;
+    min-height: 650px;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.terms-header {
+    text-align: center;
+    max-width: 750px;
+    margin: 0 auto 25px;
+}
+
+.terms-header-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 135, 201, 0.10);
+    color: #0087c9;
+    font-size: 28px;
+}
+
+.terms-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.terms-header p {
+    color: #777;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.terms-back {
+    max-width: 1000px;
+    margin: 0 auto 25px;
+}
+
+.terms-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    background: #0087c9;
+    color: white;
+    text-decoration: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+    .terms-back-btn:hover {
+        background: #006fa6;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.terms-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 18px;
+    padding: 15px 45px;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.terms-section {
+    padding: 32px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+    .terms-section:last-child {
+        border-bottom: none;
+    }
+
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
+.terms-section-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 15px;
+}
+
+    .terms-section-title span {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9px;
+        background: #0087c9;
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .terms-section-title h2 {
+        margin: 0;
+        font-size: 21px;
+        font-weight: 700;
+        color: #222;
+    }
+
+
+/* =========================================================
+   TEXT
+========================================================= */
+
+.terms-section p {
+    color: #666;
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 12px;
+}
+
+    .terms-section p:last-child {
+        margin-bottom: 0;
+    }
+
+
+/* =========================================================
+   LIST
+========================================================= */
+
+.terms-section ul {
+    margin: 15px 0 0;
+    padding-left: 25px;
+}
+
+.terms-section li {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 5px;
+}
+
+
+/* =========================================================
+   PRIVACY LINK
+========================================================= */
+
+.terms-inline-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 8px;
+    color: #0087c9;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+    .terms-inline-link:hover {
+        color: #006fa6;
+    }
+
+
+/* =========================================================
+   CONTACT
+========================================================= */
+
+.terms-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 15px;
+    padding: 15px 20px;
+    background: #f7fbfd;
+    border-radius: 10px;
+}
+
+    .terms-contact > i {
+        color: #0087c9;
+        font-size: 22px;
+    }
+
+    .terms-contact div {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .terms-contact strong {
+        font-size: 13px;
+        color: #333;
+    }
+
+    .terms-contact span {
+        font-size: 14px;
+        color: #666;
+    }
+
+
+/* =========================================================
+   CTA
+========================================================= */
+
+.terms-cta {
+    max-width: 1000px;
+    margin: 30px auto 0;
+    padding: 28px 35px;
+    background: #0087c9;
+    color: white;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+}
+
+    .terms-cta h2 {
+        margin: 0 0 7px;
+        font-size: 21px;
+    }
+
+    .terms-cta p {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+
+/* =========================================================
+   CONTACT BUTTON
+========================================================= */
+
+.terms-contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    background: white;
+    color: #0087c9;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: 0.2s ease;
+}
+
+    .terms-contact-btn:hover {
+        background: #f1f1f1;
+        color: #006fa6;
+        transform: translateY(-2px);
+    }
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .terms-page {
+        padding: 35px 20px 60px;
+    }
+
+    .terms-header h1 {
+        font-size: 29px;
+    }
+
+    .terms-container {
+        padding: 10px 25px;
+    }
+
+    .terms-section {
+        padding: 25px 0;
+    }
+
+    .terms-section-title h2 {
+        font-size: 18px;
+    }
+
+    .terms-cta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .terms-contact-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

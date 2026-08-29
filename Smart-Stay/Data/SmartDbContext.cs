@@ -258,7 +258,7 @@ public partial class SmartDbContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("firstName");
             entity.Property(e => e.Password)
-                .HasMaxLength(15)
+                .HasMaxLength(255)
                 .HasColumnName("password");
             entity.Property(e => e.PhoneNo)
                 .HasMaxLength(10)
@@ -269,6 +269,9 @@ public partial class SmartDbContext : DbContext
             entity.Property(e => e.SurName)
                 .HasMaxLength(50)
                 .HasColumnName("surName");
+
+            entity.HasIndex(e => e.Email)
+                .IsUnique();
         });
 
         OnModelCreatingPartial(modelBuilder);

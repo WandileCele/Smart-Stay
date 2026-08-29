@@ -1,6 +1,330 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/privacy.css"
+          asp-append-version="true" />
+}
+
+<div class="privacy-page">
+
+    <!-- HEADER -->
+    <div class="privacy-header">
+
+        <div class="privacy-header-icon">
+            <i class="bi bi-shield-lock-fill"></i>
+        </div>
+
+        <h1>Privacy Policy</h1>
+
+        <p>
+            Your privacy matters to Smart Stay.
+            Learn how we collect, use and protect your information.
+        </p>
+
+    </div>
+
+
+    <!-- BACK BUTTON -->
+    <div class="privacy-back">
+
+        <a href="javascript:history.back()" class="privacy-back-btn">
+            <i class="bi bi-arrow-left"></i>
+            Back
+        </a>
+
+    </div>
+
+
+    <!-- POLICY CONTENT -->
+    <div class="privacy-container">
+
+        <!-- 1 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>01</span>
+                <h2>Introduction</h2>
+            </div>
+
+            <p>
+                Smart Stay is an accommodation platform designed to connect
+                tenants with available properties and provide landlords with
+                tools to manage their accommodation listings.
+            </p>
+
+            <p>
+                We respect your privacy and are committed to protecting the
+                personal information you provide when using the Smart Stay
+                platform.
+            </p>
+
+        </section>
+
+
+        <!-- 2 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>02</span>
+                <h2>Information We Collect</h2>
+            </div>
+
+            <p>
+                When you create an account or use Smart Stay, we may collect
+                information such as:
+            </p>
+
+            <ul>
+                <li>Your full name</li>
+                <li>Email address</li>
+                <li>Phone number</li>
+                <li>Account role, such as Tenant or Landlord</li>
+                <li>Employment information where required</li>
+                <li>Property information submitted by landlords</li>
+                <li>Documents and images submitted for property verification</li>
+                <li>Messages submitted through the Contact Us form</li>
+            </ul>
+
+        </section>
+
+
+        <!-- 3 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>03</span>
+                <h2>How We Use Your Information</h2>
+            </div>
+
+            <p>
+                Information collected through Smart Stay may be used to:
+            </p>
+
+            <ul>
+                <li>Create and manage user accounts</li>
+                <li>Verify user accounts</li>
+                <li>Manage property listings</li>
+                <li>Process accommodation applications</li>
+                <li>Communicate with tenants and landlords</li>
+                <li>Respond to enquiries and Contact Us messages</li>
+                <li>Improve the Smart Stay platform</li>
+                <li>Maintain the security of the platform</li>
+            </ul>
+
+        </section>
+
+
+        <!-- 4 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>04</span>
+                <h2>Property & Landlord Information</h2>
+            </div>
+
+            <p>
+                Landlords may provide information about their properties,
+                including property descriptions, locations, prices,
+                bedrooms, bathrooms and images.
+            </p>
+
+            <p>
+                Information intended for property listings may be displayed
+                to users browsing available accommodation on Smart Stay.
+            </p>
+
+        </section>
+
+
+        <!-- 5 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>05</span>
+                <h2>Email Communication</h2>
+            </div>
+
+            <p>
+                Smart Stay may use email communication to provide important
+                services and notifications to users.
+            </p>
+
+            <div class="privacy-list-box">
+
+                <div>
+                    <i class="bi bi-envelope-check"></i>
+                    <span>Account verification emails</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-bell"></i>
+                    <span>Important account notifications</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-chat-left-text"></i>
+                    <span>Responses to enquiries</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- 6 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>06</span>
+                <h2>Information Security</h2>
+            </div>
+
+            <p>
+                Smart Stay takes reasonable measures to protect information
+                provided by users against unauthorised access, misuse,
+                alteration or disclosure.
+            </p>
+
+            <p>
+                Users are also responsible for keeping their account
+                credentials confidential and should not share their passwords
+                with other people.
+            </p>
+
+        </section>
+
+
+        <!-- 7 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>07</span>
+                <h2>Information Sharing</h2>
+            </div>
+
+            <p>
+                Smart Stay does not make personal information publicly
+                available unless it is necessary for the operation of the
+                platform or the information has been intentionally provided
+                for public display.
+            </p>
+
+            <p>
+                For example, property information submitted by landlords may
+                be visible to users browsing accommodation.
+            </p>
+
+        </section>
+
+
+        <!-- 8 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>08</span>
+                <h2>Cookies & Sessions</h2>
+            </div>
+
+            <p>
+                Smart Stay may use cookies and session technologies to
+                maintain user login sessions and support the security and
+                functionality of the website.
+            </p>
+
+        </section>
+
+
+        <!-- 9 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>09</span>
+                <h2>Your Information</h2>
+            </div>
+
+            <p>
+                Users may contact Smart Stay if they have questions about
+                information associated with their account or believe that
+                their information needs to be corrected.
+            </p>
+
+        </section>
+
+
+        <!-- 10 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>10</span>
+                <h2>Changes to This Policy</h2>
+            </div>
+
+            <p>
+                Smart Stay may update this Privacy Policy from time to time
+                as the platform develops or its services change.
+            </p>
+
+            <p>
+                Any updated version will be made available on this page.
+            </p>
+
+        </section>
+
+
+        <!-- 11 -->
+        <section class="privacy-section">
+
+            <div class="privacy-section-title">
+                <span>11</span>
+                <h2>Contact Us</h2>
+            </div>
+
+            <p>
+                If you have questions about this Privacy Policy or how your
+                information is handled, you can contact Smart Stay.
+            </p>
+
+            <div class="privacy-contact">
+
+                <i class="bi bi-envelope-fill"></i>
+
+                <div>
+                    <strong>Email</strong>
+                    <span>smartstay729@gmail.com</span>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- CONTACT CTA -->
+    <div class="privacy-cta">
+
+        <div>
+
+            <h2>Have a question about your privacy?</h2>
+
+            <p>
+                Contact the Smart Stay team and we'll be happy to assist you.
+            </p>
+
+        </div>
+
+        <a asp-controller="Home"
+           asp-action="Contact"
+           class="privacy-contact-btn">
+
+            <i class="bi bi-envelope"></i>
+            Contact Us
+
+        </a>
+
+    </div>
+
+</div>

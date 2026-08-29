@@ -8,36 +8,24 @@
 
         <h3>Admin Menu</h3>
 
-        <a asp-controller="Admin"
-           asp-action="Dashboard">
-
+        <a asp-controller="Admin" asp-action="Dashboard">
             <i class="bi bi-speedometer2"></i>
             Dashboard
-
         </a>
 
-        <a asp-controller="Admin"
-           asp-action="ManageLandlords">
-
+        <a asp-controller="Admin" asp-action="ManageLandlords">
             <i class="bi bi-people-fill"></i>
             Manage Landlords
-
         </a>
 
-        <a asp-controller="Admin"
-           asp-action="Dashboard">
-
+        <a asp-controller="Admin" asp-action="ManageApplications">
             <i class="bi bi-file-earmark-text-fill"></i>
             Manage Applications
-
         </a>
 
-        <a asp-controller="Admin"
-           asp-action="Profile">
-
+        <a asp-controller="Admin" asp-action="Profile">
             <i class="bi bi-person-circle"></i>
             Update Profile
-
         </a>
 
     </div>
@@ -45,12 +33,8 @@
 </div>
 
 <script>
-
-    function toggleMenu()
-    {
+    function toggleMenu() {
         var sidebar = document.getElementById("sidebar");
-
         sidebar.classList.toggle("show");
     }
-
 </script>
