@@ -1,0 +1,415 @@
+﻿@{
+    ViewData["Title"] = "Frequently Asked Questions";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/faq.css"
+          asp-append-version="true" />
+}
+
+<div class="faq-page">
+
+    <!-- HEADER -->
+    <div class="faq-header">
+
+        <h1>Frequently Asked Questions</h1>
+
+        <p>
+            Find answers to some of the most common questions
+            about using Smart Stay.
+        </p>
+
+    </div>
+
+
+    <!-- BACK BUTTON -->
+    <div class="faq-back">
+
+        <a href="javascript:history.back()" class="faq-back-btn">
+            <i class="bi bi-arrow-left"></i>
+            Back
+        </a>
+
+    </div>
+
+
+    <!-- FAQ CATEGORIES -->
+    <div class="faq-categories">
+
+        <!-- ================= TENANTS ================= -->
+
+        <div class="faq-category">
+
+            <div class="faq-category-header">
+
+                <div class="faq-category-icon">
+                    <i class="bi bi-person"></i>
+                </div>
+
+                <div>
+                    <h2>For Tenants</h2>
+                    <p>Questions about finding and applying for accommodation.</p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-list">
+
+                <details class="faq-item">
+
+                    <summary>
+                        How do I find a property?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Go to the Browse Properties section and use the
+                            search and filter options to find accommodation
+                            based on location and price.
+                        </p>
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+                        Do I need an account to view properties?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            You can browse available properties without an
+                            account. However, you will need to register and
+                            log in when you want to apply for accommodation
+                            or use tenant features.
+                        </p>
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+                        How do I apply for a property?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Log in as a tenant, browse the available
+                            properties and select the property you are
+                            interested in. From the property details page,
+                            you can submit an application.
+                        </p>
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+                        Can I review a property?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Yes. Tenants can leave reviews for properties
+                            where they have completed the required rental
+                            process.
+                        </p>
+                    </div>
+
+                </details>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= LANDLORDS ================= -->
+
+        <div class="faq-category">
+
+            <div class="faq-category-header">
+
+                <div class="faq-category-icon">
+                    <i class="bi bi-building"></i>
+                </div>
+
+                <div>
+                    <h2>For Landlords</h2>
+                    <p>Questions about listing and managing properties.</p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-list">
+
+                <details class="faq-item">
+
+                    <summary>
+                        How do I list my property?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Register or log in as a landlord. From your
+                            landlord dashboard, select the option to add
+                            a new property and provide the required
+                            property information and documents.
+                        </p>
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+                        Do landlords need to be verified?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Yes. Landlord accounts and submitted property
+                            information may need to be verified before
+                            properties can become available to tenants.
+                        </p>
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+                        How do I manage my properties?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            After logging in, landlords can use their
+                            dashboard to view and manage their listed
+                            properties and applications.
+                        </p>
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+                        Can I update my property information?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Yes. Landlords can update the information of
+                            their properties through the landlord
+                            dashboard.
+                        </p>
+                    </div>
+
+                </details>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= ADMIN ================= -->
+
+        <div class="faq-category">
+
+            <div class="faq-category-header">
+
+                <div class="faq-category-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+
+                <div>
+                    <h2>For Administrators</h2>
+                    <p>Questions about managing Smart Stay.</p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-list">
+
+                <details class="faq-item">
+
+                    <summary>
+                        What does the administrator do?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Administrators help manage the Smart Stay
+                            platform, verify information and oversee
+                            users and property-related activities.
+                        </p>
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+                        Can administrators verify landlords?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Yes. Administrators can review landlord
+                            information and manage verification processes.
+                        </p>
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+                        Can administrators manage properties?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Administrators can oversee property listings
+                            and take appropriate administrative actions
+                            where necessary.
+                        </p>
+                    </div>
+
+                </details>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= GENERAL ================= -->
+
+        <div class="faq-category">
+
+            <div class="faq-category-header">
+
+                <div class="faq-category-icon">
+                    <i class="bi bi-question-circle"></i>
+                </div>
+
+                <div>
+                    <h2>General Questions</h2>
+                    <p>General questions about Smart Stay.</p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-list">
+
+                <details class="faq-item">
+
+                    <summary>
+                        What is Smart Stay?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Smart Stay is an accommodation platform that
+                            connects tenants with available properties
+                            while providing landlords with tools to
+                            manage their listings.
+                        </p>
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+                        Where does Smart Stay operate?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            Smart Stay currently focuses on accommodation
+                            in Port Elizabeth, South Africa.
+                        </p>
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+                        How can I contact Smart Stay?
+                        <i class="bi bi-chevron-down"></i>
+                    </summary>
+
+                    <div class="faq-answer">
+                        <p>
+                            You can contact the Smart Stay team through
+                            the Contact Us page.
+                        </p>
+                    </div>
+
+                </details>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTACT CTA -->
+
+    <div class="faq-contact">
+
+        <div>
+            <h2>Still have questions?</h2>
+
+            <p>
+                Can't find the answer you're looking for?
+                Send us a message and we'll help you.
+            </p>
+        </div>
+
+        <a asp-controller="Home"
+           asp-action="Contact"
+           class="faq-contact-btn">
+
+            <i class="bi bi-envelope"></i>
+            Contact Us
+
+        </a>
+
+    </div>
+
+</div>

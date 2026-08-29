@@ -151,10 +151,10 @@ label {
     font-size: 13px;
 }
 
-    .signup-text a {
+  /*  .signup-text a {
         color: #e74c3c;
         text-decoration: none;
-    }
+    }*/
 
 .login-right {
     flex: 1;
@@ -211,3 +211,13 @@ label {
         min-height: 200px;
     }
 }
+.signup-link {
+    color: #0087c9;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .signup-link:hover {
+        color: #006ba1;
+        text-decoration: underline;
+    }

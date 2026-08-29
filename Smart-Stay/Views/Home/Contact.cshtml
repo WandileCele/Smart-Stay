@@ -1,0 +1,205 @@
+﻿@model Smart_Stay.Models.ContactViewModel
+
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/contact.css" asp-append-version="true" />
+}
+
+<div class="contact-page">
+
+    <div class="contact-back-container">
+        <a href="@ViewBag.ReturnUrl" class="contact-back-btn">
+            <i class="bi bi-arrow-left"></i>
+             Back
+        </a>
+    </div>
+    <div class="contact-container">
+
+        <!-- ================= LEFT SIDE ================= -->
+        <div class="contact-info">
+
+            <h1>Have a Question?</h1>
+
+            <p class="contact-intro">
+                Whether you need help finding accommodation, listing your
+                property, or have a question about Smart Stay, we're here
+                to help.
+            </p>
+
+            <div class="contact-details">
+
+                <!-- EMAIL -->
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+
+                    <div>
+                        <h3>Email Us</h3>
+                        <p>smartstay729@gmail.com</p>
+                    </div>
+
+                </div>
+
+
+                <!-- PHONE -->
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        <i class="bi bi-telephone-fill"></i>
+                    </div>
+
+                    <div>
+                        <h3>Call Us</h3>
+                        <p>+27 41 000 0000</p>
+                    </div>
+
+                </div>
+
+
+                <!-- LOCATION -->
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+
+                    <div>
+                        <h3>Location</h3>
+                        <p>Port Elizabeth, South Africa</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+  
+        <div class="contact-form-container">
+
+            @if (TempData["ContactSuccess"] != null)
+            {
+                <div class="contact-success">
+                    <i class="bi bi-check-circle"></i>
+                    <span>@TempData["ContactSuccess"]</span>
+                </div>
+            }
+
+            <h2>Send Us a Message</h2>
+
+            <p>
+                Fill in the form below and we'll get back to you as soon as possible.
+            </p>
+
+
+            <form asp-controller="Home"
+                  asp-action="Contact"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+
+                <!-- VALIDATION SUMMARY -->
+                <div asp-validation-summary="ModelOnly"
+                     class="validation-message">
+                </div>
+
+
+                <!-- NAME -->
+                <div class="form-group">
+
+                    <label asp-for="Name">
+                        Your Name
+                    </label>
+
+                    <input asp-for="Name"
+                           placeholder="Enter your name" />
+
+                    <span asp-validation-for="Name"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+
+                <!-- EMAIL -->
+                <div class="form-group">
+
+                    <label asp-for="Email">
+                        Email Address
+                    </label>
+
+                    <input asp-for="Email"
+                           type="email"
+                           placeholder="Enter your email address" />
+
+                    <span asp-validation-for="Email"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+
+                <!-- SUBJECT -->
+                <div class="form-group">
+
+                    <label asp-for="Subject">
+                        Subject
+                    </label>
+
+                    <input asp-for="Subject"
+                           placeholder="What is your message about?" />
+
+                    <span asp-validation-for="Subject"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+
+                <!-- MESSAGE -->
+                <div class="form-group">
+
+                    <label asp-for="Message">
+                        Message
+                    </label>
+
+                    <textarea asp-for="Message"
+                              rows="6"
+                              placeholder="Write your message here..."></textarea>
+
+                    <span asp-validation-for="Message"
+                          class="field-validation">
+                    </span>
+
+                </div>
+
+
+                <!-- SEND BUTTON -->
+                <button type="submit"
+                        class="contact-submit">
+
+                    <i class="bi bi-send"></i>
+
+                    Send Message
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

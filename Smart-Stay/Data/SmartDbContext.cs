@@ -269,6 +269,9 @@ public partial class SmartDbContext : DbContext
             entity.Property(e => e.SurName)
                 .HasMaxLength(50)
                 .HasColumnName("surName");
+
+            entity.HasIndex(e => e.Email)
+                .IsUnique();
         });
 
         OnModelCreatingPartial(modelBuilder);

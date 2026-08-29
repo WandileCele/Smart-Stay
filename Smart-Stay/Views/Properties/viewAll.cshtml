@@ -41,6 +41,35 @@
 
 
         /* =========================================================
+                   BACK BUTTON
+                ========================================================= */
+
+        .pd-buttons {
+            margin-bottom: 20px;
+        }
+
+        .pd-cta-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border: 1px solid #0087c9;
+            border-radius: 8px;
+            color: #0087c9;
+            background: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+            .pd-cta-outline:hover {
+                background: #0087c9;
+                color: white;
+            }
+
+
+        /* =========================================================
                    SEARCH AREA
                 ========================================================= */
 
@@ -65,7 +94,6 @@
             background: white;
         }
 
-
             .search-input input {
                 flex: 1;
                 border: none;
@@ -73,7 +101,6 @@
                 padding: 13px 16px;
                 font-size: 15px;
             }
-
 
             .search-input button {
                 border: none;
@@ -107,17 +134,16 @@
             transition: 0.2s;
         }
 
-
             .filter-button:hover {
                 background: #006fa6;
             }
 
 
         /* =========================================================
-                   PROPERTY GRID
+                   SAME PROPERTY GRID AS HOME PAGE
                 ========================================================= */
 
-        .browse-property-grid {
+        .cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
@@ -125,10 +151,10 @@
 
 
         /* =========================================================
-                   PROPERTY LINK
+                   SAME PROPERTY LINK AS HOME PAGE
                 ========================================================= */
 
-        .browse-property-link {
+        .property-link {
             text-decoration: none;
             color: inherit;
             display: block;
@@ -136,10 +162,10 @@
 
 
         /* =========================================================
-                   PROPERTY CARD
+                   SAME PROPERTY CARD AS HOME PAGE
                 ========================================================= */
 
-        .browse-property-card {
+        .card {
             background: white;
             border-radius: 15px;
             overflow: hidden;
@@ -149,33 +175,28 @@
         }
 
 
-            .browse-property-card:hover {
+            .card:hover {
                 transform: translateY(-6px);
                 box-shadow: 0 10px 25px rgba(0,0,0,0.14);
             }
 
 
-        /* =========================================================
+            /* =========================================================
                    IMAGE
                 ========================================================= */
 
-        .property-image {
-            width: 100%;
-            height: 220px;
-            overflow: hidden;
-            background: #eef3f5;
-        }
-
-
-            .property-image img {
+            .card img {
                 width: 100%;
-                height: 100%;
+                height: 220px;
                 object-fit: cover;
+                display: block;
             }
 
 
         .no-image {
-            height: 100%;
+            width: 100%;
+            height: 220px;
+            background: #eef3f5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -188,89 +209,62 @@
                    CARD CONTENT
                 ========================================================= */
 
-        .property-card-content {
-            padding: 20px;
+        .card h3 {
+            font-size: 21px;
+            font-weight: 700;
+            margin: 20px 20px 12px;
+            color: #222;
         }
 
 
-            .property-card-content h3 {
-                font-size: 21px;
-                font-weight: 700;
-                margin-bottom: 8px;
-                color: #222;
+        .card p {
+            margin: 8px 20px;
+            color: #777;
+            font-size: 14px;
+        }
+
+
+            .card p i {
+                margin-right: 6px;
             }
 
 
-        .property-details {
-            color: #777;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-
-        .property-location {
-            color: #555;
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-
-
-        .property-card-content h4 {
+        #money {
             color: #0087c9;
             font-size: 19px;
-            margin-bottom: 12px;
             font-weight: 700;
+            margin-top: 15px;
         }
 
 
         /* =========================================================
-                   RATINGS
+                   RATING
                 ========================================================= */
 
-        .property-rating {
+        .rating {
             display: flex;
             align-items: center;
             gap: 3px;
+            margin: 15px 20px 20px;
             min-height: 24px;
         }
 
 
-        .star {
-            font-size: 18px;
-            color: #ccc;
-        }
-
-
-            .star.filled {
-                color: #f5b301;
+            .rating i {
+                font-size: 17px;
             }
 
 
-        .stars {
-            font-size: 18px;
-            color: #ccc;
-            letter-spacing: 1px;
-        }
+            .rating span {
+                margin-left: 7px;
+                font-size: 13px;
+                color: #777;
+            }
 
 
-        .rating-number {
-            margin-left: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #555;
-        }
-
-
-        .review-count {
-            font-size: 13px;
-            color: #888;
-        }
-
-
-        .no-reviews {
-            font-size: 13px;
-            color: #999;
-            margin-left: 5px;
+        .no-rating {
+            color: #999 !important;
+            margin-left: 0 !important;
         }
 
 
@@ -301,7 +295,7 @@
 
         @@media (max-width: 1100px) {
 
-            .browse-property-grid {
+            .cards {
                 grid-template-columns: repeat(2, 1fr);
             }
 
@@ -322,7 +316,7 @@
                 padding: 25px 20px;
             }
 
-            .browse-property-grid {
+            .cards {
                 grid-template-columns: 1fr;
             }
 
@@ -344,68 +338,70 @@
             }
         }
 
-        .browse-back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            background: #0087c9;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 3px 10px rgba(0, 135, 201, 0.25);
-        }
-
-            .browse-back-btn:hover {
-                background: #006fa6;
-                transform: translateY(-2px);
-                box-shadow: 0 5px 14px rgba(0, 135, 201, 0.35);
-            }
-
     </style>
 }
 
 
-
-
 <div class="browse-page">
 
-    <div class="pd-buttons" style="margin-bottom: 20px;">
+
+    <!-- =========================================================
+         BACK BUTTON
+    ========================================================= -->
+
+    <div class="pd-buttons">
+
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
             if (User.IsInRole("Landlord"))
             {
-                <a asp-controller="Landlord" asp-action="Dashboard" class="pd-cta-outline">
+                <a asp-controller="Landlord"
+                   asp-action="Dashboard"
+                   class="pd-cta-outline">
+
                     &laquo; Back to Dashboard
+
                 </a>
             }
             else if (User.IsInRole("Admin"))
             {
-                <a asp-controller="Admin" asp-action="Dashboard" class="pd-cta-outline">
+                <a asp-controller="Admin"
+                   asp-action="Dashboard"
+                   class="pd-cta-outline">
+
                     &laquo; Back to Dashboard
+
                 </a>
             }
             else if (User.IsInRole("Tenant"))
             {
-                <a asp-controller="Tenant" asp-action="Dashboard" class="pd-cta-outline">
+                <a asp-controller="Tenant"
+                   asp-action="Dashboard"
+                   class="pd-cta-outline">
+
                     &laquo; Back to Dashboard
+
                 </a>
             }
         }
         else
         {
-            <a asp-controller="Home" asp-action="Index" class="pd-cta-outline">
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="pd-cta-outline">
+
                 &laquo; Back to Home
+
             </a>
         }
+
     </div>
 
 
+
+    <!-- =========================================================
+         HEADER
+    ========================================================= -->
 
     <div class="browse-header">
 
@@ -533,139 +529,153 @@
 
     <!-- =========================================================
          PROPERTY CARDS
+         SAME STRUCTURE AS HOME PAGE
     ========================================================= -->
     @if (Model != null && Model.Any())
     {
 
-        <div class="browse-property-grid">
+        <div class="cards">
 
             @foreach (var item in Model)
             {
 
-                <a class="browse-property-link"
+                <a class="property-link"
                    asp-controller="Properties"
                    asp-action="Details"
                    asp-route-id="@item.PropertyID"
                    asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
 
-                    <div class="browse-property-card">
+
+                    <div class="card">
 
 
                         <!-- IMAGE -->
+                        @if (!string.IsNullOrEmpty(item.ImagePath))
+                        {
+                            <img src="@item.ImagePath"
+                                 alt="@item.Title" />
+                        }
+                        else
+                        {
+                            <div class="no-image">
+                                🏠
+                            </div>
+                        }
 
-                        <div class="property-image">
 
-                            @if (!string.IsNullOrEmpty(item.ImagePath))
+
+                        <!-- TITLE -->
+
+                        <h3>
+                            @item.Title
+                        </h3>
+
+
+
+                        <!-- BEDROOMS -->
+
+                        <p>
+
+                            <i class="fa-solid fa-bed"></i>
+
+                            @item.Bedrooms Bedrooms
+
+                        </p>
+
+
+
+                        <!-- BATHROOMS -->
+
+                        <p>
+
+                            <i class="fa-solid fa-bath"></i>
+
+                            @item.Bathrooms Bathrooms
+
+                        </p>
+
+
+
+                        <!-- LOCATION -->
+
+                        <p>
+
+                            <i class="fa-solid fa-location-dot"></i>
+
+                            @item.Location
+
+                        </p>
+
+
+
+                        <!-- PRICE -->
+
+                        <p id="money">
+
+                            <i class="fa-solid fa-money-bill"></i>
+
+                            R @item.Price.ToString("N2") / PM
+
+                        </p>
+
+
+
+                        <!-- RATING -->
+
+                        <div class="rating">
+
+                            @if (item.AverageRating.HasValue)
                             {
-                                <img src="@item.ImagePath"
-                                     alt="@item.Title" />
+
+                                var fullStars =
+                                (int)Math.Floor(
+                                item.AverageRating.Value
+                                );
+
+                                var hasHalfStar =
+                                item.AverageRating.Value - fullStars >= 0.5;
+
+
+                                @for (int i = 1; i <= 5; i++)
+                                {
+
+                                    if (i <= fullStars)
+                                    {
+                                        <i class="fa-solid fa-star"></i>
+                                    }
+                                    else if (i == fullStars + 1 && hasHalfStar)
+                                    {
+                                        <i class="fa-solid fa-star-half-stroke"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-regular fa-star"></i>
+                                    }
+
+                                }
+
+
+                                <span>
+
+                                    @item.AverageRating.Value.ToString("0.0")
+                                    (@item.ReviewCount)
+
+                                </span>
+
                             }
                             else
                             {
-                                <div class="no-image">
-                                    🏠
-                                </div>
+
+                                <span class="no-rating">
+
+                                    ☆ No ratings yet
+
+                                </span>
+
                             }
 
                         </div>
 
-
-
-                        <!-- CONTENT -->
-
-                        <div class="property-card-content">
-
-
-                            <h3>
-                                @item.Title
-                            </h3>
-
-
-                            <p class="property-details">
-
-                                @item.Bedrooms Bedrooms
-                                •
-                                @item.Bathrooms Bathrooms
-
-                            </p>
-
-
-                            <p class="property-location">
-
-                                <span>📍</span>
-                                @item.Location
-
-                            </p>
-
-
-                            <h4>
-
-                                R @item.Price.ToString("N0") / PM
-
-                            </h4>
-
-
-
-                            <!-- RATING -->
-
-                            <div class="property-rating">
-
-
-                                @if (item.ReviewCount == 0 ||
-                                                        !item.AverageRating.HasValue)
-                                {
-
-                                    <span class="stars">
-                                        ☆☆☆☆☆
-                                    </span>
-
-                                    <span class="no-reviews">
-                                        No reviews yet
-                                    </span>
-
-                                }
-                                else
-                                {
-
-                                    var roundedRating =
-                                    (int)Math.Round(
-                                    item.AverageRating.Value,
-                                    MidpointRounding.AwayFromZero);
-
-
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-
-                                        if (i <= roundedRating)
-                                        {
-                                            <span class="star filled">
-                                                ★
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="star">
-                                                ☆
-                                            </span>
-                                        }
-
-                                    }
-
-
-                                    <span class="rating-number">
-                                        @item.AverageRating.Value.ToString("0.0")
-                                    </span>
-
-                                    <span class="review-count">
-                                        (@item.ReviewCount)
-                                    </span>
-
-                                }
-
-                            </div>
-
-
-                        </div>
 
                     </div>
 
@@ -696,5 +706,6 @@
         </div>
 
     }
+
 
 </div>

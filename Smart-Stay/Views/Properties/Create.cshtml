@@ -25,6 +25,9 @@
     <div class="property-card">
 
         <div class="property-header">
+            <a href="@Url.Action("Dashboard", "Landlord")" class="back-link">
+                ← Back
+            </a>
 
             <h2>Add New Property</h2>
 
@@ -62,19 +65,20 @@
                       class="text-danger"></span>
 
             </div>
+<div class="mb-3">
+ <label asp-for="Location"></label>
+    <select asp-for="Location" class="form-select">
+      <option value="">Select Area</option>
+      <option value="Walmer">Walmer</option>
+      <option value="North End">North End</option>
+      <option value="Humewood">Humewood</option>
+      <option value="Summerstrand">Summerstrand</option>
+      <option value="Newton Park">Newton Park</option>
+      <option value="Central">Central</option>
+    </select>
+    <span asp-validation-for="Location" class="text-danger"></span>
 
-            <div class="mb-3">
-
-                <label asp-for="Location"></label>
-
-                <input asp-for="Location"
-                       class="form-control"
-                       placeholder="City, Province" />
-
-                <span asp-validation-for="Location"
-                      class="text-danger"></span>
-
-            </div>
+</div>
 
             <div class="mb-3">
 
@@ -215,12 +219,10 @@
 
             var alert = document.querySelector(".alert");
 
-            if (alert) {
-
+            if (alert) 
+            {
                 var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-
                 bsAlert.close();
-
             }
 
         }, 4000);

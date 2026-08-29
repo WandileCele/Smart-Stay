@@ -11,11 +11,47 @@
     <title>Smart Stay - Register</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="~/css/register.css" />
+    <style>
+        .pwd-rules {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 15px;
+            font-size: 13px;
+        }
+
+            .pwd-rules li {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                color: #888;
+                margin-bottom: 4px;
+                transition: color 0.2s ease;
+            }
+
+                .pwd-rules li i {
+                    font-size: 12px;
+                    color: #c0392b;
+                    transition: color 0.2s ease;
+                }
+
+                .pwd-rules li.valid {
+                    color: #27ae60;
+                    font-weight: bold;
+                }
+
+    .pwd-rules li.valid i {
+       color: #27ae60;
+    }
+    </style>
 </head>
 <body>
 
     <div class="register-wrapper">
         <div class="register-left">
+            <a asp-controller="Home" asp-action="Index" class="close-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
+
             <h2 class="title">REGISTER ACCOUNT</h2>
 
             @if (ViewBag.AwaitingCode == true)
@@ -120,10 +156,10 @@
                         <i class="fa-solid fa-eye toggle-eye" onclick="toggleField('passwordField')"></i>
                     </div>
                     <ul id="pwdRules" class="pwd-rules">
-                        <li id="ruleLength">At least 8 characters</li>
-                        <li id="ruleUpper">1 uppercase letter</li>
-                        <li id="ruleNumber">1 number</li>
-                        <li id="ruleSpecial">1 special character</li>
+                        <li id="ruleLength"><i class="fa-solid fa-circle-xmark"></i> At least 8 characters</li>
+                        <li id="ruleUpper"><i class="fa-solid fa-circle-xmark"></i> 1 uppercase letter</li>
+                        <li id="ruleNumber"><i class="fa-solid fa-circle-xmark"></i> 1 number</li>
+                        <li id="ruleSpecial"><i class="fa-solid fa-circle-xmark"></i> 1 special character</li>
                     </ul>
 
                     <label class="field-label">Confirm Password <span class="required">*Required</span></label>
@@ -189,7 +225,12 @@
             const value = pwdField.value;
             for (const [id, check] of Object.entries(rules)) {
                 const el = document.getElementById(id);
-                el.classList.toggle('valid', check(value));
+                const passed = check(value);
+                const icon = el.querySelector('i');
+
+                el.classList.toggle('valid', passed);
+                icon.classList.toggle('fa-circle-xmark', !passed);
+                icon.classList.toggle('fa-circle-check', passed);
             }
         });
 

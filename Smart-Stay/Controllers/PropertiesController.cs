@@ -381,6 +381,23 @@ namespace Smart_Stay.Controllers
 
             return RedirectToAction("Dashboard", "Landlord");
         }
+        public IActionResult ListYourProperty()
+        {
+            // User is not logged in
+            if (User.Identity == null || !User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // User is logged in but is NOT a landlord
+            if (!User.IsInRole("Landlord"))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // User is a landlord
+            return RedirectToAction("Create", "Properties");
+        }
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -414,11 +431,25 @@ namespace Smart_Stay.Controllers
             _context.Properties.Add(property);
             await _context.SaveChangesAsync();
 
+            // Look up an existing Admin instead of hardcoding an ID, so this
+            // keeps working even if the database is wiped/reseeded and Admin
+            // records get new IDs.
+            int? adminId = await _context.Admins
+                .Select(a => (int?)a.UserId)
+                .FirstOrDefaultAsync();
+
+            if (adminId == null)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "No admin account is available to review this listing. Please contact support.");
+                return View(model);
+            }
+
             var listingApplication = new ListingApplication
             {
                 PropertyId = property.PropertyId,
                 LandlordId = landlordId,
-                AdminId = 3,
+                AdminId = adminId.Value,
                 ApplicationStatus = "Pending",
                 ApplicationDate = DateOnly.FromDateTime(DateTime.Now)
             };

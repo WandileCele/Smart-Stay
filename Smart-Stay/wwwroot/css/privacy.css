@@ -1,0 +1,331 @@
+﻿/* =========================================================
+   PRIVACY PAGE
+========================================================= */
+
+.privacy-page {
+    padding: 55px 40px 80px;
+    background: #f7f9fb;
+    min-height: 650px;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.privacy-header {
+    text-align: center;
+    max-width: 750px;
+    margin: 0 auto 25px;
+}
+
+.privacy-header-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 135, 201, 0.10);
+    color: #0087c9;
+    font-size: 28px;
+}
+
+.privacy-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.privacy-header p {
+    color: #777;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.privacy-back {
+    max-width: 1000px;
+    margin: 0 auto 25px;
+}
+
+.privacy-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    background: #0087c9;
+    color: white;
+    text-decoration: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+    .privacy-back-btn:hover {
+        background: #006fa6;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.privacy-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 18px;
+    padding: 15px 45px;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.privacy-section {
+    padding: 32px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+    .privacy-section:last-child {
+        border-bottom: none;
+    }
+
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
+.privacy-section-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 15px;
+}
+
+    .privacy-section-title span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        border-radius: 9px;
+        background: #0087c9;
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .privacy-section-title h2 {
+        margin: 0;
+        font-size: 21px;
+        font-weight: 700;
+        color: #222;
+    }
+
+
+/* =========================================================
+   TEXT
+========================================================= */
+
+.privacy-section p {
+    color: #666;
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 12px;
+}
+
+    .privacy-section p:last-child {
+        margin-bottom: 0;
+    }
+
+
+/* =========================================================
+   LIST
+========================================================= */
+
+.privacy-section ul {
+    margin: 15px 0 0;
+    padding-left: 25px;
+}
+
+.privacy-section li {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 5px;
+}
+
+
+/* =========================================================
+   EMAIL INFORMATION
+========================================================= */
+
+.privacy-list-box {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+    .privacy-list-box div {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 15px;
+        background: #f7fbfd;
+        border-radius: 9px;
+    }
+
+    .privacy-list-box i {
+        color: #0087c9;
+        font-size: 18px;
+    }
+
+    .privacy-list-box span {
+        color: #555;
+        font-size: 14px;
+    }
+
+
+/* =========================================================
+   CONTACT INFORMATION
+========================================================= */
+
+.privacy-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 15px;
+    padding: 15px 20px;
+    background: #f7fbfd;
+    border-radius: 10px;
+}
+
+    .privacy-contact > i {
+        color: #0087c9;
+        font-size: 22px;
+    }
+
+    .privacy-contact div {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .privacy-contact strong {
+        font-size: 13px;
+        color: #333;
+    }
+
+    .privacy-contact span {
+        font-size: 14px;
+        color: #666;
+    }
+
+
+/* =========================================================
+   CTA
+========================================================= */
+
+.privacy-cta {
+    max-width: 1000px;
+    margin: 30px auto 0;
+    padding: 28px 35px;
+    background: #0087c9;
+    color: white;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+}
+
+    .privacy-cta h2 {
+        margin: 0 0 7px;
+        font-size: 21px;
+    }
+
+    .privacy-cta p {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+
+/* =========================================================
+   CONTACT BUTTON
+========================================================= */
+
+.privacy-contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    background: white;
+    color: #0087c9;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: 0.2s ease;
+}
+
+    .privacy-contact-btn:hover {
+        background: #f1f1f1;
+        color: #006fa6;
+        transform: translateY(-2px);
+    }
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .privacy-page {
+        padding: 35px 20px 60px;
+    }
+
+    .privacy-header h1 {
+        font-size: 29px;
+    }
+
+    .privacy-container {
+        padding: 10px 25px;
+    }
+
+    .privacy-section {
+        padding: 25px 0;
+    }
+
+    .privacy-section-title h2 {
+        font-size: 18px;
+    }
+
+    .privacy-cta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .privacy-contact-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

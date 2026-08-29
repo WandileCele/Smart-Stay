@@ -88,91 +88,99 @@
         </a>
 
     </div>
-    <div class="cards">
 
+    @if (Model == null || !Model.Any())
+    {
+        <div class="no-properties">
+            <i class="fa-solid fa-house-circle-xmark"></i>
+            <h3>No properties listed yet</h3>
+            <p>Check back soon — new listings are added regularly.</p>
+        </div>
+    }
+    else
+    {
+        <div class="cards">
 
-        @foreach (var item in Model)
-        {
-            <a class="property-link"
-               asp-controller="Properties"
-               asp-action="Details"
-               asp-route-id="@item.PropertyID"
-               asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
+            @foreach (var item in Model)
+            {
+                <a class="property-link"
+                   asp-controller="Properties"
+                   asp-action="Details"
+                   asp-route-id="@item.PropertyID"
+                   asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
 
+                    <div class="card">
 
-                <div class="card">
+                        <img src="@item.ImagePath" alt="@item.Title" />
 
-                    <img src="@item.ImagePath" alt="@item.Title" />
+                        <h3>@item.Title</h3>
 
-                    <h3>@item.Title</h3>
+                        <p>
+                            <i class="fa-solid fa-bed"></i>
+                            @item.Bedrooms Bedrooms
+                        </p>
 
-                    <p>
-                        <i class="fa-solid fa-bed"></i>
-                        @item.Bedrooms Bedrooms
-                    </p>
+                        <p>
+                            <i class="fa-solid fa-bath"></i>
+                            @item.Bathrooms Bathrooms
+                        </p>
 
-                    <p>
-                        <i class="fa-solid fa-bath"></i>
-                        @item.Bathrooms Bathrooms
-                    </p>
+                        <p>
+                            <i class="fa-solid fa-location-dot"></i>
+                            @item.Location
+                        </p>
 
-                    <p>
-                        <i class="fa-solid fa-location-dot"></i>
-                        @item.Location
-                    </p>
+                        <p id="money">
+                            <i class="fa-solid fa-money-bill"></i>
+                            R @item.Price.ToString("N2") / PM
+                        </p>
 
-                    <p id="money">
-                        <i class="fa-solid fa-money-bill"></i>
-                        R @item.Price.ToString("N2") / PM
-                    </p>
+                        <div class="rating">
 
-                    <div class="rating">
-
-                        @if (item.AverageRating.HasValue)
-                        {
-                            var fullStars = (int)Math.Floor(item.AverageRating.Value);
-                            var hasHalfStar = item.AverageRating.Value - fullStars >= 0.5;
-
-                            @for (int i = 1; i <= 5; i++)
+                            @if (item.AverageRating.HasValue)
                             {
-                                if (i <= fullStars)
+                                var fullStars = (int)Math.Floor(item.AverageRating.Value);
+                                var hasHalfStar = item.AverageRating.Value - fullStars >= 0.5;
+
+                                @for (int i = 1; i <= 5; i++)
                                 {
-                                    <i class="fa-solid fa-star"></i>
+                                    if (i <= fullStars)
+                                    {
+                                        <i class="fa-solid fa-star"></i>
+                                    }
+                                    else if (i == fullStars + 1 && hasHalfStar)
+                                    {
+                                        <i class="fa-solid fa-star-half-stroke"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-regular fa-star"></i>
+                                    }
                                 }
-                                else if (i == fullStars + 1 && hasHalfStar)
-                                {
-                                    <i class="fa-solid fa-star-half-stroke"></i>
-                                }
-                                else
-                                {
-                                    <i class="fa-regular fa-star"></i>
-                                }
+
+                                <span>
+                                    @item.AverageRating.Value.ToString("0.0")
+                                    (@item.ReviewCount)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="no-rating">
+                                    ☆ No ratings yet
+                                </span>
                             }
 
-                            <span>
-                                @item.AverageRating.Value.ToString("0.0")
-                                (@item.ReviewCount)
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="no-rating">
-                                ☆ No ratings yet
-                            </span>
-                        }
+                        </div>
 
                     </div>
 
-                </div>
+                </a>
+            }
 
-            </a>
-        }
-
-    </div>
-
+        </div>
+    }
 
 </section>
-
 <script>
     const words = ["Walmer", "North End", "Humewood", "Summerstrand", "Newton Park", "Central"];
     let wordIndex = 0;
