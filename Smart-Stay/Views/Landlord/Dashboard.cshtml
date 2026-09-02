@@ -1,5 +1,4 @@
-﻿
-@model Smart_Stay.Models.LandlordDashboardViewModel
+﻿@model Smart_Stay.Models.LandlordDashboardViewModel
 
 @{
     ViewData["Title"] = "Landlord Dashboard";
@@ -10,18 +9,18 @@
 
 <div class="dashboard">
     @if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
 
-        <strong>Success!</strong> @TempData["SuccessMessage"]
+            <strong>Success!</strong> @TempData["SuccessMessage"]
 
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert">
-        </button>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
 
-    </div>
-}
+        </div>
+    }
     <div class="sidebar-container">
 
         <button class="menu-toggle" onclick="toggleMenu()">
@@ -33,10 +32,10 @@
 
             <h3>Landlord Menu</h3>
 
-           <a href="#properties">
-           <i class="bi bi-house-gear-fill"></i>
-              Update Property
-           </a> 
+            <a href="#properties">
+                <i class="bi bi-house-gear-fill"></i>
+                Update Property
+            </a>
 
 
             <a asp-controller="Applications"
@@ -51,24 +50,30 @@
                 <i class="bi bi-person-circle"></i>
                  Update Profile
             </a>
+            <a asp-controller="Home"
+               asp-action="Index">
+                🏠 Home
+            </a>
+
 
         </div>
 
     </div>
     <div class="top-bar">
 
-   <form asp-controller="Account"
-          asp-action="Logout"
-          method="post">
+       
+        <form asp-controller="Account"
+              asp-action="Logout"
+              method="post">
 
-        <button type="submit" class="logout-btn">
-            <i class="bi bi-box-arrow-right"></i>
-            Logout
-        </button>
+            <button type="submit" class="logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+            </button>
 
-    </form>
+        </form>
 
-</div>
+    </div>
 
     <div class="dashboard-header">
 
@@ -154,15 +159,15 @@
                 <div class="card-buttons">
 
 
-                  <a asp-controller="Properties"
-                    asp-action="Details"
-                    asp-route-id="@property.PropertyID"
-                    asp-route-returnUrl="@Url.Action("Dashboard", "Landlord")"
-                  class="btn btn-info">
- 
-                   View
+                    <a asp-controller="Properties"
+                       asp-action="Details"
+                       asp-route-id="@property.PropertyID"
+                       asp-route-returnUrl="@Url.Action("Dashboard", "Landlord")"
+                       class="btn btn-info">
 
-                  </a>
+                        View
+
+                    </a>
                     <a asp-controller="Properties"
                        asp-action="Edit"
                        asp-route-id="@property.PropertyID"
@@ -188,66 +193,66 @@
                         </button>
 
                     </form>
-                      @if (property.Status == "Approved" ||
-                       property.Status == "Available" ||
-                       property.Status == "Occupied" ||
-                        property.Status == "Under Maintenance")
-                      {
-                       <form asp-controller="Properties"
-                        asp-action="UpdateStatus"
-                        asp-route-id="@property.PropertyID"
-                        method="get">
+                    @if (property.Status == "Approved" ||
+                                    property.Status == "Available" ||
+                                    property.Status == "Occupied" ||
+                                    property.Status == "Under Maintenance")
+                    {
+                        <form asp-controller="Properties"
+                              asp-action="UpdateStatus"
+                              asp-route-id="@property.PropertyID"
+                              method="get">
 
-                       <button type="submit"
-                       class="btn btn-status">
-                       Update Status
-                       </button>
+                            <button type="submit"
+                                    class="btn btn-status">
+                                Update Status
+                            </button>
 
-                       </form>
-                      }
-                       else if (property.Status == "Pending")
-                      {
-                      <button class="btn btn-warning" disabled>
-                       Waiting for Admin Approval
-                       </button>
-                       }
-                       else if (property.Status == "Rejected")
-                       {
-                       <button class="btn btn-danger" disabled>
-                         Rejected by Admin
-                       </button>
-                       }
+                        </form>
+                    }
+                    else if (property.Status == "Pending")
+                    {
+                        <button class="btn btn-warning" disabled>
+                            Waiting for Admin Approval
+                        </button>
+                    }
+                    else if (property.Status == "Rejected")
+                    {
+                        <button class="btn btn-danger" disabled>
+                            Rejected by Admin
+                        </button>
+                    }
 
 
                 </div>
 
 
             </div>
-                }
+        }
     </div>
 
 
 </div>
 @section Scripts {
 
-<script>
+    <script>
 
-function toggleMenu()
-{
-    var sidebar = document.getElementById("sidebar");
+        function toggleMenu()
+        {
+            var sidebar = document.getElementById("sidebar");
 
-    sidebar.classList.toggle("show");
-}
- setTimeout(function () {
-
-        var alert = document.querySelector(".alert");
-
-        if (alert) {
-            bootstrap.Alert.getOrCreateInstance(alert).close();
+            sidebar.classList.toggle("show");
         }
+         setTimeout(function () {
 
-    }, 4000);
+                var alert = document.querySelector(".alert");
 
-</script>
+                if (alert) {
+                    bootstrap.Alert.getOrCreateInstance(alert).close();
+                }
+
+            }, 4000);
+
+    </script>
 
 }

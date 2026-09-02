@@ -13,14 +13,43 @@
         </div>
 
         <div class="buttons">
-            <a asp-controller="Account" asp-action="Register" class="btn">
-                SIGN UP
-            </a>
-            <a asp-controller="Account" asp-action="Login" class="btn">
-                LOG IN
-            </a>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Admin" asp-action="Dashboard" class="btn">
+                        GO TO DASHBOARD
+                    </a>
+                }
+                else if (User.IsInRole("Landlord"))
+                {
+                    <a asp-controller="Landlord" asp-action="Dashboard" class="btn">
+                        GO TO DASHBOARD
+                    </a>
+                }
+                else if (User.IsInRole("Tenant"))
+                {
+                    <a asp-controller="Tenant" asp-action="Dashboard" class="btn">
+                        GO TO DASHBOARD
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn">
+                        LOG IN
+                    </a>
+                }
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn">
+                    SIGN UP
+                </a>
+                <a asp-controller="Account" asp-action="Login" class="btn">
+                    LOG IN
+                </a>
+            }
         </div>
-
     </nav>
 
     <div class="hero-content">

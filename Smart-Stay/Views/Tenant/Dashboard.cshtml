@@ -48,6 +48,11 @@
                 Update Profile
             </a>
 
+            <a asp-controller="Home" asp-action="Index">
+                <i class="bi bi-house-door"></i>
+                Back to Main Site
+            </a>
+
         </div>
 
     </div>
@@ -82,6 +87,11 @@
 
 
             <!-- TOP RIGHT LOGOUT -->
+
+            <a asp-controller="Home" asp-action="Index" class="back-home-btn">
+                <i class="bi bi-house-door"></i>
+                Back to Main Site
+            </a>
 
             <form asp-controller="Account"
                   asp-action="Logout"
