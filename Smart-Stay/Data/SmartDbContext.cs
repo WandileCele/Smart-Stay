@@ -269,6 +269,9 @@ public partial class SmartDbContext : DbContext
             entity.Property(e => e.SurName)
                 .HasMaxLength(50)
                 .HasColumnName("surName");
+            entity.Property(e => e.ProfileImagePath)
+        .HasMaxLength(255)
+        .HasColumnName("ProfileImagePath");
 
             entity.HasIndex(e => e.Email)
                 .IsUnique();
