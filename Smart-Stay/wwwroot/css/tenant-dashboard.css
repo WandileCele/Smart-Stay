@@ -426,3 +426,81 @@
         min-height: 200px;
     }
 }
+.accommodation-filters {
+    display: flex;
+    gap: 10px;
+    margin: 12px 0 20px;
+}
+
+.filter-pill {
+    padding: 6px 18px;
+    border-radius: 999px;
+    border: none;
+    background: #eee;
+    color: #444;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+    .filter-pill:hover {
+        background: #e0e0e0;
+    }
+
+    .filter-pill.active {
+        background: #0d6efd;
+        color: #fff;
+    }
+/* =========================================================
+   RATE PROPERTY BUTTON
+========================================================= */
+
+/* =========================================================
+   RATE PROPERTY BUTTON
+========================================================= */
+
+.rate-property-button {
+    display: inline-block;
+    margin-top: 8px;
+    margin-left: 8px;
+    padding: 9px 18px;
+    background-color: #198754;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    border: none;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+    .rate-property-button:hover {
+        background-color: #157347;
+        color: #ffffff !important;
+        text-decoration: none !important;
+        transform: translateY(-1px);
+    }
+
+    .rate-property-button:focus,
+    .rate-property-button:active {
+        color: #ffffff !important;
+        text-decoration: none !important;
+    }
+/* =========================================================
+   ALREADY RATED
+========================================================= */
+
+.already-rated {
+    display: inline-block;
+    margin-top: 8px;
+    margin-left: 8px;
+    padding: 9px 18px;
+    background: #e8f5e9;
+    color: #198754;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+}

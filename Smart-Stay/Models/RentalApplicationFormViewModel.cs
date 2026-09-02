@@ -1,99 +1,50 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
-
 namespace Smart_Stay.Models
 {
     public class RentalApplicationFormViewModel
     {
         public int PropertyId { get; set; }
-
         public string PropertyTitle { get; set; } = "";
-
-        // ============================
-        // FIRST NAME
-        // ============================
-
         [Required(ErrorMessage = "First name is required")]
         [RegularExpression(
             @"^[A-Za-z\s'-]+$",
             ErrorMessage = "First name may contain letters only")]
-        [Display(Name = "First Name")]
         public string FirstName { get; set; } = "";
-
-
-        // ============================
-        // LAST NAME
-        // ============================
-
         [Required(ErrorMessage = "Last name is required")]
         [RegularExpression(
             @"^[A-Za-z\s'-]+$",
             ErrorMessage = "Last name may contain letters only")]
-        [Display(Name = "Last Name")]
         public string LastName { get; set; } = "";
-
-
-        // ============================
-        // ID NUMBER
-        // ============================
-
         [Required(ErrorMessage = "ID number is required")]
         [RegularExpression(
             @"^\d{13}$",
             ErrorMessage = "ID number must contain exactly 13 digits")]
-        [Display(Name = "ID Number")]
         public string IdNumber { get; set; } = "";
-
-
-        // ============================
-        // PHONE NUMBER
-        // ============================
-
         [Required(ErrorMessage = "Phone number is required")]
         [RegularExpression(
             @"^\d{10}$",
             ErrorMessage = "Phone number must contain exactly 10 digits")]
-        [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; } = "";
-
-
-        // ============================
-        // EMAIL
-        // ============================
-
         [Required(ErrorMessage = "Email address is required")]
         [EmailAddress(ErrorMessage = "Please enter a valid email address")]
-        [Display(Name = "Email Address")]
         public string Email { get; set; } = "";
-
-
-        // ============================
-        // EMPLOYMENT
-        // ============================
-
         [Required(ErrorMessage = "Employment is required")]
-        [Display(Name = "Employment")]
         public string Employment { get; set; } = "";
-
-
-        // ============================
-        // PAYSLIP
-        // ============================
-
-        [Required(ErrorMessage = "Please upload your payslip")]
-        [Display(Name = "Upload Payslip")]
+        [Required(ErrorMessage = "Lease start date is required")]
+        [DataType(DataType.Date)]
+        public DateOnly? LeaseStartDate { get; set; }
+        [Required(ErrorMessage = "Lease end date is required")]
+        [DataType(DataType.Date)]
+        public DateOnly? LeaseEndDate { get; set; }
+        // Validated manually in the controller (required, .pdf, <=3MB).
+        // No [Required] here because IFormFile validation via data
+        // annotations is unreliable across browsers/binders.
         public IFormFile? Payslip { get; set; }
-
-
-        // ============================
-        // TERMS AND CONDITIONS
-        // ============================
-
-        [Range(
-            typeof(bool),
-            "true",
-            "true",
-            ErrorMessage = "You must accept the Terms and Conditions")]
+        // Deliberately NOT using [Range(typeof(bool), "true", "true")].
+        // That attribute is the classic cause of "submit does nothing":
+        // it fights with any client-side JS check on the same field.
+        // AcceptTerms is validated only in the controller instead.
         [Display(Name = "Accept T's & C's")]
         public bool AcceptTerms { get; set; }
     }

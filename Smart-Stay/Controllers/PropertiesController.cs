@@ -144,12 +144,11 @@ namespace Smart_Stay.Controllers
 
         public async Task<IActionResult> Details(int id, string? returnUrl)
         {
-
             var property = await _context.Properties
-            .Include(p => p.RentalApplications)
-            .Include(p => p.Reviews)
-            .ThenInclude(r => r.Tenant)
-            .FirstOrDefaultAsync(p => p.PropertyId == id);
+                .Include(p => p.RentalApplications)
+                .Include(p => p.Reviews)
+                .ThenInclude(r => r.Tenant)
+                .FirstOrDefaultAsync(p => p.PropertyId == id);
 
             if (property == null)
             {
@@ -171,11 +170,37 @@ namespace Smart_Stay.Controllers
                 ? candidateReturnUrl
                 : Url.Action("Index", "Home")!;
 
+            bool canApply = true;
+            string? applyBlockedReason = null;
+
+            if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Tenant"))
+            {
+                var tenantIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (int.TryParse(tenantIdString, out int tenantId))
+                {
+                    var existing = property.RentalApplications
+                        .Where(a => a.TenantId == tenantId)
+                        .OrderByDescending(a => a.ApplicationDate)
+                        .FirstOrDefault();
+
+                    if (existing != null && existing.RentalApplicationStatus != "Rejected")
+                    {
+                        canApply = false;
+                        applyBlockedReason = existing.RentalApplicationStatus == "Pending"
+                            ? "Your application for this property is pending review."
+                            : "You already have an approved application for this property.";
+                    }
+                }
+            }
+
             var model = new PropertyDetailsViewModel
             {
                 Property = property,
                 ImagePaths = imagePaths,
-                ReturnUrl = safeReturnUrl
+                ReturnUrl = safeReturnUrl,
+                CanApply = canApply,
+                ApplyBlockedReason = applyBlockedReason
             };
 
             return View(model);
@@ -234,7 +259,6 @@ namespace Smart_Stay.Controllers
             {
                 return NotFound();
             }
-
             property.Title = model.Title;
             property.Description = model.Description;
             property.Location = model.Location;
@@ -266,12 +290,10 @@ namespace Smart_Stay.Controllers
                     fileName
                 );
 
-
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await model.ImageFile.CopyToAsync(stream);
                 }
-
 
                 property.ImagePath = "/images/properties/" + fileName;
             }

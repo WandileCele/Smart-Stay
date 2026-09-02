@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
@@ -27,45 +26,69 @@ namespace Smart_Stay.Controllers
 
 
         // ============================================================
+        // CHECK IF TENANT IS BLOCKED FROM REAPPLYING
+        // Returns the blocking application (Pending or Approved),
+        // or null if the tenant is free to apply.
+        // ============================================================
+
+        private async Task<RentalApplication?> GetBlockingApplication(int tenantId, int propertyId)
+        {
+            var existing = await _context.RentalApplications
+                .Where(a => a.TenantId == tenantId && a.PropertyId == propertyId)
+                .OrderByDescending(a => a.ApplicationDate)
+                .FirstOrDefaultAsync();
+
+            if (existing == null)
+                return null;
+
+            if (existing.RentalApplicationStatus == "Rejected")
+                return null;
+
+            return existing;
+        }
+
+
+        // ============================================================
         // SHOW RENTAL APPLICATION FORM
         // ============================================================
 
         [HttpGet]
         public async Task<IActionResult> Apply(int propertyId)
         {
-            // Get logged-in tenant
-            var userIdString = User.FindFirstValue(
-                ClaimTypes.NameIdentifier);
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (!int.TryParse(userIdString, out int tenantId))
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            // Find property
             var property = await _context.Properties
-                .FirstOrDefaultAsync(p =>
-                    p.PropertyId == propertyId);
+                .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
 
             if (property == null)
             {
                 return NotFound();
             }
 
-            // Make sure tenant exists
             var tenant = await _context.Tenants
-                .FirstOrDefaultAsync(t =>
-                    t.UserId == tenantId);
+                .FirstOrDefaultAsync(t => t.UserId == tenantId);
 
             if (tenant == null)
             {
                 return NotFound();
             }
 
-            // IMPORTANT:
-            // Do NOT fill in the tenant's personal information.
-            // The user must type it into the form.
+            var blocking = await GetBlockingApplication(tenantId, propertyId);
+            if (blocking != null)
+            {
+                TempData["ErrorMessage"] = blocking.RentalApplicationStatus == "Pending"
+                    ? "You already have a pending application for this property."
+                    : "You already have an approved application for this property.";
+                return RedirectToAction("Dashboard", "Tenant");
+            }
 
+            // Form starts empty except for the property name.
+            // The applicant types everything else themselves.
             var model = new RentalApplicationFormViewModel
             {
                 PropertyId = property.PropertyId,
@@ -82,109 +105,114 @@ namespace Smart_Stay.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Apply(
-            RentalApplicationFormViewModel model)
+        public async Task<IActionResult> Apply(RentalApplicationFormViewModel model)
         {
-            // ========================================================
-            // GET LOGGED-IN TENANT
-            // ========================================================
-
-            var userIdString = User.FindFirstValue(
-                ClaimTypes.NameIdentifier);
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (!int.TryParse(userIdString, out int tenantId))
             {
                 return RedirectToAction("Login", "Account");
             }
 
-
-            // ========================================================
-            // FIND PROPERTY
-            // ========================================================
-
             var property = await _context.Properties
-                .FirstOrDefaultAsync(p =>
-                    p.PropertyId == model.PropertyId);
+                .FirstOrDefaultAsync(p => p.PropertyId == model.PropertyId);
 
             if (property == null)
             {
                 return NotFound();
             }
 
-
-            // ========================================================
-            // FIND TENANT
-            // ========================================================
+            model.PropertyTitle = property.Title;
 
             var tenant = await _context.Tenants
-                .FirstOrDefaultAsync(t =>
-                    t.UserId == tenantId);
+                .FirstOrDefaultAsync(t => t.UserId == tenantId);
 
             if (tenant == null)
             {
                 return NotFound();
             }
 
-
-            // Put the property title back into the model.
-            // We DO NOT overwrite the information typed by the user.
-            model.PropertyTitle = property.Title;
-
-
-            // ========================================================
-            // PAYSLIP VALIDATION
-            // ========================================================
-
-            if (model.Payslip == null ||
-                model.Payslip.Length == 0)
+            var blocking = await GetBlockingApplication(tenantId, model.PropertyId);
+            if (blocking != null)
             {
                 ModelState.AddModelError(
-                    "Payslip",
-                    "Please upload your payslip.");
-            }
-            else
-            {
-                // Maximum 3MB
-                if (model.Payslip.Length > 3 * 1024 * 1024)
-                {
-                    ModelState.AddModelError(
-                        "Payslip",
-                        "Payslip must be 3MB or smaller.");
-                }
-
-                // PDF only
-                var extension =
-                    Path.GetExtension(
-                        model.Payslip.FileName)
-                    .ToLowerInvariant();
-
-                if (extension != ".pdf")
-                {
-                    ModelState.AddModelError(
-                        "Payslip",
-                        "Only PDF payslips are allowed.");
-                }
+                    string.Empty,
+                    blocking.RentalApplicationStatus == "Pending"
+                        ? "You already have a pending application for this property."
+                        : "You already have an approved application for this property.");
+                return View(model);
             }
 
 
             // ========================================================
-            // TERMS & CONDITIONS
+            // MANUAL VALIDATION
+            // (Kept out of data annotations on purpose so there is
+            // exactly one place these rules are enforced.)
             // ========================================================
 
             if (!model.AcceptTerms)
             {
                 ModelState.AddModelError(
-                    "AcceptTerms",
+                    nameof(model.AcceptTerms),
                     "You must accept the Terms and Conditions before submitting.");
             }
 
+            if (model.LeaseStartDate == null)
+            {
+                ModelState.AddModelError(
+                    nameof(model.LeaseStartDate),
+                    "Lease start date is required.");
+            }
+            else if (model.LeaseStartDate < DateOnly.FromDateTime(DateTime.Now))
+            {
+                ModelState.AddModelError(
+                    nameof(model.LeaseStartDate),
+                    "Lease start date cannot be in the past.");
+            }
 
-            // ========================================================
-            // VALIDATE FORM
-            // ========================================================
+            if (model.LeaseEndDate == null)
+            {
+                ModelState.AddModelError(
+                    nameof(model.LeaseEndDate),
+                    "Lease end date is required.");
+            }
+            else if (model.LeaseStartDate != null && model.LeaseEndDate <= model.LeaseStartDate)
+            {
+                ModelState.AddModelError(
+                    nameof(model.LeaseEndDate),
+                    "Lease end date must be after the start date.");
+            }
+
+            if (model.Payslip == null || model.Payslip.Length == 0)
+            {
+                ModelState.AddModelError(
+                    nameof(model.Payslip),
+                    "Please upload your payslip.");
+            }
+            else
+            {
+                if (model.Payslip.Length > 3 * 1024 * 1024)
+                {
+                    ModelState.AddModelError(
+                        nameof(model.Payslip),
+                        "Payslip must be 3MB or smaller.");
+                }
+
+                var extension = Path.GetExtension(model.Payslip.FileName)
+                    .ToLowerInvariant();
+
+                if (extension != ".pdf")
+                {
+                    ModelState.AddModelError(
+                        nameof(model.Payslip),
+                        "Only PDF payslips are allowed.");
+                }
+            }
 
             if (!ModelState.IsValid)
             {
+                // Sends the user back to the same form with error
+                // messages next to each field via asp-validation-for.
                 return View(model);
             }
 
@@ -196,22 +224,16 @@ namespace Smart_Stay.Controllers
             var rentalApplication = new RentalApplication
             {
                 TenantId = tenantId,
-
-                ApplicationDate =
-                    DateOnly.FromDateTime(DateTime.Now),
-
+                ApplicationDate = DateOnly.FromDateTime(DateTime.Now),
                 RentalApplicationStatus = "Pending",
-
                 IdNumber = model.IdNumber,
-
                 LandlordId = property.LandlordId,
-
-                PropertyId = model.PropertyId
+                PropertyId = model.PropertyId,
+                LeaseStartDate = model.LeaseStartDate,
+                LeaseEndDate = model.LeaseEndDate
             };
 
-            _context.RentalApplications.Add(
-                rentalApplication);
-
+            _context.RentalApplications.Add(rentalApplication);
             await _context.SaveChangesAsync();
 
 
@@ -220,84 +242,42 @@ namespace Smart_Stay.Controllers
             // ========================================================
 
             var uploadsFolder = Path.Combine(
-                _environment.WebRootPath,
-                "uploads",
-                "payslips");
+                _environment.WebRootPath, "uploads", "payslips");
 
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
 
+            var fileName = Guid.NewGuid().ToString() + ".pdf";
+            var filePath = Path.Combine(uploadsFolder, fileName);
 
-            // Generate unique filename
-            var fileName =
-                Guid.NewGuid().ToString()
-                + ".pdf";
-
-
-            var filePath = Path.Combine(
-                uploadsFolder,
-                fileName);
-
-
-            // Save physical PDF
-            using (var stream = new FileStream(
-                filePath,
-                FileMode.Create))
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await model.Payslip.CopyToAsync(stream);
+                await model.Payslip!.CopyToAsync(stream);
             }
 
-
-            // ========================================================
-            // SAVE DOCUMENT INFORMATION
-            // ========================================================
-
-            var document =
-                new Smart_Stay.Models.Document
-                {
-                    RentalApplicationId =
-                        rentalApplication.RentalApplicationId,
-
-                    DocumentType = "Payslip",
-
-                    UploadDate =
-                        DateOnly.FromDateTime(
-                            DateTime.Now),
-
-                    DocumentPath =
-                        "/uploads/payslips/"
-                        + fileName
-                };
-
+            var document = new Smart_Stay.Models.Document
+            {
+                RentalApplicationId = rentalApplication.RentalApplicationId,
+                DocumentType = "Payslip",
+                UploadDate = DateOnly.FromDateTime(DateTime.Now),
+                DocumentPath = "/uploads/payslips/" + fileName
+            };
 
             _context.Documents.Add(document);
-
             await _context.SaveChangesAsync();
 
 
             // ========================================================
-            // GENERATE APPLICATION PDF
+            // GENERATE + DOWNLOAD PDF
             // ========================================================
 
-            QuestPDF.Settings.License =
-                QuestPDF.Infrastructure.LicenseType.Community;
+            QuestPDF.Settings.License = LicenseType.Community;
 
+            byte[] pdf = GenerateApplicationPdf(rentalApplication, model);
 
-            byte[] pdf = GenerateApplicationPdf(
-                rentalApplication,
-                model);
-
-
-            // ========================================================
-            // DOWNLOAD PDF
-            // ========================================================
-
-            return File(
-                pdf,
-                "application/pdf",
-                "SmartStay_Rental_Application.pdf");
+            return File(pdf, "application/pdf", "SmartStay_Rental_Application.pdf");
         }
 
 
@@ -309,149 +289,51 @@ namespace Smart_Stay.Controllers
             RentalApplication application,
             RentalApplicationFormViewModel model)
         {
-            var document =
-                QuestPDF.Fluent.Document.Create(container =>
+            var document = QuestPDF.Fluent.Document.Create(container =>
+            {
+                container.Page(page =>
                 {
-                    container.Page(page =>
+                    page.Size(PageSizes.A4);
+                    page.Margin(40);
+
+                    page.Header().Column(column =>
                     {
-                        page.Size(PageSizes.A4);
-
-                        page.Margin(40);
-
-
-                        // ====================================================
-                        // HEADER
-                        // ====================================================
-
-                        page.Header()
-                            .Column(column =>
-                            {
-                                column.Item()
-                                    .Text("SMART STAY")
-                                    .Bold()
-                                    .FontSize(24);
-
-                                column.Item()
-                                    .Text("RENTAL APPLICATION")
-                                    .Bold()
-                                    .FontSize(18);
-
-                                column.Item()
-                                    .LineHorizontal(1);
-                            });
-
-
-                        // ====================================================
-                        // CONTENT
-                        // ====================================================
-
-                        page.Content()
-                            .PaddingTop(20)
-                            .Column(column =>
-                            {
-                                column.Spacing(10);
-
-
-                                column.Item()
-                                    .Text(
-                                        $"Property: {model.PropertyTitle}")
-                                    .Bold();
-
-
-                                column.Item()
-                                    .Text(
-                                        $"Application ID: {application.RentalApplicationId}");
-
-
-                                column.Item()
-                                    .Text(
-                                        $"Application Date: {application.ApplicationDate}");
-
-
-                                // APPLICANT DETAILS
-
-                                column.Item()
-                                    .PaddingTop(15)
-                                    .Text("APPLICANT DETAILS")
-                                    .Bold()
-                                    .FontSize(15);
-
-
-                                column.Item()
-                                    .Text(
-                                        $"First Name: {model.FirstName}");
-
-
-                                column.Item()
-                                    .Text(
-                                        $"Last Name: {model.LastName}");
-
-
-                                column.Item()
-                                    .Text(
-                                        $"ID Number: {model.IdNumber}");
-
-
-                                column.Item()
-                                    .Text(
-                                        $"Phone Number: {model.PhoneNumber}");
-
-
-                                column.Item()
-                                    .Text(
-                                        $"Email: {model.Email}");
-
-
-                                column.Item()
-                                    .Text(
-                                        $"Employment: {model.Employment}");
-
-
-                                // APPLICATION STATUS
-
-                                column.Item()
-                                    .PaddingTop(15)
-                                    .Text("APPLICATION STATUS")
-                                    .Bold()
-                                    .FontSize(15);
-
-
-                                column.Item()
-                                    .Text(
-                                        $"Status: {application.RentalApplicationStatus}");
-
-
-                                column.Item()
-                                    .Text(
-                                        "Payslip: Uploaded successfully");
-
-
-                                column.Item()
-                                    .Text(
-                                        "Terms and Conditions: Accepted");
-
-
-                                column.Item()
-                                    .PaddingTop(30)
-                                    .Text(
-                                        "Thank you for submitting your rental application to Smart Stay.");
-                            });
-
-
-                        // ====================================================
-                        // FOOTER
-                        // ====================================================
-
-                        page.Footer()
-                            .AlignCenter()
-                            .Text(
-                                "Smart Stay - Rental Application");
+                        column.Item().Text("SMART STAY").Bold().FontSize(24);
+                        column.Item().Text("RENTAL APPLICATION").Bold().FontSize(18);
+                        column.Item().LineHorizontal(1);
                     });
-                });
 
+                    page.Content().PaddingTop(20).Column(column =>
+                    {
+                        column.Spacing(10);
+
+                        column.Item().Text($"Property: {model.PropertyTitle}").Bold();
+                        column.Item().Text($"Application ID: {application.RentalApplicationId}");
+                        column.Item().Text($"Application Date: {application.ApplicationDate}");
+
+                        column.Item().PaddingTop(15).Text("APPLICANT DETAILS").Bold().FontSize(15);
+                        column.Item().Text($"First Name: {model.FirstName}");
+                        column.Item().Text($"Last Name: {model.LastName}");
+                        column.Item().Text($"ID Number: {model.IdNumber}");
+                        column.Item().Text($"Phone Number: {model.PhoneNumber}");
+                        column.Item().Text($"Email: {model.Email}");
+                        column.Item().Text($"Employment: {model.Employment}");
+
+                        column.Item().PaddingTop(15).Text("APPLICATION STATUS").Bold().FontSize(15);
+                        column.Item().Text($"Status: {application.RentalApplicationStatus}");
+                        column.Item().Text($"Lease: {model.LeaseStartDate} to {model.LeaseEndDate}");
+                        column.Item().Text("Payslip: Uploaded successfully");
+                        column.Item().Text("Terms and Conditions: Accepted");
+
+                        column.Item().PaddingTop(30)
+                            .Text("Thank you for submitting your rental application to Smart Stay.");
+                    });
+
+                    page.Footer().AlignCenter().Text("Smart Stay - Rental Application");
+                });
+            });
 
             return document.GeneratePdf();
         }
     }
 }
-
