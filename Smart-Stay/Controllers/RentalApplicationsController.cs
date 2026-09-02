@@ -30,7 +30,8 @@ namespace Smart_Stay.Controllers
         // ============================================================
 
         [HttpGet]
-        public async Task<IActionResult> Apply(int propertyId)
+        public async Task<IActionResult>
+    Apply(int propertyId)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -40,7 +41,7 @@ namespace Smart_Stay.Controllers
             }
 
             var property = await _context.Properties
-                .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
+            .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
 
             if (property == null)
             {
@@ -48,7 +49,7 @@ namespace Smart_Stay.Controllers
             }
 
             var tenant = await _context.Tenants
-                .FirstOrDefaultAsync(t => t.UserId == tenantId);
+            .FirstOrDefaultAsync(t => t.UserId == tenantId);
 
             if (tenant == null)
             {
@@ -73,7 +74,8 @@ namespace Smart_Stay.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Apply(RentalApplicationFormViewModel model)
+        public async Task<IActionResult>
+            Apply(RentalApplicationFormViewModel model)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -83,7 +85,7 @@ namespace Smart_Stay.Controllers
             }
 
             var property = await _context.Properties
-                .FirstOrDefaultAsync(p => p.PropertyId == model.PropertyId);
+            .FirstOrDefaultAsync(p => p.PropertyId == model.PropertyId);
 
             if (property == null)
             {
@@ -93,7 +95,7 @@ namespace Smart_Stay.Controllers
             model.PropertyTitle = property.Title;
 
             var tenant = await _context.Tenants
-                .FirstOrDefaultAsync(t => t.UserId == tenantId);
+            .FirstOrDefaultAsync(t => t.UserId == tenantId);
 
             if (tenant == null)
             {
@@ -110,33 +112,33 @@ namespace Smart_Stay.Controllers
             if (!model.AcceptTerms)
             {
                 ModelState.AddModelError(
-                    nameof(model.AcceptTerms),
-                    "You must accept the Terms and Conditions before submitting.");
+                nameof(model.AcceptTerms),
+                "You must accept the Terms and Conditions before submitting.");
             }
 
             if (model.Payslip == null || model.Payslip.Length == 0)
             {
                 ModelState.AddModelError(
-                    nameof(model.Payslip),
-                    "Please upload your payslip.");
+                nameof(model.Payslip),
+                "Please upload your payslip.");
             }
             else
             {
                 if (model.Payslip.Length > 3 * 1024 * 1024)
                 {
                     ModelState.AddModelError(
-                        nameof(model.Payslip),
-                        "Payslip must be 3MB or smaller.");
+                    nameof(model.Payslip),
+                    "Payslip must be 3MB or smaller.");
                 }
 
                 var extension = Path.GetExtension(model.Payslip.FileName)
-                    .ToLowerInvariant();
+                .ToLowerInvariant();
 
                 if (extension != ".pdf")
                 {
                     ModelState.AddModelError(
-                        nameof(model.Payslip),
-                        "Only PDF payslips are allowed.");
+                    nameof(model.Payslip),
+                    "Only PDF payslips are allowed.");
                 }
             }
 
@@ -171,7 +173,7 @@ namespace Smart_Stay.Controllers
             // ========================================================
 
             var uploadsFolder = Path.Combine(
-                _environment.WebRootPath, "uploads", "payslips");
+            _environment.WebRootPath, "uploads", "payslips");
 
             if (!Directory.Exists(uploadsFolder))
             {
@@ -199,14 +201,83 @@ namespace Smart_Stay.Controllers
 
 
             // ========================================================
-            // GENERATE + DOWNLOAD PDF
+            // GENERATE PDF AND HAND OFF TO THE SUCCESS PAGE
             // ========================================================
+            // We do NOT return the PDF directly from this POST action,
+            // and we do NOT put it in TempData/cookies either (a PDF is
+            // far too big for a cookie — that's what caused the
+            // HTTP 431 "request header too large" error). Instead we
+            // write the PDF to a small temp folder on disk, keyed by
+            // the application's ID, and redirect to a normal
+            // confirmation page. The redirect completes a real page
+            // navigation, which clears any loading overlay, and gives
+            // the applicant an actual "Submitted!" message.
 
             QuestPDF.Settings.License = LicenseType.Community;
 
             byte[] pdf = GenerateApplicationPdf(rentalApplication, model);
 
-            return File(pdf, "application/pdf", "SmartStay_Rental_Application.pdf");
+            var pdfFolder = Path.Combine(
+            _environment.ContentRootPath, "App_Data", "GeneratedPdfs");
+
+            if (!Directory.Exists(pdfFolder))
+            {
+                Directory.CreateDirectory(pdfFolder);
+            }
+
+            var pdfPath = Path.Combine(
+            pdfFolder, $"application_{rentalApplication.RentalApplicationId}.pdf");
+
+            await System.IO.File.WriteAllBytesAsync(pdfPath, pdf);
+
+            return RedirectToAction(
+            nameof(Success), new { id = rentalApplication.RentalApplicationId });
+        }
+
+
+        // ============================================================
+        // CONFIRMATION PAGE
+        // ============================================================
+
+        [HttpGet]
+        public IActionResult Success(int id)
+        {
+            var pdfPath = Path.Combine(
+            _environment.ContentRootPath, "App_Data", "GeneratedPdfs",
+            $"application_{id}.pdf");
+
+            if (!System.IO.File.Exists(pdfPath))
+            {
+                // Nothing to show (e.g. link opened directly, or the
+                // file was already cleaned up) — send them back to the form.
+                return RedirectToAction(nameof(Apply));
+            }
+
+            ViewBag.ApplicationId = id;
+
+            return View();
+        }
+
+
+        // ============================================================
+        // DOWNLOAD THE GENERATED PDF (separate, on-demand action)
+        // ============================================================
+
+        [HttpGet]
+        public IActionResult DownloadPdf(int id)
+        {
+            var pdfPath = Path.Combine(
+            _environment.ContentRootPath, "App_Data", "GeneratedPdfs",
+            $"application_{id}.pdf");
+
+            if (!System.IO.File.Exists(pdfPath))
+            {
+                return NotFound();
+            }
+
+            var pdfBytes = System.IO.File.ReadAllBytes(pdfPath);
+
+            return File(pdfBytes, "application/pdf", "SmartStay_Rental_Application.pdf");
         }
 
 
@@ -215,8 +286,8 @@ namespace Smart_Stay.Controllers
         // ============================================================
 
         private byte[] GenerateApplicationPdf(
-            RentalApplication application,
-            RentalApplicationFormViewModel model)
+        RentalApplication application,
+        RentalApplicationFormViewModel model)
         {
             var document = QuestPDF.Fluent.Document.Create(container =>
             {
@@ -254,7 +325,7 @@ namespace Smart_Stay.Controllers
                         column.Item().Text("Terms and Conditions: Accepted");
 
                         column.Item().PaddingTop(30)
-                            .Text("Thank you for submitting your rental application to Smart Stay.");
+                        .Text("Thank you for submitting your rental application to Smart Stay.");
                     });
 
                     page.Footer().AlignCenter().Text("Smart Stay - Rental Application");
