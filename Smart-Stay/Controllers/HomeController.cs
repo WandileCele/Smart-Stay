@@ -53,8 +53,9 @@ namespace Smart_Stay.Controllers
             d => d.ListingApplication,
             (la, d) => d.DocumentPath
         )
-        .FirstOrDefault()
-   })
+        .FirstOrDefault(),
+         LandlordPhoneNo = p.Landlord.User.PhoneNo
+           })
     .ToListAsync();
 
             return View(properties);
@@ -90,6 +91,25 @@ namespace Smart_Stay.Controllers
                 : Url.Action("Index", "Home")!;
 
             ViewBag.ReturnUrl = safeReturnUrl;
+
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> LandlordContact(int propertyId)
+        {
+            var property = await _context.Properties
+                .Include(p => p.Landlord)
+                .ThenInclude(l => l.User)
+                .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.PropertyTitle = property.Title;
+            ViewBag.LandlordName = $"{property.Landlord.User.FirstName} {property.Landlord.User.SurName}";
+            ViewBag.LandlordPhone = property.Landlord.User.PhoneNo;
 
             return View();
         }

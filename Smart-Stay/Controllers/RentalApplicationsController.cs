@@ -53,8 +53,7 @@ namespace Smart_Stay.Controllers
         // ============================================================
 
         [HttpGet]
-        public async Task<IActionResult>
-    Apply(int propertyId)
+        public async Task<IActionResult> Apply(int propertyId)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -183,6 +182,8 @@ namespace Smart_Stay.Controllers
                     nameof(model.LeaseEndDate),
                     "Lease end date must be after the start date.");
             }
+            if (model.Payslip == null || model.Payslip.Length == 0) { ModelState.AddModelError(nameof(model.Payslip), "Please upload your payslip."); }
+            if (!model.AcceptTerms) { ModelState.AddModelError(nameof(model.AcceptTerms), "You must accept the Terms and Conditions before submitting."); }
 
             if (model.Payslip == null || model.Payslip.Length == 0)
             {
@@ -287,15 +288,6 @@ namespace Smart_Stay.Controllers
             // ========================================================
             // GENERATE + DOWNLOAD PDF
             // ========================================================
-            // We do NOT return the PDF directly from this POST action,
-            // and we do NOT put it in TempData/cookies either (a PDF is
-            // far too big for a cookie — that's what caused the
-            // HTTP 431 "request header too large" error). Instead we
-            // write the PDF to a small temp folder on disk, keyed by
-            // the application's ID, and redirect to a normal
-            // confirmation page. The redirect completes a real page
-            // navigation, which clears any loading overlay, and gives
-            // the applicant an actual "Submitted!" message.
 
             QuestPDF.Settings.License = LicenseType.Community;
 
@@ -370,8 +362,8 @@ namespace Smart_Stay.Controllers
         // ============================================================
 
         private byte[] GenerateApplicationPdf(
-        RentalApplication application,
-        RentalApplicationFormViewModel model)
+            RentalApplication application,
+            RentalApplicationFormViewModel model)
         {
             var document = QuestPDF.Fluent.Document.Create(container =>
             {

@@ -306,8 +306,40 @@
                             }
 
                         </div>
+                        <!-- LANDLORD CONTACT -->
+                        <div class="landlord-contact">
+
+                            <!-- Call -->
+                            <a asp-controller="Home"
+                               asp-action="LandlordContact"
+                               asp-route-propertyId="@item.PropertyID"
+                               class="contact-icon"
+                               title="Call landlord">
+                                <i class="fa-solid fa-phone"></i>
+                            </a>
+
+                            <!-- WhatsApp -->
+                            <a href="https://web.whatsapp.com/"
+                               target="_blank"
+                               class="contact-icon whatsapp"
+                               title="WhatsApp">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </a>
+
+                            <!-- Facebook -->
+                            <a href="https://www.facebook.com/"
+                               target="_blank"
+                               class="contact-icon facebook"
+                               title="Facebook">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </a>
+
+                        </div>
 
                     </div>
+
+
+                   
 
                 </div>
             }
