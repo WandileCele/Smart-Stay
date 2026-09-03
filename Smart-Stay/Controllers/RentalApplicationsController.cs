@@ -185,6 +185,19 @@ namespace Smart_Stay.Controllers
             if (model.Payslip == null || model.Payslip.Length == 0) { ModelState.AddModelError(nameof(model.Payslip), "Please upload your payslip."); }
             if (!model.AcceptTerms) { ModelState.AddModelError(nameof(model.AcceptTerms), "You must accept the Terms and Conditions before submitting."); }
 
+            if (model.Payslip == null || model.Payslip.Length == 0)
+            {
+                ModelState.AddModelError(
+                    nameof(model.Payslip),
+                    "Please upload your payslip.");
+            }
+
+            if (!model.AcceptTerms)
+            {
+                ModelState.AddModelError(
+                    nameof(model.AcceptTerms),
+                    "You must accept the Terms and Conditions before submitting.");
+            }
 
             if (model.Payslip == null || model.Payslip.Length == 0)
             {
