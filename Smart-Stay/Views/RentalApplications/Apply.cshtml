@@ -257,6 +257,13 @@
             this.value = this.value.replace(/[^A-Za-z\s'-]/g, '');
         });
 
+        // ==========================================
+        // PAYSLIP PREVIEW
+        // This only clears an invalid file choice; it never touches
+        // form submission and has no event.preventDefault() on submit.
+        // ==========================================
+        const payslipInput = document.getElementById("payslipInput");
+        const uploadText = document.getElementById("uploadText");
 
         // ==========================================
         // PAYSLIP PREVIEW
@@ -303,3 +310,9 @@
     </script>
 }
 
+        // NOTE: there is intentionally no form.addEventListener("submit", ...)
+        // anywhere in this file. AcceptTerms is validated by the controller
+        // only, so there is nothing here that can silently block the click.
+
+    </script>
+}

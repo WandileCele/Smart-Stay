@@ -1,0 +1,475 @@
+﻿@model Smart_Stay.Models.UpdateProfileViewModel
+
+@{
+    ViewData["Title"] = "Update Profile";
+}
+
+@section Styles
+{
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+
+    <link rel="stylesheet"
+          href="~/css/update-profile.css"
+          asp-append-version="true" />
+}
+
+
+<div class="profile-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="profile-header">
+
+        <h1>UPDATE PROFILE</h1>
+
+
+        <!-- BACK TO LANDLORD DASHBOARD -->
+
+        <a asp-controller="Landlord"
+           asp-action="Dashboard"
+           class="back-button">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PROFILE CARD
+    ====================================================== -->
+
+    <div class="profile-card">
+
+
+        <!-- =================================================
+             SUCCESS MESSAGE
+        ================================================== -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="success-message">
+
+                @TempData["SuccessMessage"]
+
+                <span>
+                    ✓
+                </span>
+
+            </div>
+        }
+
+
+
+        <!-- =================================================
+             FORM
+        ================================================== -->
+
+        <form asp-controller="Landlord"
+              asp-action="UpdateProfile"
+              method="post"
+              enctype="multipart/form-data">
+
+
+            @Html.AntiForgeryToken()
+
+
+
+            <!-- =============================================
+                 PROFILE IMAGE
+            ============================================== -->
+
+            <div class="profile-image-section">
+
+
+                <div class="profile-image-container">
+
+
+                    @if (!string.IsNullOrEmpty(
+                                        Model.CurrentImagePath))
+                    {
+                        <img id="profilePreview"
+                             src="@Model.CurrentImagePath"
+                             alt="Profile Picture"
+                             class="profile-image" />
+                    }
+                    else
+                    {
+                        <div id="defaultProfile"
+                             class="default-profile">
+
+                            <i class="bi bi-person"></i>
+
+                        </div>
+
+
+                        <img id="profilePreview"
+                             class="profile-image hidden"
+                             alt="Profile Picture" />
+                    }
+
+
+                    <label for="ProfileImage"
+                           class="image-upload-overlay">
+
+                        <i class="bi bi-camera"></i>
+
+                    </label>
+
+
+                </div>
+
+
+                <label for="ProfileImage"
+                       class="upload-photo-text">
+
+                    Upload photo
+
+                </label>
+
+
+                <input asp-for="ProfileImage"
+                       type="file"
+                       id="ProfileImage"
+                       accept=".jpg,.jpeg,.png,.gif"
+                       class="image-input" />
+
+
+                <span asp-validation-for="ProfileImage"
+                      class="validation-error">
+                </span>
+
+
+            </div>
+
+
+
+            <!-- =============================================
+                 FIRST NAME
+            ============================================== -->
+
+            <div class="form-group">
+
+                <label asp-for="FirstName">
+
+                    First Name
+
+                </label>
+
+
+                <input asp-for="FirstName"
+                       class="form-control" />
+
+
+                <span asp-validation-for="FirstName"
+                      class="validation-error">
+                </span>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 LAST NAME
+            ============================================== -->
+
+            <div class="form-group">
+
+                <label asp-for="SurName">
+
+                    Last Name
+
+                </label>
+
+
+                <input asp-for="SurName"
+                       class="form-control" />
+
+
+                <span asp-validation-for="SurName"
+                      class="validation-error">
+                </span>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 EMAIL
+            ============================================== -->
+
+            <div class="form-group">
+
+                <label asp-for="Email">
+
+                    Email address
+
+                </label>
+
+
+                <input asp-for="Email"
+                       type="email"
+                       class="form-control" />
+
+
+                <span asp-validation-for="Email"
+                      class="validation-error">
+                </span>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 PHONE
+            ============================================== -->
+
+            <div class="form-group">
+
+                <label asp-for="PhoneNo">
+
+                    Phone number
+
+                </label>
+
+
+                <input asp-for="PhoneNo"
+                       maxlength="10"
+                       class="form-control" />
+
+
+                <span asp-validation-for="PhoneNo"
+                      class="validation-error">
+                </span>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 NEW PASSWORD
+            ============================================== -->
+
+            <div class="form-group">
+
+                <label asp-for="NewPassword">
+
+                    Change password
+
+                </label>
+
+
+                <div class="password-wrapper">
+
+                    <input asp-for="NewPassword"
+                           type="password"
+                           id="NewPassword"
+                           class="form-control password-input"
+                           placeholder="Leave blank to keep current password" />
+
+
+                    <button type="button"
+                            class="toggle-password"
+                            onclick="togglePassword('NewPassword', this)">
+
+                        <i class="bi bi-eye"></i>
+
+                    </button>
+
+                </div>
+
+
+                <span asp-validation-for="NewPassword"
+                      class="validation-error">
+                </span>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 CONFIRM PASSWORD
+            ============================================== -->
+
+            <div class="form-group">
+
+                <label asp-for="ConfirmPassword">
+
+                    Confirm password
+
+                </label>
+
+
+                <div class="password-wrapper">
+
+                    <input asp-for="ConfirmPassword"
+                           type="password"
+                           id="ConfirmPassword"
+                           class="form-control password-input"
+                           placeholder="Confirm new password" />
+
+
+                    <button type="button"
+                            class="toggle-password"
+                            onclick="togglePassword('ConfirmPassword', this)">
+
+                        <i class="bi bi-eye"></i>
+
+                    </button>
+
+                </div>
+
+
+                <span asp-validation-for="ConfirmPassword"
+                      class="validation-error">
+                </span>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 BUTTONS
+            ============================================== -->
+
+            <div class="profile-buttons">
+
+
+                <button type="submit"
+                        class="submit-button">
+
+                    Submit Changes
+
+                </button>
+
+
+                <!-- CANCEL TO LANDLORD DASHBOARD -->
+
+                <a asp-controller="Landlord"
+                   asp-action="Dashboard"
+                   class="cancel-button">
+
+                    Cancel
+
+                </a>
+
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+
+    <script>
+
+        // =================================================
+        // PASSWORD EYE
+        // =================================================
+
+        function togglePassword(inputId, button) {
+
+            var input =
+                document.getElementById(inputId);
+
+            var icon =
+                button.querySelector("i");
+
+
+            if (input.type === "password") {
+
+                input.type = "text";
+
+                icon.classList.remove("bi-eye");
+
+                icon.classList.add("bi-eye-slash");
+
+            }
+            else {
+
+                input.type = "password";
+
+                icon.classList.remove("bi-eye-slash");
+
+                icon.classList.add("bi-eye");
+
+            }
+
+        }
+
+
+
+        // =================================================
+        // IMAGE PREVIEW
+        // =================================================
+
+        document
+            .getElementById("ProfileImage")
+            .addEventListener(
+                "change",
+                function (event) {
+
+                    var file =
+                        event.target.files[0];
+
+
+                    if (file) {
+
+                        var reader =
+                            new FileReader();
+
+
+                        reader.onload =
+                            function (e) {
+
+                                var preview =
+                                    document.getElementById(
+                                        "profilePreview");
+
+
+                                var defaultProfile =
+                                    document.getElementById(
+                                        "defaultProfile");
+
+
+                                preview.src =
+                                    e.target.result;
+
+
+                                preview.classList.remove(
+                                    "hidden");
+
+
+                                if (defaultProfile) {
+
+                                    defaultProfile.style.display =
+                                        "none";
+
+                                }
+
+                            };
+
+
+                        reader.readAsDataURL(file);
+
+                    }
+
+                });
+
+    </script>
+}
