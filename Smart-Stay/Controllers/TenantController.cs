@@ -32,30 +32,38 @@ namespace Smart_Stay.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-
             var applications = await _context.RentalApplications
                 .Include(r => r.Property)
                 .Where(r => r.TenantId == tenantId)
                 .OrderByDescending(r => r.ApplicationDate)
                 .Select(r => new TenantApplicationViewModel
                 {
-                    RentalApplicationId = r.RentalApplicationId,
+                    RentalApplicationId =
+                        r.RentalApplicationId,
 
-                    PropertyId = r.PropertyId,
+                    PropertyId =
+                        r.PropertyId,
 
-                    PropertyTitle = r.Property.Title,
+                    PropertyTitle =
+                        r.Property.Title,
 
-                    Location = r.Property.Location,
+                    Location =
+                        r.Property.Location,
 
-                    Price = r.Property.Price,
+                    Price =
+                        r.Property.Price,
 
-                    Bedrooms = r.Property.Bedrooms ?? 0,
+                    Bedrooms =
+                        r.Property.Bedrooms ?? 0,
 
-                    Bathrooms = r.Property.Bathrooms ?? 0,
+                    Bathrooms =
+                        r.Property.Bathrooms ?? 0,
 
-                    ImagePath = r.Property.ImagePath,
+                    ImagePath =
+                        r.Property.ImagePath,
 
-                    ApplicationDate = r.ApplicationDate,
+                    ApplicationDate =
+                        r.ApplicationDate,
 
                     ApplicationStatus = r.RentalApplicationStatus,
 
@@ -91,23 +99,30 @@ namespace Smart_Stay.Controllers
                 User.FindFirstValue(ClaimTypes.Name);
 
 
-            var dashboard = new TenantDashboardViewModel
-            {
-                TenantName = tenantName ?? "Tenant",
+            var dashboard =
+                new TenantDashboardViewModel
+                {
+                    TenantName =
+                        tenantName ?? "Tenant",
 
-                TotalApplications = applications.Count,
+                    TotalApplications =
+                        applications.Count,
 
-                ApprovedApplications = applications.Count(a =>
-                    a.ApplicationStatus == "Approved"),
+                    ApprovedApplications =
+                        applications.Count(a =>
+                            a.ApplicationStatus == "Approved"),
 
-                PendingApplications = applications.Count(a =>
-                    a.ApplicationStatus == "Pending"),
+                    PendingApplications =
+                        applications.Count(a =>
+                            a.ApplicationStatus == "Pending"),
 
-                RejectedApplications = applications.Count(a =>
-                    a.ApplicationStatus == "Rejected"),
+                    RejectedApplications =
+                        applications.Count(a =>
+                            a.ApplicationStatus == "Rejected"),
 
-                Applications = applications
-            };
+                    Applications =
+                        applications
+                };
 
 
             return View(dashboard);
@@ -200,15 +215,10 @@ namespace Smart_Stay.Controllers
             string? location,
             string? price)
         {
-            // Start with available properties only
             var query = _context.Properties
                 .Where(p => p.Status == "Available")
                 .AsQueryable();
 
-
-            // ========================================================
-            // SEARCH
-            // ========================================================
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -220,20 +230,12 @@ namespace Smart_Stay.Controllers
             }
 
 
-            // ========================================================
-            // LOCATION FILTER
-            // ========================================================
-
             if (!string.IsNullOrWhiteSpace(location))
             {
                 query = query.Where(p =>
                     p.Location == location);
             }
 
-
-            // ========================================================
-            // PRICE FILTER
-            // ========================================================
 
             if (!string.IsNullOrWhiteSpace(price))
             {
@@ -283,32 +285,35 @@ namespace Smart_Stay.Controllers
 
                     Bathrooms = p.Bathrooms ?? 0,
 
-                    ImagePath = _context.ListingApplications
-                        .Where(la => la.PropertyId == p.PropertyId)
-                        .Join(
-                            _context.Documents.Where(d => d.DocumentType == "Image"),
-                            la => la.ListingApplicationId,
-                            d => d.ListingApplication,
-                            (la, d) => d.DocumentPath
-                        )
-                        .FirstOrDefault() ?? "",
+                    ImagePath =
+                        _context.ListingApplications
+                            .Where(la =>
+                                la.PropertyId == p.PropertyId)
+                            .Join(
+                                _context.Documents.Where(d =>
+                                    d.DocumentType == "Image"),
+                                la => la.ListingApplicationId,
+                                d => d.ListingApplication,
+                                (la, d) => d.DocumentPath
+                            )
+                            .FirstOrDefault() ?? "",
 
                     Status = p.Status,
 
-                    ApplicationCount = p.RentalApplications.Count(),
+                    ApplicationCount =
+                        p.RentalApplications.Count(),
 
-                    AverageRating = p.Reviews.Any()
-                        ? p.Reviews.Average(r => (double)r.Rating)
-                        : null,
+                    AverageRating =
+                        p.Reviews.Any()
+                            ? p.Reviews.Average(r =>
+                                (double)r.Rating)
+                            : null,
 
-                    ReviewCount = p.Reviews.Count()
+                    ReviewCount =
+                        p.Reviews.Count()
                 })
                 .ToListAsync();
 
-
-            // ========================================================
-            // SEND CURRENT FILTER VALUES BACK TO VIEW
-            // ========================================================
 
             ViewBag.Search = search;
 
@@ -445,5 +450,308 @@ namespace Smart_Stay.Controllers
             return RedirectToAction("Dashboard");
         }
 
+
+
+        // ============================================================
+        // UPDATE PROFILE - GET
+        // ============================================================
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateProfile()
+        {
+            var userIdString =
+                User.FindFirstValue(
+                    ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(
+                userIdString,
+                out int userId))
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
+
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u =>
+                    u.UserId == userId);
+
+
+            if (user == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
+
+
+            var model =
+                new UpdateProfileViewModel
+                {
+                    FirstName = user.FirstName,
+
+                    SurName = user.SurName,
+
+                    Email = user.Email,
+
+                    PhoneNo = user.PhoneNo,
+
+                    CurrentImagePath =
+                        user.ProfileImagePath
+                };
+
+
+            return View(model);
+        }
+
+
+        // ============================================================
+        // UPDATE PROFILE - POST
+        // ============================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(
+            UpdateProfileViewModel model)
+        {
+            var userIdString =
+                User.FindFirstValue(
+                    ClaimTypes.NameIdentifier);
+
+
+            if (!int.TryParse(
+                userIdString,
+                out int userId))
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
+
+
+            // PASSWORD VALIDATION
+
+            bool passwordEntered =
+                !string.IsNullOrWhiteSpace(
+                    model.NewPassword);
+
+            bool confirmPasswordEntered =
+                !string.IsNullOrWhiteSpace(
+                    model.ConfirmPassword);
+
+
+            if (passwordEntered ||
+                confirmPasswordEntered)
+            {
+                if (!passwordEntered)
+                {
+                    ModelState.AddModelError(
+                        "NewPassword",
+                        "Please enter a new password.");
+                }
+
+
+                if (!confirmPasswordEntered)
+                {
+                    ModelState.AddModelError(
+                        "ConfirmPassword",
+                        "Please confirm your password.");
+                }
+
+
+                if (passwordEntered &&
+                    confirmPasswordEntered &&
+                    model.NewPassword !=
+                    model.ConfirmPassword)
+                {
+                    ModelState.AddModelError(
+                        "ConfirmPassword",
+                        "Passwords do not match.");
+                }
+
+
+                if (passwordEntered &&
+                    model.NewPassword!.Length < 6)
+                {
+                    ModelState.AddModelError(
+                        "NewPassword",
+                        "Password must be at least 6 characters.");
+                }
+            }
+
+
+            // CHECK EMAIL
+
+            var emailExists =
+                await _context.Users.AnyAsync(u =>
+                    u.Email == model.Email &&
+                    u.UserId != userId);
+
+
+            if (emailExists)
+            {
+                ModelState.AddModelError(
+                    "Email",
+                    "This email is already being used.");
+            }
+
+
+            // GET CURRENT USER
+
+            var user =
+                await _context.Users
+                    .FirstOrDefaultAsync(u =>
+                        u.UserId == userId);
+
+
+            if (user == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account");
+            }
+
+
+            // VALIDATION FAILED
+
+            if (!ModelState.IsValid)
+            {
+                model.CurrentImagePath =
+                    user.ProfileImagePath;
+
+                return View(model);
+            }
+
+
+            // UPDATE USER INFORMATION
+
+            user.FirstName =
+                model.FirstName.Trim();
+
+            user.SurName =
+                model.SurName.Trim();
+
+            user.Email =
+                model.Email.Trim();
+
+            user.PhoneNo =
+                model.PhoneNo.Trim();
+
+
+            // UPDATE PASSWORD
+
+            if (!string.IsNullOrWhiteSpace(
+                model.NewPassword))
+            {
+                user.Password =
+                    model.NewPassword;
+            }
+
+
+            // IMAGE UPLOAD
+
+            if (model.ProfileImage != null &&
+                model.ProfileImage.Length > 0)
+            {
+                var allowedExtensions =
+                    new[]
+                    {
+                        ".jpg",
+                        ".jpeg",
+                        ".png",
+                        ".gif"
+                    };
+
+
+                var extension =
+                    Path.GetExtension(
+                        model.ProfileImage.FileName)
+                    .ToLowerInvariant();
+
+
+                if (!allowedExtensions.Contains(
+                    extension))
+                {
+                    ModelState.AddModelError(
+                        "ProfileImage",
+                        "Only JPG, JPEG, PNG and GIF files are allowed.");
+
+                    model.CurrentImagePath =
+                        user.ProfileImagePath;
+
+                    return View(model);
+                }
+
+
+                if (model.ProfileImage.Length >
+                    5 * 1024 * 1024)
+                {
+                    ModelState.AddModelError(
+                        "ProfileImage",
+                        "Image must be smaller than 5MB.");
+
+                    model.CurrentImagePath =
+                        user.ProfileImagePath;
+
+                    return View(model);
+                }
+
+
+                var uploadFolder =
+                    Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "uploads",
+                        "profile-images");
+
+
+                if (!Directory.Exists(
+                    uploadFolder))
+                {
+                    Directory.CreateDirectory(
+                        uploadFolder);
+                }
+
+
+                var fileName =
+                    Guid.NewGuid().ToString() +
+                    extension;
+
+
+                var filePath =
+                    Path.Combine(
+                        uploadFolder,
+                        fileName);
+
+
+                using (var stream =
+                    new FileStream(
+                        filePath,
+                        FileMode.Create))
+                {
+                    await model.ProfileImage
+                        .CopyToAsync(stream);
+                }
+
+
+                user.ProfileImagePath =
+                    "/uploads/profile-images/" +
+                    fileName;
+            }
+
+
+            // SAVE DATABASE
+
+            await _context.SaveChangesAsync();
+
+
+            TempData["SuccessMessage"] =
+                "Profile updated successfully!";
+
+
+            return RedirectToAction(
+                "UpdateProfile");
+        }
     }
 }

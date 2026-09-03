@@ -6,21 +6,29 @@ namespace Smart_Stay.Models
     {
         public int PropertyId { get; set; }
         public string PropertyTitle { get; set; } = "";
+
+
         [Required(ErrorMessage = "First name is required")]
         [RegularExpression(
             @"^[A-Za-z\s'-]+$",
             ErrorMessage = "First name may contain letters only")]
         public string FirstName { get; set; } = "";
+
+
         [Required(ErrorMessage = "Last name is required")]
         [RegularExpression(
             @"^[A-Za-z\s'-]+$",
             ErrorMessage = "Last name may contain letters only")]
         public string LastName { get; set; } = "";
+
+
         [Required(ErrorMessage = "ID number is required")]
         [RegularExpression(
             @"^\d{13}$",
             ErrorMessage = "ID number must contain exactly 13 digits")]
         public string IdNumber { get; set; } = "";
+
+
         [Required(ErrorMessage = "Phone number is required")]
         [RegularExpression(
             @"^\d{10}$",
@@ -41,6 +49,8 @@ namespace Smart_Stay.Models
         // No [Required] here because IFormFile validation via data
         // annotations is unreliable across browsers/binders.
         public IFormFile? Payslip { get; set; }
+
+
         // Deliberately NOT using [Range(typeof(bool), "true", "true")].
         // That attribute is the classic cause of "submit does nothing":
         // it fights with any client-side JS check on the same field.

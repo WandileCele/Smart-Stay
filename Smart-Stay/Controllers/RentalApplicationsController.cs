@@ -188,6 +188,15 @@ namespace Smart_Stay.Controllers
                 ModelState.AddModelError(
                     nameof(model.Payslip),
                     "Please upload your payslip.");
+                nameof(model.AcceptTerms),
+                "You must accept the Terms and Conditions before submitting.");
+            }
+
+            if (model.Payslip == null || model.Payslip.Length == 0)
+            {
+                ModelState.AddModelError(
+                nameof(model.Payslip),
+                "Please upload your payslip.");
             }
             else
             {
@@ -277,7 +286,67 @@ namespace Smart_Stay.Controllers
 
             byte[] pdf = GenerateApplicationPdf(rentalApplication, model);
 
-            return File(pdf, "application/pdf", "SmartStay_Rental_Application.pdf");
+            var pdfFolder = Path.Combine(
+            _environment.ContentRootPath, "App_Data", "GeneratedPdfs");
+
+            if (!Directory.Exists(pdfFolder))
+            {
+                Directory.CreateDirectory(pdfFolder);
+            }
+
+            var pdfPath = Path.Combine(
+            pdfFolder, $"application_{rentalApplication.RentalApplicationId}.pdf");
+
+            await System.IO.File.WriteAllBytesAsync(pdfPath, pdf);
+
+            return RedirectToAction(
+            nameof(Success), new { id = rentalApplication.RentalApplicationId });
+        }
+
+
+        // ============================================================
+        // CONFIRMATION PAGE
+        // ============================================================
+
+        [HttpGet]
+        public IActionResult Success(int id)
+        {
+            var pdfPath = Path.Combine(
+            _environment.ContentRootPath, "App_Data", "GeneratedPdfs",
+            $"application_{id}.pdf");
+
+            if (!System.IO.File.Exists(pdfPath))
+            {
+                // Nothing to show (e.g. link opened directly, or the
+                // file was already cleaned up) — send them back to the form.
+                return RedirectToAction(nameof(Apply));
+            }
+
+            ViewBag.ApplicationId = id;
+
+            return View();
+        }
+
+
+        // ============================================================
+        // DOWNLOAD THE GENERATED PDF (separate, on-demand action)
+        // ============================================================
+
+        [HttpGet]
+        public IActionResult DownloadPdf(int id)
+        {
+            var pdfPath = Path.Combine(
+            _environment.ContentRootPath, "App_Data", "GeneratedPdfs",
+            $"application_{id}.pdf");
+
+            if (!System.IO.File.Exists(pdfPath))
+            {
+                return NotFound();
+            }
+
+            var pdfBytes = System.IO.File.ReadAllBytes(pdfPath);
+
+            return File(pdfBytes, "application/pdf", "SmartStay_Rental_Application.pdf");
         }
 
 
