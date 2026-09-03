@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Application Submitted";
+}
+
+<div class="rental-page">
+
+    <div class="form-card" style="text-align:center;">
+
+        <h1>Application Submitted!</h1>
+
+        <p>
+            Your rental application (ID: <strong>@ViewBag.ApplicationId</strong>)
+            has been received and saved successfully.
+        </p>
+
+        <div class="buttons" style="justify-content:center; margin-top:20px;">
+
+            <a class="submit-button"
+               style="text-decoration:none; display:inline-block;"
+               target="_blank"
+               href="@Url.Action("DownloadPdf", "RentalApplications", new { id = ViewBag.ApplicationId })">
+                Download Confirmation PDF
+            </a>
+
+        </div>
+
+        <p style="margin-top:20px;">
+            <a href="@Url.Action("Index", "Home")">Return to Home</a>
+        </p>
+
+    </div>
+
+</div>

@@ -21,6 +21,8 @@ public partial class User
 
     public string Role { get; set; } = null!;
 
+    public string? ProfileImagePath { get; set; }
+
     public virtual Admin? Admin { get; set; }
 
     public virtual Landlord? Landlord { get; set; }
