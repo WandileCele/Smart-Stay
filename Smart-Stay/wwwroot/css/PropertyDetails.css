@@ -91,8 +91,33 @@
 .pd-info {
     margin-top: 28px;
 }
+.pd-info {
+    margin-top: 28px;
+    display: grid;
+    row-gap: 12px;
+}
 
-    .pd-info p {
+.pd-info-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    column-gap: 20px;
+    align-items: start;
+    font-size: 15px;
+}
+
+.pd-info-label {
+    font-weight: 700;
+    color: #222;
+    text-align: left;
+}
+
+.pd-info-value {
+    color: #555;
+    text-align: left;
+    line-height: 1.5;
+}
+    .pd-info p 
+    {
         margin: 8px 0;
         line-height: 1.5;
         font-size: 1.05rem;
@@ -188,4 +213,12 @@
 .pd-no-reviews {
     color: #777;
     font-style: italic;
+}
+.pd-cta-disabled {
+    display: inline-block;
+    background: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
+    pointer-events: none;
+    text-align: center;
 }

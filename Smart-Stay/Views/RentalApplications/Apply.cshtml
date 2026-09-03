@@ -135,6 +135,38 @@
 
                 <span asp-validation-for="Employment" class="validation"></span>
             </div>
+            <!-- LEASE START DATE -->
+            <div class="form-group">
+                <div class="label-row">
+                    <label asp-for="LeaseStartDate">Lease start date</label>
+                    <span class="required">*Required</span>
+                </div>
+
+                <input asp-for="LeaseStartDate"
+                       type="date"
+                       class="form-input"
+                       min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                       id="leaseStartDate" />
+
+                <span asp-validation-for="LeaseStartDate" class="validation"></span>
+            </div>
+
+
+            <!-- LEASE END DATE -->
+            <div class="form-group">
+                <div class="label-row">
+                    <label asp-for="LeaseEndDate">Lease end date</label>
+                    <span class="required">*Required</span>
+                </div>
+
+                <input asp-for="LeaseEndDate"
+                       type="date"
+                       class="form-input"
+                       min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                       id="leaseEndDate" />
+
+                <span asp-validation-for="LeaseEndDate" class="validation"></span>
+            </div>
 
 
             <!-- PAYSLIP -->
@@ -225,6 +257,13 @@
             this.value = this.value.replace(/[^A-Za-z\s'-]/g, '');
         });
 
+        // ==========================================
+        // PAYSLIP PREVIEW
+        // This only clears an invalid file choice; it never touches
+        // form submission and has no event.preventDefault() on submit.
+        // ==========================================
+        const payslipInput = document.getElementById("payslipInput");
+        const uploadText = document.getElementById("uploadText");
 
         // ==========================================
         // PAYSLIP PREVIEW
@@ -256,6 +295,20 @@
                 uploadText.textContent = file.name;
             }
         });
+
+                // ==========================================
+        // LEASE END DATE - CANNOT BE BEFORE START DATE
+        // ==========================================
+        const leaseStartDate = document.getElementById("leaseStartDate");
+        const leaseEndDate = document.getElementById("leaseEndDate");
+
+        leaseStartDate.addEventListener("change", function () {
+            leaseEndDate.min = this.value;
+        });
+ 
+
+    </script>
+}
 
         // NOTE: there is intentionally no form.addEventListener("submit", ...)
         // anywhere in this file. AcceptTerms is validated by the controller

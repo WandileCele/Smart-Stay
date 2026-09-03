@@ -1,0 +1,231 @@
+﻿@{
+    ViewData["Title"] = "Rate Property";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/rate-property.css"
+          asp-append-version="true" />
+}
+
+<div class="rate-property-page">
+
+   
+    <div class="rate-property-card">
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+
+        <div class="rate-property-header">
+
+            <div class="rate-icon">
+                ⭐
+            </div>
+
+            <h1>Rate Property</h1>
+
+            <!-- PROPERTY NAME -->
+
+            <div class="property-name">
+                @ViewBag.PropertyTitle
+            </div>
+
+            <p>
+                How was your experience with this property?
+            </p>
+
+        </div>
+
+
+        <!-- =====================================================
+             RATING FORM
+        ====================================================== -->
+
+        <form asp-controller="Tenant"
+              asp-action="SubmitReview"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <!-- Application ID -->
+
+            <input type="hidden"
+                   name="applicationId"
+                   value="@ViewBag.ApplicationId" />
+
+
+            <!-- =================================================
+                 STAR RATING
+            ================================================== -->
+
+            <div class="rating-section">
+
+                <label class="rating-label">
+                    Your Rating
+                </label>
+
+                <div class="star-rating">
+
+                    <input type="radio"
+                           id="star5"
+                           name="rating"
+                           value="5"
+                           required />
+
+                    <label for="star5"
+                           title="5 stars">
+                        ★
+                    </label>
+
+
+                    <input type="radio"
+                           id="star4"
+                           name="rating"
+                           value="4" />
+
+                    <label for="star4"
+                           title="4 stars">
+                        ★
+                    </label>
+
+
+                    <input type="radio"
+                           id="star3"
+                           name="rating"
+                           value="3" />
+
+                    <label for="star3"
+                           title="3 stars">
+                        ★
+                    </label>
+
+
+                    <input type="radio"
+                           id="star2"
+                           name="rating"
+                           value="2" />
+
+                    <label for="star2"
+                           title="2 stars">
+                        ★
+                    </label>
+
+
+                    <input type="radio"
+                           id="star1"
+                           name="rating"
+                           value="1" />
+
+                    <label for="star1"
+                           title="1 star">
+                        ★
+                    </label>
+
+                </div>
+
+                <div class="selected-rating" id="selectedRating">
+                    Select your rating
+                </div>
+
+                <div class="rating-help">
+                    Click a star to rate this property
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 COMMENT
+            ================================================== -->
+
+            <div class="comment-section">
+
+                <label for="comment"
+                       class="comment-label">
+
+                    Your Review
+
+                </label>
+
+                <textarea id="comment"
+                          name="comment"
+                          rows="6"
+                          maxlength="1000"
+                          placeholder="Tell us about your experience with this property..."
+                          required></textarea>
+
+                <div class="character-limit">
+                    Maximum 1000 characters
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ACTION BUTTONS
+            ================================================== -->
+
+            <div class="rating-actions">
+
+                <a asp-controller="Tenant"
+                   asp-action="Dashboard"
+                   class="cancel-rating">
+
+                    Cancel
+
+                </a>
+
+
+                <button type="submit"
+                        class="submit-rating">
+
+                    ⭐ Submit Review
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+ 
+
+</div>
+
+<!-- =========================================================
+     STAR RATING SCRIPT
+========================================================= -->
+@section Scripts {
+
+   
+    <script>
+
+        const ratingInputs =
+            document.querySelectorAll('input[name="rating"]');
+
+        const selectedRating =
+            document.getElementById("selectedRating");
+
+        const ratingText = {
+            1: "1 Star",
+            2: "2 Stars",
+            3: "3 Stars",
+            4: "4 Stars",
+            5: "5 Stars"
+        };
+
+        ratingInputs.forEach(input => {
+
+            input.addEventListener("change", function () {
+
+                selectedRating.textContent =
+                    ratingText[this.value];
+
+            });
+
+        });
+
+    </script>
+
+}

@@ -182,6 +182,8 @@ public partial class SmartDbContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("rentalApplicationStatus");
             entity.Property(e => e.TenantId).HasColumnName("tenantID");
+            entity.Property(e => e.LeaseStartDate).HasColumnName("leaseStartDate");
+            entity.Property(e => e.LeaseEndDate).HasColumnName("leaseEndDate");
 
             entity.HasOne(d => d.Landlord).WithMany(p => p.RentalApplications)
                 .HasForeignKey(d => d.LandlordId)

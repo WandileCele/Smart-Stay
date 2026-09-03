@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
-
 namespace Smart_Stay.Models
 {
     public class RentalApplicationFormViewModel
     {
         public int PropertyId { get; set; }
-
         public string PropertyTitle { get; set; } = "";
 
 
@@ -36,17 +34,17 @@ namespace Smart_Stay.Models
             @"^\d{10}$",
             ErrorMessage = "Phone number must contain exactly 10 digits")]
         public string PhoneNumber { get; set; } = "";
-
-
         [Required(ErrorMessage = "Email address is required")]
         [EmailAddress(ErrorMessage = "Please enter a valid email address")]
         public string Email { get; set; } = "";
-
-
         [Required(ErrorMessage = "Employment is required")]
         public string Employment { get; set; } = "";
-
-
+        [Required(ErrorMessage = "Lease start date is required")]
+        [DataType(DataType.Date)]
+        public DateOnly? LeaseStartDate { get; set; }
+        [Required(ErrorMessage = "Lease end date is required")]
+        [DataType(DataType.Date)]
+        public DateOnly? LeaseEndDate { get; set; }
         // Validated manually in the controller (required, .pdf, <=3MB).
         // No [Required] here because IFormFile validation via data
         // annotations is unreliable across browsers/binders.

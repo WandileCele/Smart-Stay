@@ -1,4 +1,5 @@
-﻿@model Smart_Stay.Models.TenantDashboardViewModel
+﻿
+@model Smart_Stay.Models.TenantDashboardViewModel
 
 @{
     ViewData["Title"] = "Tenant Dashboard";
@@ -10,7 +11,6 @@
           href="~/css/tenant-dashboard.css"
           asp-append-version="true" />
 }
-
 
 <div class="tenant-dashboard">
 
@@ -87,11 +87,6 @@
 
 
             <!-- TOP RIGHT LOGOUT -->
-
-            <a asp-controller="Home" asp-action="Index" class="back-home-btn">
-                <i class="bi bi-house-door"></i>
-                Back to Main Site
-            </a>
 
             <form asp-controller="Account"
                   asp-action="Logout"
@@ -207,13 +202,47 @@
 
 
             <!-- =================================================
+                 FILTER BUTTONS
+            ================================================== -->
+
+            <div class="accommodation-filters">
+
+                <button type="button"
+                        class="filter-pill active"
+                        data-filter="Current">
+
+                    Current
+
+                </button>
+
+                <button type="button"
+                        class="filter-pill"
+                        data-filter="Past">
+
+                    Past
+
+                </button>
+
+                <button type="button"
+                        class="filter-pill"
+                        data-filter="Rejected">
+
+                    Rejected
+
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
                  IF TENANT HAS APPLICATIONS
             ================================================== -->
             @if (Model.Applications != null &&
                         Model.Applications.Any())
             {
 
-                <div class="tenant-application-grid">
+                <div class="tenant-application-grid"
+                     id="accommodationGrid">
 
                     @foreach (var application in Model.Applications)
                     {
@@ -222,7 +251,8 @@
                              PROPERTY CARD
                         ====================================== -->
 
-                        <div class="tenant-property-card">
+                        <div class="tenant-property-card"
+                             data-category="@application.FilterCategory">
 
 
                             <!-- PROPERTY IMAGE -->
@@ -307,6 +337,23 @@
                                 </p>
 
 
+                                <!-- LEASE DATES -->
+                                @if (application.LeaseStartDate.HasValue &&
+                                                        application.LeaseEndDate.HasValue)
+                                {
+
+                                    <p class="application-date">
+
+                                        Lease:
+                                        @application.LeaseStartDate.Value.ToString("dd MMM yyyy")
+                                        to
+                                        @application.LeaseEndDate.Value.ToString("dd MMM yyyy")
+
+                                    </p>
+
+                                }
+
+
                                 <!-- APPLICATION STATUS -->
 
                                 <div class="application-status">
@@ -315,7 +362,9 @@
                                     {
 
                                         <span class="status approved">
+
                                             ✓ Approved
+
                                         </span>
 
                                     }
@@ -323,7 +372,9 @@
                                     {
 
                                         <span class="status pending">
+
                                             ⏳ Pending
+
                                         </span>
 
                                     }
@@ -331,7 +382,9 @@
                                     {
 
                                         <span class="status rejected">
+
                                             ✕ Rejected
+
                                         </span>
 
                                     }
@@ -339,7 +392,9 @@
                                     {
 
                                         <span class="status">
+
                                             @application.ApplicationStatus
+
                                         </span>
 
                                     }
@@ -347,7 +402,9 @@
                                 </div>
 
 
-                                <!-- VIEW PROPERTY -->
+                                <!-- =================================================
+                                     VIEW PROPERTY
+                                ================================================== -->
 
                                 <a asp-controller="Properties"
                                    asp-action="Details"
@@ -358,6 +415,35 @@
 
                                 </a>
 
+
+                                <!-- =================================================
+                                     RATE PROPERTY
+                                ================================================== -->
+                                @if (application.CanRate &&
+                                                        !application.HasRated)
+                                {
+
+                                    <a asp-controller="Tenant"
+                                       asp-action="RateProperty"
+                                       asp-route-applicationId="@application.RentalApplicationId"
+                                       class="rate-property-button">
+
+                                        ⭐ Rate Property
+
+                                    </a>
+
+                                }
+                                else if (application.HasRated)
+                                {
+
+                                    <span class="already-rated">
+
+                                        ✓ Rated
+
+                                    </span>
+
+                                }
+
                             </div>
 
                         </div>
@@ -365,6 +451,15 @@
                     }
 
                 </div>
+
+
+                <p class="no-applications"
+                   id="noFilterResults"
+                   style="display:none;">
+
+                    No accommodations in this category.
+
+                </p>
 
             }
             else
@@ -377,19 +472,25 @@
                 <div class="no-applications">
 
                     <div class="no-applications-icon">
+
                         🏠
+
                     </div>
 
 
                     <h3>
+
                         You haven't applied for any
                         accommodation yet.
+
                     </h3>
 
 
                     <p>
+
                         Browse available properties and find
                         a place that feels like home.
+
                     </p>
 
 
@@ -413,15 +514,83 @@
 
 
 <!-- =========================================================
-     SIDEBAR TOGGLE SCRIPT
+     SIDEBAR TOGGLE + FILTER SCRIPT
 ========================================================= -->
 @section Scripts {
 
     <script>
 
         function toggleMenu() {
+
             var sidebar = document.getElementById("sidebar");
+
             sidebar.classList.toggle("show");
+
+        }
+
+
+        const filterButtons =
+            document.querySelectorAll(".filter-pill");
+
+        const propertyCards =
+            document.querySelectorAll(".tenant-property-card");
+
+        const noResultsMsg =
+            document.getElementById("noFilterResults");
+
+
+        function applyFilter(category) {
+
+            let visibleCount = 0;
+
+            propertyCards.forEach(card => {
+
+                if (card.dataset.category === category) {
+
+                    card.style.display = "";
+
+                    visibleCount++;
+
+                }
+                else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+
+            if (noResultsMsg) {
+
+                noResultsMsg.style.display =
+                    visibleCount === 0 ? "block" : "none";
+
+            }
+
+        }
+
+
+        filterButtons.forEach(button => {
+
+            button.addEventListener("click", function () {
+
+                filterButtons.forEach(b =>
+                    b.classList.remove("active"));
+
+                this.classList.add("active");
+
+                applyFilter(this.dataset.filter);
+
+            });
+
+        });
+
+
+        if (propertyCards.length > 0) {
+
+            applyFilter("Current");
+
         }
 
     </script>

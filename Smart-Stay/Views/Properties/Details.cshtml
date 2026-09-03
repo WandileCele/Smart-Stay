@@ -25,16 +25,33 @@
         </div>
     }
     <div class="pd-info">
-        <p><strong>Description:</strong> @Model.Property.Description</p>
-        <p><strong>Price:</strong> <span class="pd-price">R @Model.Property.Price.ToString("N2") / Month</span></p>
-        <p><strong>Bedrooms:</strong> @Model.Property.Bedrooms</p>
-        <p><strong>Bathrooms:</strong> @Model.Property.Bathrooms</p>
-        <p><strong>Status:</strong> @Model.Property.Status</p>
-        <p><strong>Total Applications:</strong> @Model.Property.RentalApplications.Count()</p>
+        <div class="pd-info-row">
+            <span class="pd-info-label">Description:</span>
+            <span class="pd-info-value">@Model.Property.Description</span>
+        </div>
+        <div class="pd-info-row">
+            <span class="pd-info-label">Price:</span>
+            <span class="pd-info-value pd-price">R @Model.Property.Price.ToString("N2") / Month</span>
+        </div>
+        <div class="pd-info-row">
+            <span class="pd-info-label">Bedrooms:</span>
+            <span class="pd-info-value">@Model.Property.Bedrooms</span>
+        </div>
+        <div class="pd-info-row">
+            <span class="pd-info-label">Bathrooms:</span>
+            <span class="pd-info-value">@Model.Property.Bathrooms</span>
+        </div>
+        <div class="pd-info-row">
+            <span class="pd-info-label">Status:</span>
+            <span class="pd-info-value">@Model.Property.Status</span>
+        </div>
+        <div class="pd-info-row">
+            <span class="pd-info-label">Total Applications:</span>
+            <span class="pd-info-value">@Model.Property.RentalApplications.Count()</span>
+        </div>
     </div>
     <div class="pd-reviews">
         <h2 class="pd-reviews-title">Reviews (@Model.Property.Reviews.Count)</h2>
-
         @if (Model.Property.Reviews.Any())
         {
             <div class="pd-reviews-list">
@@ -60,11 +77,19 @@
             <p class="pd-no-reviews">No reviews yet for this property.</p>
         }
     </div>
-
     <div class="pd-buttons">
-        <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">
-            Apply
-        </a>
+        @if (Model.CanApply)
+        {
+            <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">
+                Apply
+            </a>
+        }
+        else
+        {
+            <span class="pd-cta pd-cta-disabled" title="@Model.ApplyBlockedReason">
+                @Model.ApplyBlockedReason
+            </span>
+        }
         <a href="@Model.ReturnUrl" class="pd-cta-outline">
             Back
         </a>
