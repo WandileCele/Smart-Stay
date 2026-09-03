@@ -1,13 +1,16 @@
-﻿@model Smart_Stay.Models.LandlordDashboardViewModel
+﻿
+@model Smart_Stay.Models.LandlordDashboardViewModel
 
 @{
     ViewData["Title"] = "Landlord Dashboard";
 }
+
 @section Styles {
     <link rel="stylesheet" href="~/css/LanlordDashboard.css" asp-append-version="true" />
 }
 
 <div class="dashboard">
+
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -21,12 +24,12 @@
 
         </div>
     }
+
     <div class="sidebar-container">
 
         <button class="menu-toggle" onclick="toggleMenu()">
             ☰
         </button>
-
 
         <div class="sidebar" id="sidebar">
 
@@ -37,31 +40,28 @@
                 Update Property
             </a>
 
-
             <a asp-controller="Applications"
                asp-action="ManageApplications">
                 📄 Manage Applications
             </a>
 
-
-            
-
-            <a asp-controller="Landlord" asp-action="UpdateProfile">
+            <a asp-controller="Landlord"
+               asp-action="UpdateProfile">
                 <i class="bi bi-person-circle"></i>
-                 Update Profile
+                Update Profile
             </a>
+
             <a asp-controller="Home"
                asp-action="Index">
                 🏠 Home
             </a>
 
-
         </div>
 
     </div>
+
     <div class="top-bar">
 
-       
         <form asp-controller="Account"
               asp-action="Logout"
               method="post">
@@ -100,7 +100,6 @@
 
     </div>
 
-
     <a asp-controller="Properties"
        asp-action="Create"
        class="btn btn-primary">
@@ -109,51 +108,56 @@
 
     </a>
 
-
     <hr />
 
-
     <div id="properties" class="property-container">
-
 
         @foreach (var property in Model.Properties)
         {
 
             <div class="property-card">
 
-
                 <h3>@property.Title</h3>
 
+                <!-- PROPERTY DETAILS -->
 
-                <p>
-                    <strong>Location📍:</strong>
-                    @property.Location
+                <p class="property-detail">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <strong>Location:</strong>
+                    <span>@property.Location</span>
                 </p>
 
-
-                <p>
-                    @property.Bedrooms Bedrooms 🛏️ |
-                    @property.Bathrooms Bathrooms 🛁
+                <p class="property-detail">
+                    <i class="bi bi-house-door-fill"></i>
+                    <strong>Bedrooms:</strong>
+                    <span>@property.Bedrooms</span>
                 </p>
 
-
-                <p>
-                    <strong>Price 💰:</strong>
-                    R @property.Price.ToString("N2") / Month
+                <p class="property-detail">
+                    <i class="bi bi-droplet-fill"></i>
+                    <strong>Bathrooms:</strong>
+                    <span>@property.Bathrooms</span>
                 </p>
 
-
-                <p>
-                    <strong>Status 🔃:</strong>
-                    @property.Status
+                <p class="property-detail">
+                    <i class="bi bi-cash-stack"></i>
+                    <strong>Price:</strong>
+                    <span>
+                        R @property.Price.ToString("N2") / Month
+                    </span>
                 </p>
 
-
-                <p>
-                    <strong>Applications 🔢:</strong>
-                    @property.ApplicationCount
+                <p class="property-detail">
+                    <i class="bi bi-arrow-repeat"></i>
+                    <strong>Status:</strong>
+                    <span>@property.Status</span>
                 </p>
 
+                <p class="property-detail">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <strong>Applications:</strong>
+                    <span>@property.ApplicationCount</span>
+                </p>
 
 
                 <div class="card-buttons">
@@ -168,6 +172,8 @@
                         View
 
                     </a>
+
+
                     <a asp-controller="Properties"
                        asp-action="Edit"
                        asp-route-id="@property.PropertyID"
@@ -176,6 +182,7 @@
                         Update Property
 
                     </a>
+
 
                     <form asp-controller="Properties"
                           asp-action="Delete"
@@ -193,6 +200,8 @@
                         </button>
 
                     </form>
+
+
                     @if (property.Status == "Approved" ||
                                     property.Status == "Available" ||
                                     property.Status == "Occupied" ||
@@ -229,10 +238,12 @@
 
             </div>
         }
+
     </div>
 
-
 </div>
+
+
 @section Scripts {
 
     <script>
@@ -243,16 +254,18 @@
 
             sidebar.classList.toggle("show");
         }
-         setTimeout(function () {
 
-                var alert = document.querySelector(".alert");
+        setTimeout(function () {
 
-                if (alert) {
-                    bootstrap.Alert.getOrCreateInstance(alert).close();
-                }
+            var alert = document.querySelector(".alert");
 
-            }, 4000);
+            if (alert) {
+                bootstrap.Alert.getOrCreateInstance(alert).close();
+            }
+
+        }, 4000);
 
     </script>
 
 }
+

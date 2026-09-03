@@ -1,0 +1,154 @@
+﻿
+.landlord-contact-page {
+    min-height: 100vh;
+    background: #f4f7fb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+}
+
+.landlord-contact-card {
+    width: 100%;
+    max-width: 600px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.landlord-contact-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+/* Heading */
+.landlord-contact-card h1 {
+    margin: 0 0 10px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #222222;
+}
+
+/* Introduction */
+.landlord-contact-intro {
+    margin: 0 auto 30px;
+    max-width: 480px;
+    color: #666666;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* Property Information */
+.property-contact-info,
+.landlord-info {
+    text-align: left;
+    padding: 18px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+    .property-contact-info span,
+    .landlord-info span {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #777777;
+    }
+
+    .property-contact-info h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: #222222;
+    }
+
+    .landlord-info h3 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 600;
+        color: #333333;
+    }
+
+/* Phone Number Box */
+.phone-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 25px 0;
+    padding: 18px;
+    background: #eef4ff;
+    border: 1px solid #dbe7ff;
+    border-radius: 8px;
+}
+
+    .phone-box i {
+        color: #2563eb;
+        font-size: 20px;
+    }
+
+    .phone-box a {
+        color: #2563eb;
+        font-size: 20px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .phone-box a:hover {
+            text-decoration: underline;
+        }
+
+/* Back Button */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    background: #2563eb;
+    color: #ffffff;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+    .back-button:hover {
+        background: #1d4ed8;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+
+@media (max-width: 600px) {
+
+    .landlord-contact-page {
+        padding: 30px 15px;
+    }
+
+    .landlord-contact-card {
+        padding: 30px 20px;
+    }
+
+        .landlord-contact-card h1 {
+            font-size: 25px;
+        }
+
+    .phone-box a {
+        font-size: 18px;
+    }
+}

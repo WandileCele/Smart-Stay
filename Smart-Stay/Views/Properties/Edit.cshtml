@@ -1,68 +1,230 @@
-﻿@model Smart_Stay.Models.PropertyEditViewModel
+﻿
+@model Smart_Stay.Models.PropertyEditViewModel
 
 @{
     ViewData["Title"] = "Edit Property";
 }
 
-<h1>Edit Property</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/PropertyEdit.css" asp-append-version="true" />
+}
 
-<form asp-action="Edit" method="post" enctype="multipart/form-data">
+<div class="edit-property-page">
 
-    <input type="hidden" asp-for="PropertyId" />
-
-    <div>
-        <label>Title</label>
-        <input asp-for="Title" />
+    <div class="edit-property-header">
+        <h1>Edit Property</h1>
+        <p>Update your property information and manage its photos.</p>
     </div>
 
-    <div>
-        <label>Description</label>
-        <textarea asp-for="Description"></textarea>
-    </div>
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
 
-    <div>
-        <label>Location</label>
-        <input asp-for="Location" />
-    </div>
+        <input type="hidden" asp-for="PropertyId" />
 
-    <div>
-        <label>Price</label>
-        <input asp-for="Price" />
-    </div>
+        <!-- =====================================================
+             PROPERTY INFORMATION
+        ====================================================== -->
 
-    <div>
-        <label>Property Type</label>
-        <input asp-for="PropertyType" />
-    </div>
+        <div class="edit-card">
 
-    <div>
-        <label>Bedrooms</label>
-        <input asp-for="Bedrooms" />
-    </div>
+            <h2>Property Information</h2>
 
-    <div>
-        <label>Bathrooms</label>
-        <input asp-for="Bathrooms" />
-    </div>
+            <div class="edit-form-grid">
 
-    <div>
-        <label>Current Image</label>
+                <div class="edit-field">
+                    <label asp-for="Title">Title</label>
+                    <input asp-for="Title" />
+                    <span asp-validation-for="Title"></span>
+                </div>
 
-        @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
-        {
-            <img src="@Model.ExistingImagePath" width="200" />
-        }
+                <div class="edit-field">
+                    <label asp-for="Location">Location</label>
+                    <input asp-for="Location" />
+                    <span asp-validation-for="Location"></span>
+                </div>
 
-    </div>
+                <div class="edit-field">
+                    <label asp-for="Price">Price</label>
+                    <input asp-for="Price" />
+                    <span asp-validation-for="Price"></span>
+                </div>
 
-    <div>
-        <label>Upload New Image (optional)</label>
-        <input asp-for="ImageFile" type="file" />
-    </div>
+                <div class="edit-field">
+                    <label asp-for="PropertyType">Property Type</label>
+                    <input asp-for="PropertyType" />
+                    <span asp-validation-for="PropertyType"></span>
+                </div>
+
+                <div class="edit-field">
+                    <label asp-for="Bedrooms">Bedrooms</label>
+                    <input asp-for="Bedrooms" />
+                    <span asp-validation-for="Bedrooms"></span>
+                </div>
+
+                <div class="edit-field">
+                    <label asp-for="Bathrooms">Bathrooms</label>
+                    <input asp-for="Bathrooms" />
+                    <span asp-validation-for="Bathrooms"></span>
+                </div>
+
+                <div class="edit-field edit-field-full">
+                    <label asp-for="Description">Description</label>
+                    <textarea asp-for="Description" rows="5"></textarea>
+                    <span asp-validation-for="Description"></span>
+                </div>
+
+            </div>
+
+        </div>
 
 
-    <button type="submit">
-        Save Changes
-    </button>
+        <!-- =====================================================
+             EXISTING PHOTOS
+        ====================================================== -->
 
-</form>
+        <div class="edit-card">
+
+            <div class="photo-section-header">
+                <div>
+                    <h2>Current Property Photos</h2>
+                    <p>Select the photos you want to delete.</p>
+                </div>
+
+                <span class="photo-count">
+                    @Model.ExistingImages.Count photo(s)
+                </span>
+            </div>
+
+
+            @if (Model.ExistingImages.Any())
+            {
+                <div class="existing-photo-grid">
+
+                    @for (int i = 0; i < Model.ExistingImages.Count; i++)
+                    {
+                        <div class="existing-photo-card">
+
+                            <img src="@Model.ExistingImages[i].ImagePath"
+                                 alt="Property photo @(i + 1)" />
+
+                            <div class="photo-delete">
+
+                                <input type="checkbox"
+                                       name="ImagesToDelete"
+                                       value="@Model.ExistingImages[i].DocumentId"
+                                       id="delete-@Model.ExistingImages[i].DocumentId" />
+
+                                <label for="delete-@Model.ExistingImages[i].DocumentId">
+                                    Delete photo
+                                </label>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="no-existing-photos">
+                    <p>No photos are currently attached to this property.</p>
+                </div>
+            }
+
+        </div>
+
+
+        <!-- =====================================================
+             ADD NEW PHOTOS
+        ====================================================== -->
+
+        <div class="edit-card">
+
+            <h2>Add More Photos</h2>
+
+            <p class="section-description">
+                Select one or more new photos to add to this property.
+            </p>
+
+            <div class="upload-area">
+
+                <label for="NewImages" class="upload-label">
+                    <span class="upload-icon">+</span>
+                    <span>Choose Photos</span>
+                    <small>You can select multiple images</small>
+                </label>
+
+                <input type="file"
+                       id="NewImages"
+                       name="NewImages"
+                       accept="image/*"
+                       multiple />
+
+            </div>
+
+            <div id="selected-files" class="selected-files"></div>
+
+        </div>
+
+
+        <!-- =====================================================
+             BUTTONS
+        ====================================================== -->
+
+        <div class="edit-actions">
+
+            <a asp-controller="Landlord"
+               asp-action="Dashboard"
+               class="cancel-button">
+                Cancel
+            </a>
+
+            <button type="submit" class="save-button">
+                Save Changes
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        const imageInput = document.getElementById("NewImages");
+        const selectedFiles = document.getElementById("selected-files");
+
+        imageInput.addEventListener("change", function () {
+
+            selectedFiles.innerHTML = "";
+
+            if (this.files.length === 0) {
+                return;
+            }
+
+            const heading = document.createElement("p");
+            heading.className = "selected-heading";
+            heading.textContent = this.files.length + " photo(s) selected:";
+
+            selectedFiles.appendChild(heading);
+
+            for (let i = 0; i < this.files.length; i++) {
+
+                const file = document.createElement("div");
+
+                file.className = "selected-file";
+
+                file.textContent = "📷 " + this.files[i].name;
+
+                selectedFiles.appendChild(file);
+            }
+
+        });
+
+    </script>
+}

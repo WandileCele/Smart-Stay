@@ -7,16 +7,10 @@
 
 @section Styles {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-    <link rel="stylesheet"
-          href="~/css/tenant-dashboard.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/tenant-dashboard.css" asp-append-version="true" />
 }
 
 <div class="tenant-dashboard">
-
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
 
     <div class="sidebar-container">
 
@@ -57,18 +51,7 @@
 
     </div>
 
-
-    <!-- =====================================================
-         MAIN CONTENT
-    ====================================================== -->
-
-    <main class="tenant-main expanded"
-          id="tenantMain">
-
-
-        <!-- =================================================
-             HEADER
-        ================================================== -->
+    <main class="tenant-main expanded" id="tenantMain">
 
         <div class="tenant-header">
 
@@ -85,104 +68,61 @@
 
             </div>
 
-
-            <!-- TOP RIGHT LOGOUT -->
-
             <form asp-controller="Account"
                   asp-action="Logout"
                   method="post">
 
                 @Html.AntiForgeryToken()
 
-                <button type="submit"
-                        class="tenant-logout">
-
+                <button type="submit" class="tenant-logout">
                     Logout
-
                 </button>
 
             </form>
 
         </div>
 
-
-        <!-- =================================================
-             SUMMARY CARDS
-        ================================================== -->
-
         <section class="dashboard-summary">
 
-            <!-- TOTAL -->
-
             <div class="summary-card">
-
                 <div class="summary-number">
                     @Model.TotalApplications
                 </div>
-
                 <div class="summary-title">
                     Total Applications
                 </div>
-
             </div>
 
-
-            <!-- APPROVED -->
-
             <div class="summary-card">
-
                 <div class="summary-number">
                     @Model.ApprovedApplications
                 </div>
-
                 <div class="summary-title">
                     Approved
                 </div>
-
             </div>
 
-
-            <!-- PENDING -->
-
             <div class="summary-card">
-
                 <div class="summary-number">
                     @Model.PendingApplications
                 </div>
-
                 <div class="summary-title">
                     Pending
                 </div>
-
             </div>
 
-
-            <!-- REJECTED -->
-
             <div class="summary-card">
-
                 <div class="summary-number">
                     @Model.RejectedApplications
                 </div>
-
                 <div class="summary-title">
                     Rejected
                 </div>
-
             </div>
 
         </section>
 
-
-        <!-- =================================================
-             MY ACCOMMODATIONS
-        ================================================== -->
-
-        <section class="applications-section"
-                 id="applications">
-
-
-            <!-- SECTION HEADING -->
+        <section class="applications-section" id="applications">
 
             <div class="section-heading">
 
@@ -190,53 +130,35 @@
                     My Accommodations
                 </h2>
 
-
                 <a asp-controller="Tenant"
                    asp-action="BrowseProperties">
-
                     Browse Properties
-
                 </a>
 
             </div>
-
-
-            <!-- =================================================
-                 FILTER BUTTONS
-            ================================================== -->
 
             <div class="accommodation-filters">
 
                 <button type="button"
                         class="filter-pill active"
                         data-filter="Current">
-
                     Current
-
                 </button>
 
                 <button type="button"
                         class="filter-pill"
                         data-filter="Past">
-
                     Past
-
                 </button>
 
                 <button type="button"
                         class="filter-pill"
                         data-filter="Rejected">
-
                     Rejected
-
                 </button>
 
             </div>
 
-
-            <!-- =================================================
-                 IF TENANT HAS APPLICATIONS
-            ================================================== -->
             @if (Model.Applications != null &&
                         Model.Applications.Any())
             {
@@ -247,201 +169,123 @@
                     @foreach (var application in Model.Applications)
                     {
 
-                        <!-- =====================================
-                             PROPERTY CARD
-                        ====================================== -->
-
                         <div class="tenant-property-card"
                              data-category="@application.FilterCategory">
-
-
-                            <!-- PROPERTY IMAGE -->
 
                             <div class="tenant-property-image">
 
                                 @if (!string.IsNullOrEmpty(application.ImagePath))
                                 {
-
                                     <img src="@application.ImagePath"
                                          alt="@application.PropertyTitle" />
-
                                 }
                                 else
                                 {
-
                                     <div class="no-property-image">
-
                                         🏠
-
                                     </div>
-
                                 }
 
                             </div>
 
-
-                            <!-- PROPERTY CONTENT -->
-
                             <div class="tenant-property-content">
-
-
-                                <!-- TITLE -->
 
                                 <h3>
                                     @application.PropertyTitle
                                 </h3>
 
-
                                 <!-- LOCATION -->
-
                                 <p class="property-location">
-
-                                    📍
+                                    <i class="fa-solid fa-location-dot"></i>
                                     @application.Location
-
                                 </p>
 
-
-                                <!-- BEDROOMS / BATHROOMS -->
-
+                                <!-- BEDROOMS -->
                                 <p>
-
-                                    🛏
+                                    <i class="fa-solid fa-bed"></i>
                                     @application.Bedrooms Bedrooms
-
-                                    &nbsp; • &nbsp;
-
-                                    🛁
-                                    @application.Bathrooms Bathrooms
-
                                 </p>
 
+                                <!-- BATHROOMS -->
+                                <p>
+                                    <i class="fa-solid fa-bath"></i>
+                                    @application.Bathrooms Bathrooms
+                                </p>
 
                                 <!-- PRICE -->
-
                                 <p class="property-price">
-
-                                    💰
-                                    R @application.Price / Month
-
+                                    <i class="fa-solid fa-money-bill"></i>
+                                    R @application.Price.ToString("N2") / Month
                                 </p>
-
-
-                                <!-- APPLICATION DATE -->
 
                                 <p class="application-date">
-
                                     Applied:
                                     @application.ApplicationDate.ToString("dd MMM yyyy")
-
                                 </p>
 
-
-                                <!-- LEASE DATES -->
                                 @if (application.LeaseStartDate.HasValue &&
                                                         application.LeaseEndDate.HasValue)
                                 {
-
                                     <p class="application-date">
-
                                         Lease:
                                         @application.LeaseStartDate.Value.ToString("dd MMM yyyy")
                                         to
                                         @application.LeaseEndDate.Value.ToString("dd MMM yyyy")
-
                                     </p>
-
                                 }
-
-
-                                <!-- APPLICATION STATUS -->
 
                                 <div class="application-status">
 
                                     @if (application.ApplicationStatus == "Approved")
                                     {
-
                                         <span class="status approved">
-
                                             ✓ Approved
-
                                         </span>
-
                                     }
                                     else if (application.ApplicationStatus == "Pending")
                                     {
-
                                         <span class="status pending">
-
                                             ⏳ Pending
-
                                         </span>
-
                                     }
                                     else if (application.ApplicationStatus == "Rejected")
                                     {
-
                                         <span class="status rejected">
-
                                             ✕ Rejected
-
                                         </span>
-
                                     }
                                     else
                                     {
-
                                         <span class="status">
-
                                             @application.ApplicationStatus
-
                                         </span>
-
                                     }
 
                                 </div>
 
-
-                                <!-- =================================================
-                                     VIEW PROPERTY
-                                ================================================== -->
-
+                                <!-- BUTTONS — KEPT SIDE-BY-SIDE -->
                                 <a asp-controller="Properties"
                                    asp-action="Details"
                                    asp-route-id="@application.PropertyId"
                                    class="view-property-button">
-
                                     View Property
-
                                 </a>
 
-
-                                <!-- =================================================
-                                     RATE PROPERTY
-                                ================================================== -->
                                 @if (application.CanRate &&
                                                         !application.HasRated)
                                 {
-
                                     <a asp-controller="Tenant"
                                        asp-action="RateProperty"
                                        asp-route-applicationId="@application.RentalApplicationId"
                                        class="rate-property-button">
-
                                         ⭐ Rate Property
-
                                     </a>
-
                                 }
                                 else if (application.HasRated)
                                 {
-
                                     <span class="already-rated">
-
                                         ✓ Rated
-
                                     </span>
-
                                 }
 
                             </div>
@@ -452,54 +296,36 @@
 
                 </div>
 
-
                 <p class="no-applications"
                    id="noFilterResults"
                    style="display:none;">
-
                     No accommodations in this category.
-
                 </p>
 
             }
             else
             {
 
-                <!-- =================================================
-                     NO APPLICATIONS
-                ================================================== -->
-
                 <div class="no-applications">
 
                     <div class="no-applications-icon">
-
                         🏠
-
                     </div>
 
-
                     <h3>
-
                         You haven't applied for any
                         accommodation yet.
-
                     </h3>
 
-
                     <p>
-
                         Browse available properties and find
                         a place that feels like home.
-
                     </p>
-
 
                     <a asp-controller="Tenant"
                        asp-action="BrowseProperties"
                        class="browse-button">
-
                         Browse Properties
-
                     </a>
 
                 </div>
@@ -512,22 +338,14 @@
 
 </div>
 
-
-<!-- =========================================================
-     SIDEBAR TOGGLE + FILTER SCRIPT
-========================================================= -->
 @section Scripts {
 
     <script>
 
         function toggleMenu() {
-
             var sidebar = document.getElementById("sidebar");
-
             sidebar.classList.toggle("show");
-
         }
-
 
         const filterButtons =
             document.querySelectorAll(".filter-pill");
@@ -538,38 +356,26 @@
         const noResultsMsg =
             document.getElementById("noFilterResults");
 
-
         function applyFilter(category) {
-
             let visibleCount = 0;
 
             propertyCards.forEach(card => {
 
                 if (card.dataset.category === category) {
-
                     card.style.display = "";
-
                     visibleCount++;
-
                 }
                 else {
-
                     card.style.display = "none";
-
                 }
 
             });
 
-
             if (noResultsMsg) {
-
                 noResultsMsg.style.display =
                     visibleCount === 0 ? "block" : "none";
-
             }
-
         }
-
 
         filterButtons.forEach(button => {
 
@@ -586,11 +392,8 @@
 
         });
 
-
         if (propertyCards.length > 0) {
-
             applyFilter("Current");
-
         }
 
     </script>

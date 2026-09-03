@@ -1,42 +1,121 @@
-﻿@model Smart_Stay.Models.PropertyStatusViewModel
+﻿
+@model Smart_Stay.Models.PropertyStatusViewModel
 
 @{
-    ViewData["Title"] = "Update Status";
+    ViewData["Title"] = "Update Property Status";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/UpdateStatus.css" asp-append-version="true" />
+}
 
-<h2>Update Property Status</h2>
+<div class="status-page">
 
+    <div class="status-card">
 
-<form asp-action="UpdateStatus" method="post">
+        <div class="status-header">
+            <div class="status-icon">
+                <i class="fa-solid fa-building"></i>
+            </div>
 
-    <input asp-for="PropertyId" type="hidden" />
+            <div>
+                <h1>Update Property Status</h1>
+                <p>Manage the availability of your property.</p>
+            </div>
+        </div>
 
+        <div class="property-name">
+            <span>Property</span>
+            <h2>@Model.PropertyTitle</h2>
+        </div>
 
-    <div>
-        <label>Status</label>
+        <form asp-action="UpdateStatus" method="post">
 
-        <select asp-for="Status">
+            <input type="hidden" asp-for="PropertyId" />
 
-            <option value="Available">
-                Available
-            </option>
+            <div class="form-group">
+                <label asp-for="Status">Property Status</label>
 
-            <option value="Occupied">
-                Occupied
-            </option>
+                <select asp-for="Status" class="status-select" id="Status">
+                    <option value="Available">Available</option>
+                    <option value="Occupied">Occupied</option>
+                    <option value="Maintenance">Maintenance</option>
+                </select>
+            </div>
 
-            <option value="Maintenance">
-                Maintenance
-            </option>
+            <div class="status-explanation" id="status-explanation">
 
-        </select>
+                <div class="explanation-icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+
+                <div>
+                    <h3 id="status-explanation-title"></h3>
+                    <p id="status-explanation-text"></p>
+                </div>
+
+            </div>
+
+            <div class="status-actions">
+
+                <a asp-controller="Landlord"
+                   asp-action="Dashboard"
+                   class="btn-cancel">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn-save">
+                    <i class="fa-solid fa-check"></i>
+                    Save Status
+                </button>
+
+            </div>
+
+        </form>
 
     </div>
 
+</div>
 
-    <button type="submit">
-        Save Status
-    </button>
+<script>
 
-</form>
+    const statusSelect = document.getElementById("Status");
+    const statusExplanation = document.getElementById("status-explanation");
+    const statusTitle = document.getElementById("status-explanation-title");
+    const statusText = document.getElementById("status-explanation-text");
+
+    function updateStatusExplanation() {
+
+        switch (statusSelect.value) {
+
+            case "Available":
+
+                statusTitle.textContent = "Available";
+                statusText.textContent =
+                    "The property is available for tenants and will be displayed on the home page.";
+
+                break;
+
+            case "Occupied":
+
+                statusTitle.textContent = "Occupied";
+                statusText.textContent =
+                    "The property is currently full or occupied and will not be displayed on the home page.";
+
+                break;
+
+            case "Maintenance":
+
+                statusTitle.textContent = "Maintenance";
+                statusText.textContent =
+                    "The property is currently under maintenance and will not be displayed on the home page.";
+
+                break;
+        }
+    }
+
+    statusSelect.addEventListener("change", updateStatusExplanation);
+
+    updateStatusExplanation();
+
+</script>

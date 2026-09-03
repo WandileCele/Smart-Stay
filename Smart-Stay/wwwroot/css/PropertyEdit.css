@@ -1,0 +1,344 @@
+﻿
+.edit-property-page {
+    width: 85%;
+    max-width: 1100px;
+    margin: 40px auto 60px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #222;
+}
+body {
+    background: #f3f6fa;
+}
+
+.edit-property-header {
+    margin-bottom: 30px;
+}
+
+    .edit-property-header h1 {
+        font-size: 2.4rem;
+        margin-bottom: 8px;
+    }
+
+    .edit-property-header p {
+        color: #666;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.edit-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+    .edit-card h2 {
+        font-size: 1.35rem;
+        margin: 0 0 20px;
+    }
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.edit-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.edit-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-field-full {
+    grid-column: 1 / -1;
+}
+
+.edit-field label {
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.edit-field input,
+.edit-field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d8dce2;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    outline: none;
+}
+
+    .edit-field input:focus,
+    .edit-field textarea:focus {
+        border-color: #1857D6;
+    }
+
+.edit-field textarea {
+    resize: vertical;
+}
+
+.field-validation-error {
+    color: #d32f2f;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   PHOTO HEADER
+========================================================= */
+
+.photo-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+    .photo-section-header h2 {
+        margin-bottom: 5px;
+    }
+
+    .photo-section-header p {
+        color: #777;
+        margin: 0;
+    }
+
+.photo-count {
+    background: #eef3ff;
+    color: #1857D6;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   EXISTING PHOTOS
+========================================================= */
+
+.existing-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.existing-photo-card {
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fafafa;
+}
+
+    .existing-photo-card img {
+        width: 100%;
+        height: 190px;
+        object-fit: cover;
+        display: block;
+    }
+
+.photo-delete {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: #fff;
+}
+
+    .photo-delete input {
+        width: 17px;
+        height: 17px;
+        cursor: pointer;
+    }
+
+    .photo-delete label {
+        font-size: 0.95rem;
+        color: #555;
+        cursor: pointer;
+    }
+
+.no-existing-photos {
+    padding: 25px;
+    background: #f7f7f7;
+    border-radius: 7px;
+    text-align: center;
+    color: #777;
+}
+
+
+/* =========================================================
+   ADD PHOTOS
+========================================================= */
+
+.section-description {
+    color: #666;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+.upload-area {
+    border: 2px dashed #cfd5dd;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    background: #fafbfc;
+}
+
+.upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    color: #1857D6;
+    font-weight: 600;
+}
+
+.upload-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #eef3ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+}
+
+.upload-label small {
+    color: #777;
+    font-weight: 400;
+}
+
+.upload-area input[type="file"] {
+    margin-top: 15px;
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   SELECTED FILES
+========================================================= */
+
+.selected-files {
+    margin-top: 15px;
+}
+
+.selected-heading {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.selected-file {
+    padding: 8px 12px;
+    background: #f5f6f8;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.save-button,
+.cancel-button {
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.save-button {
+    border: none;
+    background: #1857D6;
+    color: #fff;
+}
+
+    .save-button:hover {
+        background: #123F9E;
+    }
+
+.cancel-button {
+    background: #fff;
+    color: #1857D6;
+    border: 1px solid #1857D6;
+}
+
+    .cancel-button:hover {
+        background: #f0f4ff;
+    }
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .edit-property-page {
+        width: 92%;
+    }
+
+    .edit-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-field-full {
+        grid-column: auto;
+    }
+
+    .existing-photo-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 550px) {
+
+    .edit-card {
+        padding: 20px;
+    }
+
+    .existing-photo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .photo-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .edit-actions {
+        flex-direction: column-reverse;
+    }
+
+    .save-button,
+    .cancel-button {
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
