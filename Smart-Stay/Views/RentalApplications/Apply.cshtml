@@ -135,6 +135,38 @@
 
                 <span asp-validation-for="Employment" class="validation"></span>
             </div>
+            <!-- LEASE START DATE -->
+            <div class="form-group">
+                <div class="label-row">
+                    <label asp-for="LeaseStartDate">Lease start date</label>
+                    <span class="required">*Required</span>
+                </div>
+
+                <input asp-for="LeaseStartDate"
+                       type="date"
+                       class="form-input"
+                       min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                       id="leaseStartDate" />
+
+                <span asp-validation-for="LeaseStartDate" class="validation"></span>
+            </div>
+
+
+            <!-- LEASE END DATE -->
+            <div class="form-group">
+                <div class="label-row">
+                    <label asp-for="LeaseEndDate">Lease end date</label>
+                    <span class="required">*Required</span>
+                </div>
+
+                <input asp-for="LeaseEndDate"
+                       type="date"
+                       class="form-input"
+                       min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                       id="leaseEndDate" />
+
+                <span asp-validation-for="LeaseEndDate" class="validation"></span>
+            </div>
 
 
             <!-- PAYSLIP -->
@@ -186,33 +218,35 @@
 
 </div>
 
-
 @section Scripts {
 
+  
     <partial name="_ValidationScriptsPartial" />
 
     <script>
 
         // ==========================================
-        // ID NUMBER - NUMBERS ONLY (cosmetic, does not block submit)
+        // ID NUMBER - NUMBERS ONLY
         // ==========================================
         const idNumber = document.getElementById("idNumber");
+
         idNumber.addEventListener("input", function () {
             this.value = this.value.replace(/\D/g, '').slice(0, 13);
         });
 
 
         // ==========================================
-        // PHONE NUMBER - NUMBERS ONLY (cosmetic, does not block submit)
+        // PHONE NUMBER - NUMBERS ONLY
         // ==========================================
         const phoneNumber = document.getElementById("phoneNumber");
+
         phoneNumber.addEventListener("input", function () {
             this.value = this.value.replace(/\D/g, '').slice(0, 10);
         });
 
 
         // ==========================================
-        // NAMES - LETTERS ONLY (cosmetic, does not block submit)
+        // NAMES - LETTERS ONLY
         // ==========================================
         const firstName = document.getElementById("firstName");
         const lastName = document.getElementById("lastName");
@@ -227,39 +261,64 @@
 
 
         // ==========================================
-        // PAYSLIP PREVIEW
-        // This only clears an invalid file choice; it never touches
-        // form submission and has no event.preventDefault() on submit.
+        // PAYSLIP VALIDATION / PREVIEW
         // ==========================================
         const payslipInput = document.getElementById("payslipInput");
         const uploadText = document.getElementById("uploadText");
 
         payslipInput.addEventListener("change", function () {
+
             if (this.files.length > 0) {
+
                 const file = this.files[0];
 
+                // Check PDF
                 if (file.type !== "application/pdf" &&
                     !file.name.toLowerCase().endsWith(".pdf")) {
+
                     alert("Please upload a PDF payslip.");
+
                     this.value = "";
-                    uploadText.textContent = "Click to upload or drag and drop";
+                    uploadText.textContent =
+                        "Click to upload or drag and drop";
+
                     return;
                 }
 
+                // Check 3MB limit
                 if (file.size > 3 * 1024 * 1024) {
+
                     alert("Payslip must be 3MB or smaller.");
+
                     this.value = "";
-                    uploadText.textContent = "Click to upload or drag and drop";
+                    uploadText.textContent =
+                        "Click to upload or drag and drop";
+
                     return;
                 }
 
+                // Show selected filename
                 uploadText.textContent = file.name;
             }
         });
 
-        // NOTE: there is intentionally no form.addEventListener("submit", ...)
-        // anywhere in this file. AcceptTerms is validated by the controller
-        // only, so there is nothing here that can silently block the click.
+
+        // ==========================================
+        // LEASE END DATE - CANNOT BE BEFORE START DATE
+        // ==========================================
+        const leaseStartDate =
+            document.getElementById("leaseStartDate");
+
+        const leaseEndDate =
+            document.getElementById("leaseEndDate");
+
+        leaseStartDate.addEventListener("change", function () {
+            leaseEndDate.min = this.value;
+        });
 
     </script>
+  
+
+}
+
 }

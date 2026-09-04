@@ -65,8 +65,32 @@ namespace Smart_Stay.Controllers
                     ApplicationDate =
                         r.ApplicationDate,
 
-                    ApplicationStatus =
-                        r.RentalApplicationStatus
+                    ApplicationStatus = r.RentalApplicationStatus,
+
+                    LeaseStartDate = r.LeaseStartDate,
+
+                    LeaseEndDate = r.LeaseEndDate,
+
+
+                    // ====================================================
+                    // RATING ELIGIBILITY
+                    // Tenant must be approved and today must be AFTER
+                    // the LeaseStartDate.
+                    // ====================================================
+
+                    CanRate = r.RentalApplicationStatus == "Approved"
+                              && r.LeaseStartDate.HasValue
+                              && r.LeaseStartDate.Value
+                                  < DateOnly.FromDateTime(DateTime.Today),
+
+
+                    // ====================================================
+                    // CHECK WHETHER THIS TENANT ALREADY RATED
+                    // THIS PROPERTY
+                    // ====================================================
+
+                    HasRated = r.Property.Reviews
+                        .Any(review => review.TenantId == tenantId)
                 })
                 .ToListAsync();
 
@@ -106,7 +130,83 @@ namespace Smart_Stay.Controllers
 
 
         // ============================================================
-        // BROWSE PROPERTIES
+        // RATE PROPERTY - SHOW RATING PAGE
+        // ============================================================
+
+        [HttpGet]
+        public async Task<IActionResult> RateProperty(int applicationId)
+        {
+            var userIdString =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(userIdString, out int tenantId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+
+            // Find the application belonging to the logged-in tenant
+            var application = await _context.RentalApplications
+                .Include(r => r.Property)
+                .FirstOrDefaultAsync(r =>
+                    r.RentalApplicationId == applicationId &&
+                    r.TenantId == tenantId);
+
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+
+            // Only approved applications can rate
+            if (application.RentalApplicationStatus != "Approved")
+            {
+                return Forbid();
+            }
+
+
+            // Tenant must be past the lease start date
+            if (!application.LeaseStartDate.HasValue ||
+                application.LeaseStartDate.Value >=
+                DateOnly.FromDateTime(DateTime.Today))
+            {
+                TempData["RatingError"] =
+                    "You can only rate the property after your lease has started.";
+
+                return RedirectToAction("Dashboard");
+            }
+
+
+            // Check if this tenant has already rated this property
+            var alreadyRated = await _context.Reviews
+                .AnyAsync(r =>
+                    r.PropertyId == application.PropertyId &&
+                    r.TenantId == tenantId);
+
+
+            if (alreadyRated)
+            {
+                TempData["RatingError"] =
+                    "You have already rated this property.";
+
+                return RedirectToAction("Dashboard");
+            }
+
+
+            ViewBag.PropertyTitle = application.Property.Title;
+
+            ViewBag.PropertyId = application.PropertyId;
+
+            ViewBag.ApplicationId = application.RentalApplicationId;
+
+
+            return View();
+        }
+
+
+        // ============================================================
+        // BROWSE ALL AVAILABLE PROPERTIES
         // ============================================================
 
         [HttpGet]
@@ -224,6 +324,132 @@ namespace Smart_Stay.Controllers
 
             return View(properties);
         }
+        // ============================================================
+        // SUBMIT PROPERTY REVIEW
+        // ============================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubmitReview(
+            int applicationId,
+            byte rating,
+            string comment)
+        {
+            var userIdString =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(userIdString, out int tenantId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // ========================================================
+            // FIND THE TENANT'S APPLICATION
+            // ========================================================
+
+            var application = await _context.RentalApplications
+                .Include(r => r.Property)
+                .FirstOrDefaultAsync(r =>
+                    r.RentalApplicationId == applicationId &&
+                    r.TenantId == tenantId);
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            // ========================================================
+            // CHECK THAT THE APPLICATION WAS APPROVED
+            // ========================================================
+
+            if (application.RentalApplicationStatus != "Approved")
+            {
+                return Forbid();
+            }
+
+            // ========================================================
+            // CHECK THAT THE LEASE HAS STARTED
+            // Tenant can only review after LeaseStartDate
+            // ========================================================
+
+            if (!application.LeaseStartDate.HasValue ||
+                application.LeaseStartDate.Value >=
+                DateOnly.FromDateTime(DateTime.Today))
+            {
+                TempData["ReviewError"] =
+                    "You can only rate the property after your lease has started.";
+
+                return RedirectToAction("Dashboard");
+            }
+
+            // ========================================================
+            // CHECK RATING VALUE
+            // ========================================================
+
+            if (rating < 1 || rating > 5)
+            {
+                TempData["ReviewError"] =
+                    "Please select a rating between 1 and 5 stars.";
+
+                return RedirectToAction("Dashboard");
+            }
+
+            // ========================================================
+            // CHECK COMMENT
+            // ========================================================
+
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                TempData["ReviewError"] =
+                    "Please enter a review comment.";
+
+                return RedirectToAction("Dashboard");
+            }
+
+            // ========================================================
+            // CHECK IF TENANT ALREADY REVIEWED THIS PROPERTY
+            // ========================================================
+
+            var alreadyReviewed = await _context.Reviews
+                .AnyAsync(r =>
+                    r.PropertyId == application.PropertyId &&
+                    r.TenantId == tenantId);
+
+            if (alreadyReviewed)
+            {
+                TempData["ReviewError"] =
+                    "You have already reviewed this property.";
+
+                return RedirectToAction("Dashboard");
+            }
+
+            // ========================================================
+            // CREATE REVIEW
+            // ========================================================
+
+            var review = new Review
+            {
+                PropertyId = application.PropertyId,
+                TenantId = tenantId,
+                Rating = rating,
+                Comment = comment.Trim(),
+                ReviewDate = DateOnly.FromDateTime(DateTime.Today)
+            };
+
+            _context.Reviews.Add(review);
+
+            await _context.SaveChangesAsync();
+
+            // ========================================================
+            // SUCCESS
+            // ========================================================
+
+            TempData["ReviewSuccess"] =
+                "Your review has been submitted successfully!";
+
+            return RedirectToAction("Dashboard");
+        }
+
 
 
         // ============================================================

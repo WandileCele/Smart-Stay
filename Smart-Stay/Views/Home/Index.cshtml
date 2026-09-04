@@ -1,9 +1,11 @@
 ﻿@model List<Smart_Stay.Models.PropertyCardViewModel>
+
 @{
     ViewData["Title"] = "Smart Stay";
 }
 
 <div class="hero">
+
 
     <nav>
 
@@ -13,49 +15,69 @@
         </div>
 
         <div class="buttons">
+
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 @if (User.IsInRole("Admin"))
                 {
-                    <a asp-controller="Admin" asp-action="Dashboard" class="btn">
+                    <a asp-controller="Admin"
+                       asp-action="Dashboard"
+                       class="btn">
                         GO TO DASHBOARD
                     </a>
                 }
                 else if (User.IsInRole("Landlord"))
                 {
-                    <a asp-controller="Landlord" asp-action="Dashboard" class="btn">
+                    <a asp-controller="Landlord"
+                       asp-action="Dashboard"
+                       class="btn">
                         GO TO DASHBOARD
                     </a>
                 }
                 else if (User.IsInRole("Tenant"))
                 {
-                    <a asp-controller="Tenant" asp-action="Dashboard" class="btn">
+                    <a asp-controller="Tenant"
+                       asp-action="Dashboard"
+                       class="btn">
                         GO TO DASHBOARD
                     </a>
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login" class="btn">
+                    <a asp-controller="Account"
+                       asp-action="Login"
+                       class="btn">
                         LOG IN
                     </a>
                 }
             }
             else
             {
-                <a asp-controller="Account" asp-action="Register" class="btn">
+                <a asp-controller="Account"
+                   asp-action="Register"
+                   class="btn">
                     SIGN UP
                 </a>
-                <a asp-controller="Account" asp-action="Login" class="btn">
+
+                <a asp-controller="Account"
+                   asp-action="Login"
+                   class="btn">
                     LOG IN
                 </a>
             }
+
         </div>
+
     </nav>
 
+
     <div class="hero-content">
+
         <h2>
-            FIND THE PERFECT ACCOMMODATION IN <span id="typewriter"></span>
+            FIND THE PERFECT ACCOMMODATION IN
+            <span id="typewriter"></span>
         </h2>
+
 
         <form asp-controller="Properties"
               asp-action="viewAll"
@@ -63,34 +85,80 @@
               class="hero-search">
 
             <div class="search-input">
+
                 <input type="text"
                        name="search"
                        placeholder="Search Property e.g Sarah Bartman" />
+
                 <button type="submit">
                     🔍
                 </button>
+
             </div>
+
 
             <div class="filters-row">
 
                 <select name="location">
-                    <option value="">Filter by location</option>
-                    <option value="Walmer">Walmer</option>
-                    <option value="Humewood">Humewood</option>
-                    <option value="Summerstrand">Summerstrand</option>
-                    <option value="North End">North End</option>
-                    <option value="Newton Park">Newton Park</option>
-                    <option value="Central">Central</option>
+
+                    <option value="">
+                        Filter by location
+                    </option>
+
+                    <option value="Walmer">
+                        Walmer
+                    </option>
+
+                    <option value="Humewood">
+                        Humewood
+                    </option>
+
+                    <option value="Summerstrand">
+                        Summerstrand
+                    </option>
+
+                    <option value="North End">
+                        North End
+                    </option>
+
+                    <option value="Newton Park">
+                        Newton Park
+                    </option>
+
+                    <option value="Central">
+                        Central
+                    </option>
+
                 </select>
+
 
                 <select name="price">
-                    <option value="">Filter by price</option>
-                    <option value="2000-3000">R2 000 - R3 000</option>
-                    <option value="3000-5000">R3 000 - R5 000</option>
-                    <option value="5000+">R5 000+</option>
+
+                    <option value="">
+                        Filter by price
+                    </option>
+
+                    <option value="0-2000">
+                        R0 - R2 000
+                    </option>
+
+                    <option value="2000-3000">
+                        R2 000 - R3 000
+                    </option>
+
+                    <option value="3000-5000">
+                        R3 000 - R5 000
+                    </option>
+
+                    <option value="5000+">
+                        R5 000+
+                    </option>
+
                 </select>
 
-                <button type="submit" class="filter-button">
+
+                <button type="submit"
+                        class="filter-button">
                     Search
                 </button>
 
@@ -98,32 +166,42 @@
 
         </form>
 
-
     </div>
 
 
 </div>
+
 <section class="popular">
+
 
     <div class="title">
 
-        <h2>POPULAR ACCOMMODATION</h2>
+        <h2>
+            POPULAR ACCOMMODATION
+        </h2>
 
         <a asp-controller="Properties"
            asp-action="viewAll">
-
             VIEW ALL
-
         </a>
 
     </div>
 
+
     @if (Model == null || !Model.Any())
     {
         <div class="no-properties">
+
             <i class="fa-solid fa-house-circle-xmark"></i>
-            <h3>No properties listed yet</h3>
-            <p>Check back soon — new listings are added regularly.</p>
+
+            <h3>
+                No properties listed yet
+            </h3>
+
+            <p>
+                Check back soon — new listings are added regularly.
+            </p>
+
         </div>
     }
     else
@@ -132,17 +210,18 @@
 
             @foreach (var item in Model)
             {
-                <a class="property-link"
-                   asp-controller="Properties"
-                   asp-action="Details"
-                   asp-route-id="@item.PropertyID"
-                   asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
+                <div class="card">
 
-                    <div class="card">
+                    <!-- CARD CONTENT -->
+                    <div class="card-content"
+                         onclick="window.location.href='@Url.Action("Details", "Properties", new { id = item.PropertyID, returnUrl = Context.Request.Path + Context.Request.QueryString })'">
 
-                        <img src="@item.ImagePath" alt="@item.Title" />
+                        <img src="@item.ImagePath"
+                             alt="@item.Title" />
 
-                        <h3>@item.Title</h3>
+                        <h3>
+                            @item.Title
+                        </h3>
 
                         <p>
                             <i class="fa-solid fa-bed"></i>
@@ -164,12 +243,43 @@
                             R @item.Price.ToString("N2") / PM
                         </p>
 
+                    </div>
+
+
+                    <!-- APPLY BUTTON -->
+                    <div class="card-bottom">
+
+                        @if (User.Identity != null &&
+                                        User.Identity.IsAuthenticated &&
+                                        User.IsInRole("Tenant"))
+                        {
+                            <a asp-controller="RentalApplications"
+                               asp-action="Apply"
+                               asp-route-propertyId="@item.PropertyID"
+                               class="apply-button">
+                                Apply
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account"
+                               asp-action="Login"
+                               class="apply-button">
+                                Apply
+                            </a>
+                        }
+
+
+                        <!-- RATING -->
                         <div class="rating">
 
                             @if (item.AverageRating.HasValue)
                             {
-                                var fullStars = (int)Math.Floor(item.AverageRating.Value);
-                                var hasHalfStar = item.AverageRating.Value - fullStars >= 0.5;
+                                var fullStars =
+                                (int)Math.Floor(item.AverageRating.Value);
+
+                                var hasHalfStar =
+                                item.AverageRating.Value - fullStars >= 0.5;
 
                                 @for (int i = 1; i <= 5; i++)
                                 {
@@ -200,42 +310,98 @@
                             }
 
                         </div>
+                        <!-- LANDLORD CONTACT -->
+                        <div class="landlord-contact">
+
+                            <!-- Call -->
+                            <a asp-controller="Home"
+                               asp-action="LandlordContact"
+                               asp-route-propertyId="@item.PropertyID"
+                               class="contact-icon"
+                               title="Call landlord">
+                                <i class="fa-solid fa-phone"></i>
+                            </a>
+
+                            <!-- WhatsApp -->
+                            <a href="https://web.whatsapp.com/"
+                               target="_blank"
+                               class="contact-icon whatsapp"
+                               title="WhatsApp">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </a>
+
+                            <!-- Facebook -->
+                            <a href="https://www.facebook.com/"
+                               target="_blank"
+                               class="contact-icon facebook"
+                               title="Facebook">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </a>
+
+                        </div>
 
                     </div>
 
-                </a>
+
+
+
+                </div>
             }
 
         </div>
     }
 
+
 </section>
+
 <script>
-    const words = ["Walmer", "North End", "Humewood", "Summerstrand", "Newton Park", "Central"];
+
+    const words = [
+        "Walmer",
+        "North End",
+        "Humewood",
+        "Summerstrand",
+        "Newton Park",
+        "Central"
+    ];
+
     let wordIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
+
     const el = document.getElementById("typewriter");
 
     function type() {
+
         const currentWord = words[wordIndex];
 
         if (isDeleting) {
             charIndex--;
-        } else {
+        }
+        else {
             charIndex++;
         }
 
-        el.textContent = currentWord.substring(0, charIndex);
+        el.textContent =
+            currentWord.substring(0, charIndex);
 
-        let typeSpeed = isDeleting ? 50 : 100;
+        let typeSpeed =
+            isDeleting ? 50 : 100;
 
-        if (!isDeleting && charIndex === currentWord.length) {
+        if (!isDeleting &&
+            charIndex === currentWord.length) {
+
             typeSpeed = 1800;
             isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
+        }
+        else if (isDeleting &&
+                 charIndex === 0) {
+
             isDeleting = false;
-            wordIndex = (wordIndex + 1) % words.length;
+
+            wordIndex =
+                (wordIndex + 1) % words.length;
+
             typeSpeed = 300;
         }
 
@@ -243,4 +409,5 @@
     }
 
     type();
+
 </script>

@@ -234,7 +234,12 @@
 
 
                 <input asp-for="PhoneNo"
+                       type="tel"
+                       id="phoneNo"
                        maxlength="10"
+                       minlength="10"
+                       pattern="[0-9]{10}"
+                       inputmode="numeric"
                        class="form-control" />
 
 
@@ -245,10 +250,9 @@
             </div>
 
 
-
             <!-- =============================================
                  NEW PASSWORD
-            ============================================== -->
+            ================================================ -->
 
             
             <div class="form-group">
@@ -263,7 +267,8 @@
                            type="password"
                            id="NewPassword"
                            class="form-control password-input"
-                           placeholder="Leave blank to keep current password" />
+                           placeholder="Leave blank to keep current password"
+                           autocomplete="new-password" />
 
                     <button type="button"
                             class="toggle-password"
@@ -275,6 +280,31 @@
 
                 </div>
 
+                <!-- PASSWORD REQUIREMENTS -->
+
+                <div class="pwd-rules">
+
+                    <div id="ruleLength">
+                        <span>✗</span>
+                        At least 8 characters
+                    </div>
+
+                    <div id="ruleUpper">
+                        <span>✗</span>
+                        At least 1 uppercase letter
+                    </div>
+
+                    <div id="ruleNumber">
+                        <span>✗</span>
+                        At least 1 number
+                    </div>
+
+                    <div id="ruleSpecial">
+                        <span>✗</span>
+                        At least 1 special character
+                    </div>
+
+                </div>
 
                 <div class="password-requirements">
 
@@ -325,16 +355,13 @@
 
             <!-- =============================================
                  CONFIRM PASSWORD
-            ============================================== -->
+            ================================================ -->
 
             <div class="form-group">
 
                 <label asp-for="ConfirmPassword">
-
                     Confirm password
-
                 </label>
-
 
                 <div class="password-wrapper">
 
@@ -342,8 +369,8 @@
                            type="password"
                            id="ConfirmPassword"
                            class="form-control password-input"
-                           placeholder="Confirm new password" />
-
+                           placeholder="Confirm new password"
+                           autocomplete="new-password" />
 
                     <button type="button"
                             class="toggle-password"
@@ -355,13 +382,15 @@
 
                 </div>
 
+                <span id="passwordMatchMessage"
+                      class="validation-error">
+                </span>
 
                 <span asp-validation-for="ConfirmPassword"
                       class="validation-error">
                 </span>
 
             </div>
-
 
 
             <!-- =============================================

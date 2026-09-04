@@ -20,7 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="App_Data\GeneratedPdfs\" />
+    <Folder Include="wwwroot\images\properties\" />
     <Folder Include="wwwroot\uploads\" />
+    <Folder Include="wwwroot\uploads\profiles\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,816 @@
+﻿@model IEnumerable<Smart_Stay.Models.User>
+
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<style>
+
+    /* =========================
+           PAGE
+           ========================= */
+
+    .manage-users-page {
+        padding: 40px;
+        background: #f5f7fb;
+        min-height: 80vh;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+        .page-header h2 {
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: #777;
+            margin: 0;
+        }
+
+    /* =========================
+           BACK BUTTON
+           ========================= */
+
+    .back-button {
+        background: #1473ea;
+        color: white;
+        padding: 11px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .back-button:hover {
+            background: #0d5fc7;
+            color: white;
+        }
+
+    /* =========================
+           TABLE CONTAINER
+           ========================= */
+
+    .users-table-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+
+        /* =========================
+           TABLE HEADER
+           ========================= */
+
+        .users-table thead {
+            background: #1473ea;
+            color: white;
+        }
+
+        .users-table th {
+            padding: 22px 18px;
+            font-size: 17px;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        /* =========================
+           TABLE BODY
+           ========================= */
+
+        .users-table td {
+            padding: 22px 18px;
+            font-size: 16px;
+            color: #222;
+            border-bottom: 1px solid #eeeeee;
+            vertical-align: middle;
+        }
+
+        .users-table tbody tr {
+            transition: 0.2s;
+        }
+
+            .users-table tbody tr:hover {
+                background: #f8fbff;
+            }
+
+            .users-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    /* =========================
+           ROLE BADGES
+           ========================= */
+
+    .role-badge {
+        display: inline-block;
+        padding: 7px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .role-admin {
+        background: #e7f0ff;
+        color: #1473ea;
+    }
+
+    .role-landlord {
+        background: #e8f7ef;
+        color: #168a55;
+    }
+
+    .role-tenant {
+        background: #fff3df;
+        color: #d88916;
+    }
+
+    /* =========================
+           SUSPENDED BADGE
+           ========================= */
+
+    .suspended-badge {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 5px 10px;
+        border-radius: 15px;
+        background: #ffe5e5;
+        color: #d63031;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    /* =========================
+           ACTION BUTTONS
+           ========================= */
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .action-button {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .suspend-button {
+        background: #f5a623;
+        color: white;
+    }
+
+        .suspend-button:hover {
+            background: #db8e0c;
+        }
+
+    .delete-button {
+        background: #dc3545;
+        color: white;
+    }
+
+        .delete-button:hover {
+            background: #bb2635;
+        }
+
+    /* =========================
+           EMPTY MESSAGE
+           ========================= */
+
+    .empty-message {
+        text-align: center;
+        padding: 50px;
+        color: #777;
+        font-size: 17px;
+    }
+
+    /* =========================
+           FEEDBACK MESSAGE
+           ========================= */
+
+    .feedback-message {
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        font-weight: 600;
+    }
+
+    .feedback-success {
+        background: #e8f7ef;
+        color: #168a55;
+        border: 1px solid #b9e6ce;
+    }
+
+    .feedback-error {
+        background: #ffe8e8;
+        color: #c62828;
+        border: 1px solid #f3b4b4;
+    }
+
+    /* =========================
+           MODAL BACKGROUND
+           ========================= */
+
+    .confirmation-overlay {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 35, 70, 0.55);
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    /* =========================
+           CONFIRMATION BOX
+           ========================= */
+
+    .confirmation-box {
+        background: white;
+        width: 100%;
+        max-width: 470px;
+        border-radius: 18px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        animation: modalAppear 0.2s ease;
+    }
+
+    @@keyframes modalAppear {
+
+        from {
+            opacity: 0;
+            transform: translateY(-15px) scale(0.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* =========================
+           MODAL HEADER
+           ========================= */
+
+    .confirmation-header {
+        background: #1473ea;
+        color: white;
+        padding: 20px 25px;
+    }
+
+        .confirmation-header h4 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+    /* =========================
+           MODAL BODY
+           ========================= */
+
+    .confirmation-body {
+        padding: 30px 25px 20px;
+    }
+
+        .confirmation-body p {
+            margin: 0;
+            color: #555;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+    .user-name-confirmation {
+        font-weight: 700;
+        color: #1473ea;
+    }
+
+    /* =========================
+           MODAL FOOTER
+           ========================= */
+
+    .confirmation-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 0 25px 25px;
+    }
+
+    .modal-cancel {
+        border: none;
+        background: #e9ecef;
+        color: #333;
+        padding: 11px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .modal-cancel:hover {
+            background: #d8dce0;
+        }
+
+    .modal-confirm {
+        border: none;
+        color: white;
+        padding: 11px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .modal-confirm-delete {
+        background: #dc3545;
+    }
+
+        .modal-confirm-delete:hover {
+            background: #bb2635;
+        }
+
+    .modal-confirm-suspend {
+        background: #f5a623;
+    }
+
+        .modal-confirm-suspend:hover {
+            background: #db8e0c;
+        }
+
+    /* =========================
+           MOBILE
+           ========================= */
+
+    @@media (max-width: 900px) {
+
+        .manage-users-page {
+            padding: 20px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .users-table-container {
+            overflow-x: auto;
+        }
+
+        .users-table {
+            min-width: 950px;
+        }
+    }
+
+</style>
+
+
+<div class="manage-users-page">
+
+    <!-- =========================
+         PAGE HEADER
+         ========================= -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Manage Users</h2>
+
+            <p>
+                View, suspend and delete user accounts.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Dashboard"
+           class="back-button">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
+
+
+    <!-- =========================
+         FEEDBACK MESSAGE
+         ========================= -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="feedback-message feedback-success">
+            ✓ @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="feedback-message feedback-error">
+            ✕ @TempData["ErrorMessage"]
+        </div>
+    }
+
+
+    <!-- =========================
+         USERS TABLE
+         ========================= -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="users-table-container">
+
+            <div class="empty-message">
+                No user accounts found.
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="users-table-container">
+
+            <div style="overflow-x:auto;">
+
+                <table class="users-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>User ID</th>
+
+                            <th>Name</th>
+
+                            <th>Surname</th>
+
+                            <th>Email</th>
+
+                            <th>Phone</th>
+
+                            <th>Role</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+
+                                <!-- USER ID -->
+
+                                <td>
+                                    @user.UserId
+                                </td>
+
+
+                                <!-- FIRST NAME -->
+
+                                <td>
+                                    @user.FirstName
+                                </td>
+
+
+                                <!-- SURNAME -->
+
+                                <td>
+                                    @user.SurName
+                                </td>
+
+
+                                <!-- EMAIL -->
+
+                                <td>
+                                    @user.Email
+                                </td>
+
+
+                                <!-- PHONE -->
+
+                                <td>
+                                    @user.PhoneNo
+                                </td>
+
+
+                                <!-- ROLE -->
+
+                                <td>
+
+                                    @if (user.Role == "Admin")
+                                    {
+                                        <span class="role-badge role-admin">
+                                            Admin
+                                        </span>
+                                    }
+                                    else if (user.Role == "Landlord")
+                                    {
+                                        <span class="role-badge role-landlord">
+                                            Landlord
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="role-badge role-tenant">
+                                            Tenant
+                                        </span>
+                                    }
+
+                                    @if (user.IsSuspended)
+                                    {
+                                        <span class="suspended-badge">
+                                            Suspended
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- ACTIONS -->
+
+                                <td>
+
+                                    <div class="action-buttons">
+
+
+                                        <!-- SUSPEND -->
+
+                                        <form asp-controller="Admin"
+                                              asp-action="SuspendUser"
+                                              method="post"
+                                              class="suspend-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@user.UserId" />
+
+                                            <button type="button"
+                                                    class="action-button suspend-button"
+                                                    onclick="openConfirmation(
+                                                                'suspend',
+                                                                '@user.UserId',
+                                                                '@user.FirstName @user.SurName'
+                                                            )">
+
+                                                @(user.IsSuspended ? "Unsuspend" : "Suspend")
+
+                                            </button>
+
+                                        </form>
+
+
+                                        <!-- DELETE -->
+
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteUser"
+                                              method="post"
+                                              class="delete-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@user.UserId" />
+
+                                            <button type="button"
+                                                    class="action-button delete-button"
+                                                    onclick="openConfirmation(
+                                                                'delete',
+                                                                '@user.UserId',
+                                                                '@user.FirstName @user.SurName'
+                                                            )">
+
+                                                Delete
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+
+<!-- ==================================================
+     CONFIRMATION MODAL
+     ================================================== -->
+
+<div id="confirmationOverlay"
+     class="confirmation-overlay">
+
+    <div class="confirmation-box">
+
+        <div class="confirmation-header">
+
+            <h4 id="confirmationTitle">
+                Confirm Action
+            </h4>
+
+        </div>
+
+
+        <div class="confirmation-body">
+
+            <p id="confirmationMessage">
+                Are you sure?
+            </p>
+
+        </div>
+
+
+        <div class="confirmation-footer">
+
+            <button type="button"
+                    class="modal-cancel"
+                    onclick="closeConfirmation()">
+
+                Cancel
+
+            </button>
+
+
+            <button type="button"
+                    id="confirmActionButton"
+                    class="modal-confirm">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let selectedAction = "";
+    let selectedUserId = "";
+    let selectedUserName = "";
+
+    function openConfirmation(action, userId, userName) {
+
+        selectedAction = action;
+        selectedUserId = userId;
+        selectedUserName = userName;
+
+        const overlay =
+            document.getElementById("confirmationOverlay");
+
+        const title =
+            document.getElementById("confirmationTitle");
+
+        const message =
+            document.getElementById("confirmationMessage");
+
+        const confirmButton =
+            document.getElementById("confirmActionButton");
+
+
+        /* =========================
+           SUSPEND
+           ========================= */
+
+        if (action === "suspend") {
+
+            title.innerText = "Confirm Suspension";
+
+            message.innerHTML =
+                "Are you sure you want to suspend " +
+                "<span class='user-name-confirmation'>" +
+                selectedUserName +
+                "</span>? " +
+                "The user will no longer be able to access their account.";
+
+            confirmButton.innerText = "Suspend";
+
+            confirmButton.className =
+                "modal-confirm modal-confirm-suspend";
+        }
+
+
+        /* =========================
+           DELETE
+           ========================= */
+
+        if (action === "delete") {
+
+            title.innerText = "Confirm Account Deletion";
+
+            message.innerHTML =
+                "Are you sure you want to permanently delete " +
+                "<span class='user-name-confirmation'>" +
+                selectedUserName +
+                "</span>? " +
+                "This action cannot be undone.";
+
+            confirmButton.innerText = "Delete";
+
+            confirmButton.className =
+                "modal-confirm modal-confirm-delete";
+        }
+
+
+        overlay.style.display = "flex";
+    }
+
+
+    function closeConfirmation() {
+
+        document.getElementById(
+            "confirmationOverlay"
+        ).style.display = "none";
+
+    }
+
+
+    document.getElementById(
+        "confirmActionButton"
+    ).addEventListener("click", function () {
+
+        let form;
+
+        if (selectedAction === "suspend") {
+
+            form =
+                document.querySelector(
+                    '.suspend-form input[name="id"][value="' +
+                    selectedUserId +
+                    '"]'
+                ).closest("form");
+
+        }
+
+        if (selectedAction === "delete") {
+
+            form =
+                document.querySelector(
+                    '.delete-form input[name="id"][value="' +
+                    selectedUserId +
+                    '"]'
+                ).closest("form");
+
+        }
+
+        if (form) {
+
+            form.submit();
+
+        }
+
+    });
+
+
+    /* Close when clicking outside the box */
+
+    document.getElementById(
+        "confirmationOverlay"
+    ).addEventListener("click", function (event) {
+
+        if (event.target === this) {
+
+            closeConfirmation();
+
+        }
+
+    });
+
+</script>
