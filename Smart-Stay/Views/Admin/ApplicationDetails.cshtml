@@ -5,15 +5,16 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/AdminSidebar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ReviewListing.css" asp-append-version="true" />
 }
 
 <partial name="_AdminSidebar" />
 
-<div class="review-container" style="padding: 30px;">
+<div class="review-container">
     <h2>Review Listing Application</h2>
     <hr />
 
-    <div class="property-details" style="margin-bottom: 25px;">
+    <div class="property-details">
         <h3>@Model.Title</h3>
         <p><strong>Landlord:</strong> @Model.LandlordName</p>
         <p><strong>Description:</strong> @Model.Description</p>
@@ -22,36 +23,36 @@
         <p><strong>Property Type:</strong> @Model.PropertyType</p>
         <p><strong>Bedrooms:</strong> @(Model.Bedrooms?.ToString() ?? "N/A")</p>
         <p><strong>Bathrooms:</strong> @(Model.Bathrooms?.ToString() ?? "N/A")</p>
-        <p><strong>Application Date:</strong> @Model.ApplicationDate</p>
-        <p><strong>Status:</strong> @Model.ApplicationStatus</p>
+        <p><strong>Application Date:</strong> @Model.ApplicationDate.ToString("yyyy/MM/dd")</p>
+        <p><strong>Status:</strong> <span class="status-badge @Model.ApplicationStatus.ToLower()">@Model.ApplicationStatus</span></p>
     </div>
 
-    <div class="affidavit-section" style="margin-bottom: 25px;">
+    <div class="affidavit-section">
         <h4>Affidavit</h4>
         @if (!string.IsNullOrEmpty(Model.AffidavitPath))
         {
-            <a href="@Model.AffidavitPath" target="_blank">View Affidavit</a>
+            <a href="@Model.AffidavitPath" target="_blank" class="doc-link">View Affidavit</a>
         }
         else
         {
-            <p>No affidavit uploaded.</p>
+            <p class="empty-text">No affidavit uploaded.</p>
         }
     </div>
 
-    <div class="images-section" style="margin-bottom: 25px;">
+    <div class="images-section">
         <h4>Property Images</h4>
         @if (Model.ImagePaths != null && Model.ImagePaths.Any())
         {
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <div class="image-grid">
                 @foreach (var imagePath in Model.ImagePaths)
                 {
-                    <img src="@imagePath" alt="Property Image" style="width: 200px; height: 150px; object-fit: cover; border-radius: 6px;" />
+                    <img src="@imagePath" alt="Property Image" />
                 }
             </div>
         }
         else
         {
-            <p>No images uploaded.</p>
+            <p class="empty-text">No images uploaded.</p>
         }
     </div>
 
