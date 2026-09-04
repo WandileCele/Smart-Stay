@@ -1,0 +1,22 @@
+﻿@model bool
+@{
+    ViewData["Title"] = "Account Verified";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Smart Stay - Verified</title>
+    <link rel="stylesheet" href="~/css/register.css" />
+</head>
+<body>
+    <div class="register-wrapper" style="display:flex; align-items:center; justify-content:center;">
+        <div class="register-left" style="text-align:center;">
+            <h2 class="title">✅ Account Verified!</h2>
+            <p>Your account is now active. You can log in.</p>
+            <a asp-controller="Account" asp-action="Login" class="btn-register" style="display:inline-block; text-decoration:none; margin-top:15px;">Go to Login</a>
+        </div>
+    </div>
+</body>
+</html>

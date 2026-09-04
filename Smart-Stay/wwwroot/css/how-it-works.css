@@ -1,0 +1,481 @@
+﻿/* =========================================================
+   HOW IT WORKS PAGE
+========================================================= */
+
+.how-it-works-page {
+    padding: 45px 40px 80px;
+    background: #f7f9fb;
+    min-height: 700px;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.how-back-container {
+    max-width: 1100px;
+    margin: 0 auto 25px;
+}
+
+.how-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #0087c9;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+    .how-back-btn:hover {
+        background: #006fa6;
+        transform: translateY(-2px);
+    }
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.how-header {
+    max-width: 900px;
+    margin: 0 auto 40px;
+    text-align: center;
+}
+
+    .how-header h1 {
+        font-size: 36px;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 10px;
+    }
+
+    .how-header p {
+        color: #777;
+        font-size: 16px;
+        margin: 0;
+    }
+
+
+/* =========================================================
+   ROLE SELECTOR
+========================================================= */
+
+.role-selector {
+    max-width: 1100px;
+    margin: 0 auto 45px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+
+/* ROLE CARD */
+
+.role-card {
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+    .role-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+
+
+    /* ACTIVE ROLE */
+
+    .role-card.active {
+        border-color: #0087c9;
+        box-shadow: 0 8px 25px rgba(0, 135, 201, 0.18);
+    }
+
+
+/* ROLE ICON */
+
+.role-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e8f6fc;
+    color: #0087c9;
+    font-size: 28px;
+    transition: 0.25s ease;
+}
+
+.role-card.active .role-icon {
+    background: #0087c9;
+    color: white;
+}
+
+
+/* ROLE TEXT */
+
+.role-card h3 {
+    margin: 0 0 7px;
+    font-size: 19px;
+    font-weight: 700;
+    color: #222;
+}
+
+.role-card p {
+    margin: 0;
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ROLE CONTENT
+========================================================= */
+
+.role-content {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 18px;
+    padding: 40px 45px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    display: none;
+}
+
+
+    /* ACTIVE CONTENT */
+
+    .role-content.active {
+        display: block;
+        animation: roleFade 0.3s ease;
+    }
+
+
+/* CONTENT ANIMATION */
+
+@keyframes roleFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   ROLE TITLE
+========================================================= */
+
+.role-title {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 40px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #eee;
+}
+
+.large-role-icon {
+    width: 65px;
+    height: 65px;
+    min-width: 65px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0087c9;
+    color: white;
+    font-size: 27px;
+}
+
+.role-title h2 {
+    margin: 0 0 5px;
+    font-size: 27px;
+    font-weight: 700;
+    color: #222;
+}
+
+.role-title p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   STEPS
+========================================================= */
+
+.steps {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+
+    /* CONNECTING LINE */
+
+    .steps::before {
+        content: "";
+        position: absolute;
+        left: 24px;
+        top: 25px;
+        bottom: 25px;
+        width: 2px;
+        background: #d9edf5;
+    }
+
+
+/* =========================================================
+   INDIVIDUAL STEP
+========================================================= */
+
+.step {
+    position: relative;
+    display: flex;
+    gap: 25px;
+    padding-bottom: 32px;
+}
+
+    .step:last-child {
+        padding-bottom: 0;
+    }
+
+
+/* =========================================================
+   STEP NUMBER
+========================================================= */
+
+.step-number {
+    position: relative;
+    z-index: 2;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0087c9;
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    box-shadow: 0 3px 10px rgba(0, 135, 201, 0.25);
+}
+
+
+/* =========================================================
+   STEP CONTENT
+========================================================= */
+
+.step-content {
+    padding-top: 3px;
+}
+
+    .step-content h3 {
+        margin: 0 0 7px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #222;
+    }
+
+    .step-content p {
+        margin: 0;
+        color: #777;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+
+/* =========================================================
+   BOTTOM CTA
+========================================================= */
+
+.how-cta {
+    max-width: 900px;
+    margin: 45px auto 0;
+    padding: 40px;
+    text-align: center;
+    background: #0087c9;
+    color: white;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0, 135, 201, 0.20);
+}
+
+    .how-cta h2 {
+        margin: 0 0 8px;
+        font-size: 26px;
+        font-weight: 700;
+    }
+
+    .how-cta p {
+        margin: 0 0 22px;
+        font-size: 15px;
+        opacity: 0.95;
+    }
+
+
+/* CTA BUTTON */
+
+.how-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 25px;
+    border-radius: 10px;
+    background: white;
+    color: #0087c9;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition: 0.2s ease;
+}
+
+    .how-cta-btn:hover {
+        background: #f2f2f2;
+        color: #006fa6;
+        transform: translateY(-2px);
+    }
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .how-it-works-page {
+        padding: 35px 25px 60px;
+    }
+
+    .role-selector {
+        grid-template-columns: 1fr;
+    }
+
+    .role-card {
+        padding: 22px;
+    }
+
+    .role-content {
+        padding: 35px 30px;
+    }
+
+    .how-header h1 {
+        font-size: 31px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .how-it-works-page {
+        padding: 25px 18px 50px;
+    }
+
+    .how-header {
+        margin-bottom: 30px;
+    }
+
+        .how-header h1 {
+            font-size: 27px;
+        }
+
+        .how-header p {
+            font-size: 14px;
+        }
+
+    .role-selector {
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .role-card {
+        padding: 20px 15px;
+    }
+
+    .role-icon {
+        width: 55px;
+        height: 55px;
+        font-size: 23px;
+    }
+
+    .role-content {
+        padding: 25px 20px;
+    }
+
+    .role-title {
+        gap: 12px;
+        margin-bottom: 30px;
+    }
+
+    .large-role-icon {
+        width: 55px;
+        height: 55px;
+        min-width: 55px;
+        font-size: 23px;
+    }
+
+    .role-title h2 {
+        font-size: 23px;
+    }
+
+    .role-title p {
+        font-size: 13px;
+    }
+
+    .step {
+        gap: 17px;
+        padding-bottom: 27px;
+    }
+
+    .step-number {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        font-size: 15px;
+    }
+
+    .steps::before {
+        left: 20px;
+    }
+
+    .step-content h3 {
+        font-size: 16px;
+    }
+
+    .step-content p {
+        font-size: 13px;
+    }
+
+    .how-cta {
+        padding: 30px 20px;
+        margin-top: 30px;
+    }
+
+        .how-cta h2 {
+            font-size: 22px;
+        }
+}

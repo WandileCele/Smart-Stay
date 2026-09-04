@@ -1,74 +1,79 @@
 ﻿
 @model Smart_Stay.Models.LandlordDashboardViewModel
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-
-        <strong>Success!</strong> @TempData["SuccessMessage"]
-
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert">
-        </button>
-
-    </div>
-}
-
 @{
     ViewData["Title"] = "Landlord Dashboard";
 }
+
 @section Styles {
     <link rel="stylesheet" href="~/css/LanlordDashboard.css" asp-append-version="true" />
 }
 
 <div class="dashboard">
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+            <strong>Success!</strong> @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
     <div class="sidebar-container">
 
         <button class="menu-toggle" onclick="toggleMenu()">
             ☰
         </button>
 
-
         <div class="sidebar" id="sidebar">
 
             <h3>Landlord Menu</h3>
 
-           <a href="#properties">
-           <i class="bi bi-house-gear-fill"></i>
-              Update Property
-           </a> 
-
+            <a href="#properties">
+                <i class="bi bi-house-gear-fill"></i>
+                Update Property
+            </a>
 
             <a asp-controller="Applications"
-               asp-action="Index">
+               asp-action="ManageApplications">
                 📄 Manage Applications
             </a>
 
-
             <a asp-controller="Landlord"
-               asp-action="Profile">
-                👤 Update Profile
+               asp-action="UpdateProfile">
+                <i class="bi bi-person-circle"></i>
+                Update Profile
             </a>
 
+            <a asp-controller="Home"
+               asp-action="Index">
+                🏠 Home
+            </a>
 
         </div>
 
     </div>
+
     <div class="top-bar">
 
-   <form asp-controller="Account"
-          asp-action="Logout"
-          method="post">
+        <form asp-controller="Account"
+              asp-action="Logout"
+              method="post">
 
-        <button type="submit" class="logout-btn">
-            <i class="bi bi-box-arrow-right"></i>
-            Logout
-        </button>
+            <button type="submit" class="logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+            </button>
 
-    </form>
+        </form>
 
-</div>
+    </div>
 
     <div class="dashboard-header">
 
@@ -95,7 +100,6 @@
 
     </div>
 
-
     <a asp-controller="Properties"
        asp-action="Create"
        class="btn btn-primary">
@@ -104,65 +108,72 @@
 
     </a>
 
-
     <hr />
 
-
     <div id="properties" class="property-container">
-
 
         @foreach (var property in Model.Properties)
         {
 
             <div class="property-card">
 
-
                 <h3>@property.Title</h3>
 
+                <!-- PROPERTY DETAILS -->
 
-                <p>
-                    <strong>Location📍:</strong>
-                    @property.Location
+                <p class="property-detail">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <strong>Location:</strong>
+                    <span>@property.Location</span>
                 </p>
 
-
-                <p>
-                    @property.Bedrooms Bedrooms 🛏️ |
-                    @property.Bathrooms Bathrooms 🛁
+                <p class="property-detail">
+                    <i class="bi bi-house-door-fill"></i>
+                    <strong>Bedrooms:</strong>
+                    <span>@property.Bedrooms</span>
                 </p>
 
-
-                <p>
-                    <strong>Price 💰:</strong>
-                    R @property.Price.ToString("N2") / Month
+                <p class="property-detail">
+                    <i class="bi bi-droplet-fill"></i>
+                    <strong>Bathrooms:</strong>
+                    <span>@property.Bathrooms</span>
                 </p>
 
-
-                <p>
-                    <strong>Status 🔃:</strong>
-                    @property.Status
+                <p class="property-detail">
+                    <i class="bi bi-cash-stack"></i>
+                    <strong>Price:</strong>
+                    <span>
+                        R @property.Price.ToString("N2") / Month
+                    </span>
                 </p>
 
-
-                <p>
-                    <strong>Applications 🔢:</strong>
-                    @property.ApplicationCount
+                <p class="property-detail">
+                    <i class="bi bi-arrow-repeat"></i>
+                    <strong>Status:</strong>
+                    <span>@property.Status</span>
                 </p>
 
+                <p class="property-detail">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <strong>Applications:</strong>
+                    <span>@property.ApplicationCount</span>
+                </p>
 
 
                 <div class="card-buttons">
 
 
-                  <a asp-controller="Properties"
-                    asp-action="Details"
-                    asp-route-id="@property.PropertyID"
-                    asp-route-returnUrl="@Url.Action("Dashboard", "Landlord")"
-                  class="btn btn-info">
- 
-                   View
+                    <a asp-controller="Properties"
+                       asp-action="Details"
+                       asp-route-id="@property.PropertyID"
+                       asp-route-returnUrl="@Url.Action("Dashboard", "Landlord")"
+                       class="btn btn-info">
 
-                  </a>
+                        View
+
+                    </a>
+
+
                     <a asp-controller="Properties"
                        asp-action="Edit"
                        asp-route-id="@property.PropertyID"
@@ -171,6 +182,7 @@
                         Update Property
 
                     </a>
+
 
                     <form asp-controller="Properties"
                           asp-action="Delete"
@@ -188,66 +200,72 @@
                         </button>
 
                     </form>
-                      @if (property.Status == "Approved" ||
-                       property.Status == "Available" ||
-                       property.Status == "Occupied" ||
-                        property.Status == "Under Maintenance")
-                      {
-                       <form asp-controller="Properties"
-                        asp-action="UpdateStatus"
-                        asp-route-id="@property.PropertyID"
-                        method="get">
 
-                       <button type="submit"
-                       class="btn btn-status">
-                       Update Status
-                       </button>
 
-                       </form>
-                      }
-                       else if (property.Status == "Pending")
-                      {
-                      <button class="btn btn-warning" disabled>
-                       Waiting for Admin Approval
-                       </button>
-                       }
-                       else if (property.Status == "Rejected")
-                       {
-                       <button class="btn btn-danger" disabled>
-                         Rejected by Admin
-                       </button>
-                       }
+                    @if (property.Status == "Approved" ||
+                                    property.Status == "Available" ||
+                                    property.Status == "Occupied" ||
+                                    property.Status == "Under Maintenance")
+                    {
+                        <form asp-controller="Properties"
+                              asp-action="UpdateStatus"
+                              asp-route-id="@property.PropertyID"
+                              method="get">
+
+                            <button type="submit"
+                                    class="btn btn-status">
+                                Update Status
+                            </button>
+
+                        </form>
+                    }
+                    else if (property.Status == "Pending")
+                    {
+                        <button class="btn btn-warning" disabled>
+                            Waiting for Admin Approval
+                        </button>
+                    }
+                    else if (property.Status == "Rejected")
+                    {
+                        <button class="btn btn-danger" disabled>
+                            Rejected by Admin
+                        </button>
+                    }
 
 
                 </div>
 
 
             </div>
-                }
-    </div>
-
-
-</div
-@section Scripts {
-
-<script>
-
-function toggleMenu()
-{
-    var sidebar = document.getElementById("sidebar");
-
-    sidebar.classList.toggle("show");
-}
- setTimeout(function () {
-
-        var alert = document.querySelector(".alert");
-
-        if (alert) {
-            bootstrap.Alert.getOrCreateInstance(alert).close();
         }
 
-    }, 4000);
+    </div>
 
-</script>
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        function toggleMenu()
+        {
+            var sidebar = document.getElementById("sidebar");
+
+            sidebar.classList.toggle("show");
+        }
+
+        setTimeout(function () {
+
+            var alert = document.querySelector(".alert");
+
+            if (alert) {
+                bootstrap.Alert.getOrCreateInstance(alert).close();
+            }
+
+        }, 4000);
+
+    </script>
 
 }
+

@@ -1,4 +1,5 @@
-﻿@model List<Smart_Stay.Models.PropertyCardViewModel>
+﻿
+@model List<Smart_Stay.Models.PropertyCardViewModel>
 
 @{
     ViewData["Title"] = "Browse Properties";
@@ -9,8 +10,8 @@
     <style>
 
         /* =========================================================
-           PAGE
-        ========================================================= */
+                   PAGE
+                ========================================================= */
 
         .browse-page {
             padding: 35px 45px 60px;
@@ -20,29 +21,58 @@
 
 
         /* =========================================================
-           HEADER
-        ========================================================= */
+                   BACK TO DASHBOARD BUTTON
+                ========================================================= */
+
+        .browse-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            background: #0087c9;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 3px 10px rgba(0, 135, 201, 0.25);
+        }
+
+            .browse-back-btn:hover {
+                background: #006fa6;
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 14px rgba(0, 135, 201, 0.35);
+            }
+
+
+        /* =========================================================
+                   HEADER
+                ========================================================= */
 
         .browse-header {
             text-align: center;
             margin-bottom: 35px;
         }
 
-        .browse-header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
+            .browse-header h1 {
+                font-size: 32px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
 
-        .browse-header p {
-            color: #777;
-            font-size: 16px;
-        }
+            .browse-header p {
+                color: #777;
+                font-size: 16px;
+            }
 
 
         /* =========================================================
-           SEARCH AREA
-        ========================================================= */
+                   SEARCH AREA
+                ========================================================= */
 
         .property-search {
             display: flex;
@@ -55,7 +85,6 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
 
-
         .search-input {
             flex: 1;
             display: flex;
@@ -65,25 +94,22 @@
             background: white;
         }
 
+            .search-input input {
+                flex: 1;
+                border: none;
+                outline: none;
+                padding: 13px 16px;
+                font-size: 15px;
+            }
 
-        .search-input input {
-            flex: 1;
-            border: none;
-            outline: none;
-            padding: 13px 16px;
-            font-size: 15px;
-        }
-
-
-        .search-input button {
-            border: none;
-            background: #0087c9;
-            color: white;
-            padding: 0 20px;
-            cursor: pointer;
-            font-size: 17px;
-        }
-
+            .search-input button {
+                border: none;
+                background: #0087c9;
+                color: white;
+                padding: 0 20px;
+                cursor: pointer;
+                font-size: 17px;
+            }
 
         .property-search select {
             padding: 13px 15px;
@@ -94,7 +120,6 @@
             outline: none;
             cursor: pointer;
         }
-
 
         .filter-button {
             padding: 13px 25px;
@@ -107,15 +132,14 @@
             transition: 0.2s;
         }
 
-
-        .filter-button:hover {
-            background: #006fa6;
-        }
+            .filter-button:hover {
+                background: #006fa6;
+            }
 
 
         /* =========================================================
-           PROPERTY GRID
-        ========================================================= */
+                   PROPERTY GRID
+                ========================================================= */
 
         .browse-property-grid {
             display: grid;
@@ -123,43 +147,30 @@
             gap: 30px;
         }
 
-
-        /* =========================================================
-           PROPERTY LINK
-        ========================================================= */
-
         .browse-property-link {
             text-decoration: none;
             color: inherit;
             display: block;
         }
 
-
-        /* =========================================================
-           PROPERTY CARD
-        ========================================================= */
-
         .browse-property-card {
             background: white;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 5px 18px rgba(0,0,0,0.08);
-            transition: transform 0.25s ease,
-                        box-shadow 0.25s ease;
-
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
             height: 100%;
         }
 
-
-        .browse-property-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.14);
-        }
+            .browse-property-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.14);
+            }
 
 
         /* =========================================================
-           IMAGE
-        ========================================================= */
+                   IMAGE
+                ========================================================= */
 
         .property-image {
             width: 100%;
@@ -168,13 +179,11 @@
             background: #eef3f5;
         }
 
-
-        .property-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
+            .property-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
 
         .no-image {
             height: 100%;
@@ -187,22 +196,20 @@
 
 
         /* =========================================================
-           CARD CONTENT
-        ========================================================= */
+                   CARD CONTENT
+                ========================================================= */
 
         .property-card-content {
             padding: 20px;
-            text-align:left;
+            text-align: left;
         }
 
-
-        .property-card-content h3 {
-            font-size: 21px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #222;
-        }
-
+            .property-card-content h3 {
+                font-size: 21px;
+                font-weight: 700;
+                margin-bottom: 8px;
+                color: #222;
+            }
 
         .property-details {
             color: #777;
@@ -210,6 +217,10 @@
             font-size: 14px;
         }
 
+            .property-details i {
+                color: #0087c9;
+                margin-right: 4px;
+            }
 
         .property-location {
             color: #555;
@@ -217,18 +228,31 @@
             margin-bottom: 12px;
         }
 
-
-        .property-card-content h4 {
-            color: #0087c9;
-            font-size: 19px;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
+            .property-location i {
+                color: #0087c9;
+                margin-right: 4px;
+            }
 
 
         /* =========================================================
-           RATINGS
-        ========================================================= */
+                   PRICE
+                ========================================================= */
+
+        .property-card-content h4 {
+            color: #0087c9;
+            font-size: 14px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+            .property-card-content h4 i {
+                margin-right: 4px;
+            }
+
+
+        /* =========================================================
+                   RATINGS
+                ========================================================= */
 
         .property-rating {
             display: flex;
@@ -237,24 +261,15 @@
             min-height: 24px;
         }
 
+            .property-rating i {
+                font-size: 16px;
+                color: #ccc;
+            }
 
-        .star {
-            font-size: 18px;
-            color: #ccc;
-        }
-
-
-        .star.filled {
-            color: #f5b301;
-        }
-
-
-        .stars {
-            font-size: 18px;
-            color: #ccc;
-            letter-spacing: 1px;
-        }
-
+            .property-rating .fa-solid.fa-star,
+            .property-rating .fa-solid.fa-star-half-stroke {
+                color: #f5b301;
+            }
 
         .rating-number {
             margin-left: 6px;
@@ -263,14 +278,12 @@
             color: #555;
         }
 
-
         .review-count {
             font-size: 13px;
             color: #888;
         }
 
-
-        .no-reviews {
+        .no-rating {
             font-size: 13px;
             color: #999;
             margin-left: 5px;
@@ -278,29 +291,33 @@
 
 
         /* =========================================================
-           NO RESULTS
-        ========================================================= */
+                   NO RESULTS
+                ========================================================= */
 
         .no-results {
             text-align: center;
             padding: 70px 20px;
         }
 
+            .no-results i {
+                font-size: 40px;
+                color: #ccc;
+                margin-bottom: 15px;
+            }
 
-        .no-results h2 {
-            font-size: 25px;
-            margin-bottom: 10px;
-        }
+            .no-results h2 {
+                font-size: 25px;
+                margin-bottom: 10px;
+            }
 
-
-        .no-results p {
-            color: #777;
-        }
+            .no-results p {
+                color: #777;
+            }
 
 
         /* =========================================================
-           RESPONSIVE
-        ========================================================= */
+                   RESPONSIVE
+                ========================================================= */
 
         @@media (max-width: 1100px) {
 
@@ -316,7 +333,6 @@
                 width: 100%;
                 flex: none;
             }
-
         }
 
 
@@ -335,9 +351,9 @@
                 align-items: stretch;
             }
 
-            .property-search select {
-                width: 100%;
-            }
+                .property-search select {
+                    width: 100%;
+                }
 
             .filter-button {
                 width: 100%;
@@ -348,27 +364,8 @@
             }
 
             .browse-back-btn {
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                padding: 12px 24px;
-                border: none;
-                border-radius: 10px;
-                background: #0087c9;
-                color: white;
-                font-weight: 600;
-                font-size: 14px;
-                text-decoration: none;
-                cursor: pointer;
-                transition: 0.2s;
-                box-shadow: 0 3px 10px rgba(0, 135, 201, 0.25);
+                width: fit-content;
             }
-
-                .browse-back-btn:hover {
-                    background: #006fa6;
-                    transform: translateY(-2px);
-                    box-shadow: 0 5px 14px rgba(0, 135, 201, 0.35);
-                }
         }
 
     </style>
@@ -377,14 +374,25 @@
 
 <div class="browse-page">
 
-        <div style="margin-bottom: 20px;">
-         
-            <a asp-controller="Tenant" asp-action="Dashboard" class="browse-back-btn">
-                &laquo; Back to Dashboard
-            </a>
-        </div>
 
-        <div class="browse-header">
+    <!-- =========================================================
+         BACK TO DASHBOARD
+    ========================================================= -->
+
+    <div style="margin-bottom: 20px;">
+
+        <a asp-controller="Tenant"
+           asp-action="Dashboard"
+           class="browse-back-btn">
+
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Dashboard
+
+        </a>
+
+    </div>
+
+
     <!-- =========================================================
          HEADER
     ========================================================= -->
@@ -392,7 +400,7 @@
     <div class="browse-header">
 
         <h1>
-            Find Your Perfect Accommodation 🏠
+            Find Your Perfect Accommodation
         </h1>
 
         <p>
@@ -401,7 +409,6 @@
         </p>
 
     </div>
-
 
 
     <!-- =========================================================
@@ -413,9 +420,6 @@
           method="get"
           class="property-search">
 
-
-        <!-- SEARCH -->
-
         <div class="search-input">
 
             <input type="text"
@@ -424,14 +428,11 @@
                    placeholder="Search property or location..." />
 
             <button type="submit">
-                🔍
+                <i class="fa-solid fa-magnifying-glass"></i>
             </button>
 
         </div>
 
-
-
-        <!-- LOCATION -->
 
         <select name="location">
 
@@ -472,9 +473,6 @@
         </select>
 
 
-
-        <!-- PRICE -->
-
         <select name="price">
 
             <option value="">
@@ -499,9 +497,6 @@
         </select>
 
 
-
-        <!-- SEARCH BUTTON -->
-
         <button type="submit"
                 class="filter-button">
 
@@ -510,7 +505,6 @@
         </button>
 
     </form>
-
 
 
     <!-- =========================================================
@@ -530,106 +524,111 @@
                    asp-route-id="@item.PropertyID"
                    asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">
 
-
                     <div class="browse-property-card">
 
 
-                        <!-- IMAGE -->
+                        <!-- PROPERTY IMAGE -->
 
                         <div class="property-image">
 
                             @if (!string.IsNullOrEmpty(item.ImagePath))
                             {
+
                                 <img src="@item.ImagePath"
                                      alt="@item.Title" />
+
                             }
                             else
                             {
+
                                 <div class="no-image">
-                                    🏠
+
+                                    <i class="fa-solid fa-house-circle-xmark"></i>
+
                                 </div>
+
                             }
 
                         </div>
 
 
-
-                        <!-- CONTENT -->
+                        <!-- PROPERTY INFORMATION -->
 
                         <div class="property-card-content">
-
 
                             <h3>
                                 @item.Title
                             </h3>
 
 
+                            <!-- BEDROOMS -->
+
                             <p class="property-details">
 
+                                <i class="fa-solid fa-bed"></i>
                                 @item.Bedrooms Bedrooms
-                                •
+
+                            </p>
+
+
+                            <!-- BATHROOMS -->
+
+                            <p class="property-details">
+
+                                <i class="fa-solid fa-bath"></i>
                                 @item.Bathrooms Bathrooms
 
                             </p>
 
 
+                            <!-- LOCATION -->
+
                             <p class="property-location">
 
-                                <span>📍</span>
+                                <i class="fa-solid fa-location-dot"></i>
                                 @item.Location
 
                             </p>
 
 
+                            <!-- PRICE -->
+
                             <h4>
 
-                                R @item.Price.ToString("N0") / PM
+                                <i class="fa-solid fa-money-bill"></i>
+                                R @item.Price.ToString("N2") / PM
 
                             </h4>
-
 
 
                             <!-- RATING -->
 
                             <div class="property-rating">
 
-
-                                @if (item.ReviewCount == 0 ||
-                                                        !item.AverageRating.HasValue)
+                                @if (item.AverageRating.HasValue)
                                 {
 
-                                    <span class="stars">
-                                        ☆☆☆☆☆
-                                    </span>
+                                    var fullStars =
+                                    (int)Math.Floor(item.AverageRating.Value);
 
-                                    <span class="no-reviews">
-                                        No reviews yet
-                                    </span>
-
-                                }
-                                else
-                                {
-
-                                    var roundedRating =
-                                    (int)Math.Round(
-                                    item.AverageRating.Value,
-                                    MidpointRounding.AwayFromZero);
+                                    var hasHalfStar =
+                                    item.AverageRating.Value - fullStars >= 0.5;
 
 
                                     @for (int i = 1; i <= 5; i++)
                                     {
 
-                                        if (i <= roundedRating)
+                                        if (i <= fullStars)
                                         {
-                                            <span class="star filled">
-                                                ★
-                                            </span>
+                                            <i class="fa-solid fa-star"></i>
+                                        }
+                                        else if (i == fullStars + 1 && hasHalfStar)
+                                        {
+                                            <i class="fa-solid fa-star-half-stroke"></i>
                                         }
                                         else
                                         {
-                                            <span class="star">
-                                                ☆
-                                            </span>
+                                            <i class="fa-regular fa-star"></i>
                                         }
 
                                     }
@@ -639,14 +638,25 @@
                                         @item.AverageRating.Value.ToString("0.0")
                                     </span>
 
+
                                     <span class="review-count">
                                         (@item.ReviewCount)
                                     </span>
 
                                 }
+                                else
+                                {
+
+                                    <span class="no-rating">
+
+                                        <i class="fa-regular fa-star"></i>
+                                        No ratings yet
+
+                                    </span>
+
+                                }
 
                             </div>
-
 
                         </div>
 
@@ -668,8 +678,10 @@
 
         <div class="no-results">
 
+            <i class="fa-solid fa-house-circle-xmark"></i>
+
             <h2>
-                No accommodations found 😕
+                No accommodations found
             </h2>
 
             <p>
@@ -681,3 +693,4 @@
     }
 
 </div>
+```

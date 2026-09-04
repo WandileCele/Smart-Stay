@@ -1,42 +1,42 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
     margin-bottom: 0px;
     font-family: Arial;
-
 }
+
 .header {
     position: absolute;
     width: 100%;
     z-index: 100;
 }
+
 .hero {
     background-image: url('../images/timeless elegance meets sustainability_ invest in novaspace passive housing today (1).jpg');
     height: 650px;
     background-size: cover;
     background-position: center;
-    color:white;
-    width:100%;
-
-
+    color: white;
+    width: 100%;
 }
+
 nav {
     display: flex;
     justify-content: space-between;
@@ -53,9 +53,11 @@ nav {
         width: 60px;
         margin-right: 15px;
     }
+
     .logo h1 {
         font-size: 42px;
     }
+
 .buttons .btn {
     text-decoration: none;
     color: black;
@@ -66,6 +68,7 @@ nav {
     font-weight: bold;
     border: 2px solid black;
 }
+
 .hero-content {
     width: 75%;
     margin: auto;
@@ -132,6 +135,11 @@ nav {
             text-decoration: underline;
         }
 
+
+/* ============================================================
+   PROPERTY CARDS
+============================================================ */
+
 .cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -186,15 +194,18 @@ nav {
         font-weight: bold;
     }
 
-@media (max-width: 992px) {
 
+/* ============================================================
+   RESPONSIVE CARDS
+============================================================ */
+
+@media (max-width: 992px) {
     .cards {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 768px) {
-
     .cards {
         grid-template-columns: 1fr;
     }
@@ -205,6 +216,11 @@ nav {
         gap: 10px;
     }
 }
+
+
+/* ============================================================
+   STARS / RATING
+============================================================ */
 
 .stars {
     color: gold;
@@ -219,29 +235,32 @@ nav {
     font-size: 24px;
     border-top: 1px solid #eee;
 }
+
 .rating {
-    margin-top: auto;
-    padding-top: 10px;
+    margin-top: 4px;
+    padding: 0 18px 15px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     text-align: left;
     font-size: 16px;
 }
- .rating .fa-star,
- .rating .fa-star-half-stroke
- {
-        margin-right: 3px;
- }
 
- .rating span {
-      margin-left: 7px;
-       font-size: 14px;
- }
+    .rating .fa-star,
+    .rating .fa-star-half-stroke,
+    .rating .fa-regular.fa-star {
+        margin-right: 3px;
+    }
+
+    .rating span {
+        margin-left: 7px;
+        font-size: 14px;
+    }
 
 .no-rating {
     font-size: 14px;
 }
+
 .rating .fa-star,
 .rating .fa-star-half-stroke {
     color: #f5b301;
@@ -250,12 +269,48 @@ nav {
 .rating .fa-regular.fa-star {
     color: #ccc;
 }
-.fa-solid fa-money-bill{
-    color:forestgreen;
+
+
+/* ============================================================
+   MONEY
+============================================================ */
+
+.fa-solid.fa-money-bill {
+    color: forestgreen;
 }
-#money{
-    color:green;
+
+#money {
+    color: green;
 }
+
+
+/* ============================================================
+   APPLY BUTTON
+============================================================ */
+
+.apply-button {
+    display: inline-block;
+    margin: 5px 18px 0;
+    padding: 7px 16px;
+    border-radius: 20px;
+    background: #198754;
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+    .apply-button:hover {
+        background: #157347;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+
+/* ============================================================
+   HERO SEARCH
+============================================================ */
 
 .hero-search {
     display: flex;
@@ -326,3 +381,361 @@ nav {
         flex-direction: column;
     }
 }
+
+
+/* ============================================================
+   TYPEWRITER
+============================================================ */
+
+#typewriter {
+    color: #2563eb;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+    #typewriter::after {
+        content: "|";
+        color: #2563eb;
+        animation: blink 0.8s infinite;
+        margin-left: 2px;
+    }
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+
+/* ============================================================
+   ABOUT PAGE
+============================================================ */
+
+.about-wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .about-wrap::before,
+    .about-wrap::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        opacity: 0.15;
+        z-index: -1;
+        animation: blobFloat 12s ease-in-out infinite;
+    }
+
+    .about-wrap::before {
+        width: 300px;
+        height: 300px;
+        background: #2563eb;
+        top: -50px;
+        left: -100px;
+    }
+
+    .about-wrap::after {
+        width: 250px;
+        height: 250px;
+        background: #60a5fa;
+        bottom: 0;
+        right: -80px;
+        animation-delay: 3s;
+    }
+
+@keyframes blobFloat {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(30px, -20px);
+    }
+}
+
+.about-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 30px;
+    transition: color 0.2s ease, transform 0.2s ease;
+    opacity: 0;
+    animation: aboutFadeUp 0.6s ease forwards;
+}
+
+    .about-back:hover {
+        color: #2563eb;
+        transform: translateX(-4px);
+    }
+
+.about-intro {
+    text-align: center;
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: aboutFadeUp 0.6s ease forwards;
+    animation-delay: 0.15s;
+}
+
+.about-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.about-desc {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #555;
+    line-height: 1.7;
+}
+
+.about-team-heading {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: aboutFadeUp 0.6s ease forwards;
+    animation-delay: 0.35s;
+}
+
+@keyframes aboutFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.about-team {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+}
+
+
+/* Scroll-triggered reveal for each team card */
+
+.team-member {
+    text-align: center;
+    max-width: 240px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    perspective: 800px;
+}
+
+    .team-member.in-view {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+
+/* Gradient spinning ring around photo + tilt on hover */
+
+.team-photo-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 16px;
+    transition: transform 0.3s ease;
+}
+
+    .team-photo-wrap::before {
+        content: "";
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, #2563eb, #60a5fa, #2563eb);
+        animation: ringSpin 4s linear infinite;
+    }
+
+.team-photo {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    z-index: 1;
+    display: block;
+    margin: 0 auto;
+}
+
+@keyframes ringSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.team-member:hover .team-photo-wrap {
+    transform: rotateY(8deg) rotateX(4deg) scale(1.05);
+}
+
+.team-name {
+    position: relative;
+    display: inline-block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    transition: letter-spacing 0.25s ease;
+}
+
+    .team-name::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 0;
+        height: 2px;
+        background: #2563eb;
+        transition: width 0.3s ease;
+    }
+
+.team-member:hover .team-name {
+    letter-spacing: 1px;
+}
+
+    .team-member:hover .team-name::after {
+        width: 100%;
+    }
+
+.team-desc {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   NO PROPERTIES
+============================================================ */
+
+.no-properties {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+    .no-properties i {
+        font-size: 3rem;
+        color: #b0b8c9;
+        margin-bottom: 16px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .no-properties h3 {
+        font-size: 1.3rem;
+        color: #555;
+        margin-bottom: 6px;
+    }
+
+    .no-properties p {
+        color: #999;
+        font-size: 0.95rem;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+/* =========================================================
+   LANDLORD CONTACT ICONS
+========================================================= */
+
+.landlord-contact {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0 16px;
+    border-top: 1px solid #eeeeee;
+    margin-top: 8px;
+}
+
+.contact-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: #f1f3f5;
+    color: #333333;
+    font-size: 16px;
+    transition: 0.2s ease;
+}
+
+    .contact-icon:hover {
+        transform: translateY(-2px);
+        background: #e9ecef;
+    }
+
+    /* WhatsApp */
+    .contact-icon.whatsapp {
+        color: #25D366;
+    }
+
+        .contact-icon.whatsapp:hover {
+            background: #25D366;
+            color: #ffffff;
+        }
+
+    /* Facebook */
+    .contact-icon.facebook {
+        color: #1877F2;
+    }
+
+        .contact-icon.facebook:hover {
+            background: #1877F2;
+            color: #ffffff;
+        }
+
+    /* Phone */
+    .contact-icon:not(.whatsapp):not(.facebook) {
+        color: #2563eb;
+    }
+
+        .contact-icon:not(.whatsapp):not(.facebook):hover {
+            background: #2563eb;
+            color: #ffffff;
+        }
+

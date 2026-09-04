@@ -1,0 +1,315 @@
+﻿@{
+    ViewData["Title"] = "Support Center";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/support.css" asp-append-version="true" />
+}
+
+<div class="support-page">
+
+    <!-- BACK BUTTON -->
+    <div class="support-back-container">
+
+        <a href="@(
+           !string.IsNullOrWhiteSpace(ViewBag.ReturnUrl) &&
+           Url.IsLocalUrl(ViewBag.ReturnUrl)
+               ? ViewBag.ReturnUrl
+               : Url.Action("Index", "Home")
+        )" class="support - back - btn">
+
+            <i class="bi bi-arrow-left"></i>
+            Back
+
+        </a>
+
+    </div>
+    <!-- HEADER -->
+    <div class="support-header">
+
+        <div class="support-header-icon">
+            <i class="bi bi-headset"></i>
+        </div>
+
+        <h1>Support Center</h1>
+
+        <p>
+            We're here to help you get the most out of Smart Stay.
+            Choose your account type below or contact our support team.
+        </p>
+
+    </div>
+
+
+    <!-- SUPPORT CATEGORIES -->
+    <div class="support-section">
+
+        <h2>How Can We Help You?</h2>
+
+        <p class="support-section-intro">
+            Select the category that best matches your needs.
+        </p>
+
+
+        <div class="support-categories">
+
+
+            <!-- TENANT -->
+            <div class="support-card">
+
+                <div class="support-card-icon tenant-icon">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+
+                <h3>Tenant Support</h3>
+
+                <p>
+                    Get help finding accommodation, applying for
+                    properties, booking viewings and managing your
+                    Smart Stay account.
+                </p>
+
+                <ul>
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Finding a property
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Applying for accommodation
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Booking property viewings
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Managing your account
+                    </li>
+                </ul>
+
+            </div>
+
+
+            <!-- LANDLORD -->
+            <div class="support-card">
+
+                <div class="support-card-icon landlord-icon">
+                    <i class="bi bi-building"></i>
+                </div>
+
+                <h3>Landlord Support</h3>
+
+                <p>
+                    Get help listing your property, managing applications,
+                    uploading documents and managing your accommodation.
+                </p>
+
+                <ul>
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Adding a property
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Managing property listings
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Managing tenant applications
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Uploading property documents
+                    </li>
+                </ul>
+
+            </div>
+
+
+            <!-- ADMIN -->
+            <div class="support-card">
+
+                <div class="support-card-icon admin-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+
+                <h3>Admin Support</h3>
+
+                <p>
+                    Get help managing users, verifying landlords,
+                    reviewing properties and maintaining the Smart Stay
+                    platform.
+                </p>
+
+                <ul>
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Managing users
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Verifying landlords
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Reviewing properties
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle"></i>
+                        Managing applications
+                    </li>
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUICK SUPPORT -->
+    <div class="quick-support-section">
+
+        <h2>Quick Support</h2>
+
+        <p>
+            Looking for something specific? Try one of these options.
+        </p>
+
+
+        <div class="quick-support-grid">
+
+
+            <!-- FAQ -->
+            <a asp-controller="Home"
+               asp-action="FAQs"
+               asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString"
+               class="quick-support-card">
+
+                <div class="quick-icon">
+                    <i class="bi bi-question-circle"></i>
+                </div>
+
+                <div>
+                    <h3>Frequently Asked Questions</h3>
+                    <p>
+                        Find answers to common Smart Stay questions.
+                    </p>
+                </div>
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+
+            <!-- HOW IT WORKS -->
+            <a asp-controller="Home"
+               asp-action="HowItWorks"
+               asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString"
+               class="quick-support-card">
+
+                <div class="quick-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+
+                <div>
+                    <h3>How It Works</h3>
+                    <p>
+                        Learn how Smart Stay works for each user type.
+                    </p>
+                </div>
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+
+            <!-- CONTACT -->
+            <a asp-controller="Home"
+               asp-action="Contact"
+               asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString"
+               class="quick-support-card">
+
+                <div class="quick-icon">
+                    <i class="bi bi-envelope"></i>
+                </div>
+
+                <div>
+                    <h3>Contact Support</h3>
+                    <p>
+                        Send us a message and our team will assist you.
+                    </p>
+                </div>
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+
+            <!-- ABOUT -->
+            <a asp-controller="Home"
+               asp-action="About"
+               asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString"
+               class="quick-support-card">
+
+                <div class="quick-icon">
+                    <i class="bi bi-house-heart"></i>
+                </div>
+
+                <div>
+                    <h3>About Smart Stay</h3>
+                    <p>
+                        Learn more about Smart Stay and what we offer.
+                    </p>
+                </div>
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTACT SUPPORT BANNER -->
+    <div class="support-contact-banner">
+
+        <div class="support-contact-icon">
+            <i class="bi bi-headset"></i>
+        </div>
+
+        <div class="support-contact-text">
+
+            <h2>Still Need Help?</h2>
+
+            <p>
+                Can't find what you're looking for?
+                Our support team is ready to assist you.
+            </p>
+
+        </div>
+
+        <a asp-controller="Home"
+           asp-action="Contact"
+           asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString"
+           class="support-contact-btn">
+
+            Contact Support
+            <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+    </div>
+
+</div>

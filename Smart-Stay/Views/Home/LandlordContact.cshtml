@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Contact Landlord";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/LandlordContact.css" asp-append-version="true" />
+}
+
+<div class="landlord-contact-page">
+
+    <div class="landlord-contact-card">
+
+        <div class="landlord-contact-icon">
+            <i class="fa-solid fa-phone"></i>
+        </div>
+
+        <h1>Contact Landlord</h1>
+
+        <p class="landlord-contact-intro">
+            You can contact the landlord of this property using the
+            phone number below.
+        </p>
+
+        <div class="property-contact-info">
+
+            <span>PROPERTY</span>
+
+            <h2>@ViewBag.PropertyTitle</h2>
+
+        </div>
+
+        <div class="landlord-info">
+
+            <span>LANDLORD</span>
+
+            <h3>@ViewBag.LandlordName</h3>
+
+        </div>
+
+        <div class="phone-box">
+
+            <i class="fa-solid fa-phone"></i>
+
+            <a href="tel:@ViewBag.LandlordPhone">
+                @ViewBag.LandlordPhone
+            </a>
+
+        </div>
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="back-button">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to Properties
+
+        </a>
+
+    </div>
+
+</div>

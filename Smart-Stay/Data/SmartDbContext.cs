@@ -182,6 +182,8 @@ public partial class SmartDbContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("rentalApplicationStatus");
             entity.Property(e => e.TenantId).HasColumnName("tenantID");
+            entity.Property(e => e.LeaseStartDate).HasColumnName("leaseStartDate");
+            entity.Property(e => e.LeaseEndDate).HasColumnName("leaseEndDate");
 
             entity.HasOne(d => d.Landlord).WithMany(p => p.RentalApplications)
                 .HasForeignKey(d => d.LandlordId)
@@ -269,6 +271,12 @@ public partial class SmartDbContext : DbContext
             entity.Property(e => e.SurName)
                 .HasMaxLength(50)
                 .HasColumnName("surName");
+            entity.Property(e => e.ProfileImagePath)
+        .HasMaxLength(255)
+        .HasColumnName("ProfileImagePath");
+
+            entity.HasIndex(e => e.Email)
+                .IsUnique();
         });
 
         OnModelCreatingPartial(modelBuilder);

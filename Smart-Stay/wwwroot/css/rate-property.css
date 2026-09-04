@@ -1,0 +1,324 @@
+﻿
+/* ============================================================
+   RATE PROPERTY PAGE
+============================================================ */
+.rate-property-page {
+    min-height: 100vh;
+    padding: 50px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+
+/* ============================================================
+   MAIN CARD
+============================================================ */
+
+.rate-property-card {
+    width: 100%;
+    max-width: 650px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.rate-property-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.rate-icon {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+.rate-property-header h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    color: #222;
+}
+
+
+/* ============================================================
+   PROPERTY NAME
+============================================================ */
+
+.property-name {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background: #f3f4f6;
+    color: #222;
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.rate-property-header p {
+    margin-top: 15px;
+    color: #777;
+    font-size: 15px;
+}
+
+
+/* ============================================================
+   RATING SECTION
+============================================================ */
+
+.rating-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.rating-label {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #333;
+}
+
+
+/* ============================================================
+   STAR RATING
+============================================================ */
+
+.star-rating {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 16px;
+    background: #fafafa;
+}
+
+
+    /* Hide radio buttons */
+
+    .star-rating input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+
+    /* Individual stars */
+
+    .star-rating label {
+        display: inline-block;
+        font-size: 45px;
+        line-height: 1;
+        color: #d5d5d5;
+        cursor: pointer;
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+
+        /* ============================================================
+   STAR HOVER
+============================================================ */
+
+        /* Highlight the hovered star */
+
+        .star-rating label:hover {
+            color: #f5b301;
+            transform: scale(1.15);
+        }
+
+
+            /* Highlight the hovered star and all stars before it */
+
+            .star-rating label:hover ~ label {
+                color: #f5b301;
+            }
+
+
+    /* ============================================================
+   SELECTED STAR
+============================================================ */
+
+    /* Highlight selected star and all stars to its left */
+
+    .star-rating input:checked ~ label {
+        color: #f5b301;
+    }
+
+
+    /* Slightly enlarge the selected stars */
+
+    .star-rating input:checked ~ label {
+        transform: scale(1.05);
+    }
+
+
+    /* ============================================================
+   KEYBOARD ACCESSIBILITY
+============================================================ */
+
+    .star-rating input:focus-visible + label {
+        outline: 3px solid rgba(245, 179, 1, 0.35);
+        outline-offset: 4px;
+        border-radius: 6px;
+    }
+
+
+/* ============================================================
+   RATING HELP
+============================================================ */
+
+.rating-help {
+    margin-top: 12px;
+    color: #999;
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   COMMENT
+============================================================ */
+
+.comment-section {
+    margin-bottom: 30px;
+}
+
+.comment-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #333;
+}
+
+.comment-section textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
+    resize: vertical;
+    min-height: 140px;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .comment-section textarea:focus {
+        border-color: #777;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+.character-limit {
+    margin-top: 7px;
+    text-align: right;
+    color: #999;
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+
+.rating-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.cancel-rating,
+.submit-rating {
+    border-radius: 10px;
+    padding: 11px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+
+/* ============================================================
+   CANCEL
+============================================================ */
+
+.cancel-rating {
+    background: #f1f1f1;
+    color: #444;
+}
+
+    .cancel-rating:hover {
+        background: #e4e4e4;
+    }
+
+
+/* ============================================================
+   SUBMIT
+============================================================ */
+
+.submit-rating {
+    border: none;
+    background: #222;
+    color: white;
+}
+
+    .submit-rating:hover {
+        background: #444;
+    }
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 600px) {
+
+    .rate-property-page {
+        padding: 25px 15px;
+    }
+
+    .rate-property-card {
+        padding: 25px 20px;
+        border-radius: 15px;
+    }
+
+    .rate-property-header h1 {
+        font-size: 25px;
+    }
+
+    .property-name {
+        font-size: 17px;
+    }
+
+    .star-rating {
+        gap: 3px;
+        padding: 8px 10px;
+    }
+
+        .star-rating label {
+            font-size: 38px;
+        }
+
+    .rating-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .cancel-rating,
+    .submit-rating {
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+}

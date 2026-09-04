@@ -1,149 +1,57 @@
-﻿@model Smart_Stay.Models.TenantDashboardViewModel
+﻿
+@model Smart_Stay.Models.TenantDashboardViewModel
 
 @{
     ViewData["Title"] = "Tenant Dashboard";
 }
 
 @section Styles {
-    <link rel="stylesheet"
-          href="~/css/tenant-dashboard.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/tenant-dashboard.css" asp-append-version="true" />
 }
-
 
 <div class="tenant-dashboard">
 
-    <!-- =====================================================
-         SIDEBAR
-         COLLAPSED BY DEFAULT
-    ====================================================== -->
+    <div class="sidebar-container">
 
-    <aside class="tenant-sidebar collapsed"
-           id="tenantSidebar">
+        <button class="menu-toggle" onclick="toggleMenu()">
+            ☰
+        </button>
 
-        <h2>Tenant Menu</h2>
+        <div class="sidebar" id="sidebar">
 
-        <nav class="tenant-navigation">
+            <h3>Tenant Menu</h3>
 
-            <!-- DASHBOARD -->
-
-            <a asp-controller="Tenant"
-               asp-action="Dashboard"
-               class="tenant-nav-link active">
-
-                <span class="nav-icon">🏠</span>
-
-                <span class="nav-text">
-                    Dashboard
-                </span>
-
+            <a asp-controller="Tenant" asp-action="Dashboard">
+                <i class="bi bi-speedometer2"></i>
+                Dashboard
             </a>
 
-
-            <!-- MY APPLICATIONS -->
-
-            <a href="#applications"
-               class="tenant-nav-link">
-
-                <span class="nav-icon">📋</span>
-
-                <span class="nav-text">
-                    My Applications
-                </span>
-
+            <a href="#applications">
+                <i class="bi bi-file-earmark-text-fill"></i>
+                My Applications
             </a>
 
-
-            <!-- UPDATE PROFILE -->
-
-            <a asp-controller="Account"
-               asp-action="Profile"
-               class="tenant-nav-link">
-
-                <span class="nav-icon">👤</span>
-
-                <span class="nav-text">
-                    Update Profile
-                </span>
-
+            <a asp-controller="Tenant" asp-action="BrowseProperties">
+                <i class="bi bi-search"></i>
+                Browse Properties
             </a>
 
-
-            <!-- BROWSE PROPERTIES -->
-
-            <a asp-controller="Tenant"
-               asp-action="BrowseProperties"
-               class="tenant-nav-link">
-
-                <span class="nav-icon">🔍</span>
-
-                <span class="nav-text">
-                    Browse Properties
-                </span>
-
+            <a asp-controller="Tenant" asp-action="UpdateProfile">
+                <i class="bi bi-person-circle"></i>
+                Update Profile
             </a>
 
-        </nav>
-
-
-        <!-- =================================================
-             SIDEBAR LOGOUT
-        ================================================== -->
-
-        <div class="tenant-sidebar-bottom">
-
-            <form asp-controller="Account"
-                  asp-action="Logout"
-                  method="post">
-
-                @Html.AntiForgeryToken()
-
-                <button type="submit"
-                        class="tenant-nav-link logout-link">
-
-                    <span class="nav-icon">🚪</span>
-
-                    <span class="nav-text">
-                        Logout
-                    </span>
-
-                </button>
-
-            </form>
+            <a asp-controller="Home" asp-action="Index">
+                <i class="bi bi-house-door"></i>
+                Back to Main Site
+            </a>
 
         </div>
 
-    </aside>
+    </div>
 
-
-    <!-- =====================================================
-         SIDEBAR TOGGLE BUTTON
-
-         Starts in the top-left corner because the sidebar
-         starts collapsed.
-    ====================================================== -->
-
-    <button class="sidebar-menu-button sidebar-closed"
-            id="sidebarToggle"
-            type="button"
-            aria-label="Toggle navigation">
-
-        ☰
-
-    </button>
-
-
-    <!-- =====================================================
-         MAIN CONTENT
-    ====================================================== -->
-
-    <main class="tenant-main expanded"
-          id="tenantMain">
-
-
-        <!-- =================================================
-             HEADER
-        ================================================== -->
+    <main class="tenant-main expanded" id="tenantMain">
 
         <div class="tenant-header">
 
@@ -160,104 +68,61 @@
 
             </div>
 
-
-            <!-- TOP RIGHT LOGOUT -->
-
             <form asp-controller="Account"
                   asp-action="Logout"
                   method="post">
 
                 @Html.AntiForgeryToken()
 
-                <button type="submit"
-                        class="tenant-logout">
-
+                <button type="submit" class="tenant-logout">
                     Logout
-
                 </button>
 
             </form>
 
         </div>
 
-
-        <!-- =================================================
-             SUMMARY CARDS
-        ================================================== -->
-
         <section class="dashboard-summary">
 
-            <!-- TOTAL -->
-
             <div class="summary-card">
-
                 <div class="summary-number">
                     @Model.TotalApplications
                 </div>
-
                 <div class="summary-title">
                     Total Applications
                 </div>
-
             </div>
 
-
-            <!-- APPROVED -->
-
             <div class="summary-card">
-
                 <div class="summary-number">
                     @Model.ApprovedApplications
                 </div>
-
                 <div class="summary-title">
                     Approved
                 </div>
-
             </div>
 
-
-            <!-- PENDING -->
-
             <div class="summary-card">
-
                 <div class="summary-number">
                     @Model.PendingApplications
                 </div>
-
                 <div class="summary-title">
                     Pending
                 </div>
-
             </div>
 
-
-            <!-- REJECTED -->
-
             <div class="summary-card">
-
                 <div class="summary-number">
                     @Model.RejectedApplications
                 </div>
-
                 <div class="summary-title">
                     Rejected
                 </div>
-
             </div>
 
         </section>
 
-
-        <!-- =================================================
-             MY ACCOMMODATIONS
-        ================================================== -->
-
-        <section class="applications-section"
-                 id="applications">
-
-
-            <!-- SECTION HEADING -->
+        <section class="applications-section" id="applications">
 
             <div class="section-heading">
 
@@ -265,168 +130,163 @@
                     My Accommodations
                 </h2>
 
-
                 <a asp-controller="Tenant"
                    asp-action="BrowseProperties">
-
                     Browse Properties
-
                 </a>
 
             </div>
 
+            <div class="accommodation-filters">
 
-            <!-- =================================================
-                 IF TENANT HAS APPLICATIONS
-            ================================================== -->
+                <button type="button"
+                        class="filter-pill active"
+                        data-filter="Current">
+                    Current
+                </button>
+
+                <button type="button"
+                        class="filter-pill"
+                        data-filter="Past">
+                    Past
+                </button>
+
+                <button type="button"
+                        class="filter-pill"
+                        data-filter="Rejected">
+                    Rejected
+                </button>
+
+            </div>
+
             @if (Model.Applications != null &&
                         Model.Applications.Any())
             {
 
-                <div class="tenant-application-grid">
+                <div class="tenant-application-grid"
+                     id="accommodationGrid">
 
                     @foreach (var application in Model.Applications)
                     {
 
-                        <!-- =====================================
-                             PROPERTY CARD
-                        ====================================== -->
-
-                        <div class="tenant-property-card">
-
-
-                            <!-- PROPERTY IMAGE -->
+                        <div class="tenant-property-card"
+                             data-category="@application.FilterCategory">
 
                             <div class="tenant-property-image">
 
                                 @if (!string.IsNullOrEmpty(application.ImagePath))
                                 {
-
                                     <img src="@application.ImagePath"
                                          alt="@application.PropertyTitle" />
-
                                 }
                                 else
                                 {
-
                                     <div class="no-property-image">
-
                                         🏠
-
                                     </div>
-
                                 }
 
                             </div>
 
-
-                            <!-- PROPERTY CONTENT -->
-
                             <div class="tenant-property-content">
-
-
-                                <!-- TITLE -->
 
                                 <h3>
                                     @application.PropertyTitle
                                 </h3>
 
-
                                 <!-- LOCATION -->
-
                                 <p class="property-location">
-
-                                    📍
+                                    <i class="fa-solid fa-location-dot"></i>
                                     @application.Location
-
                                 </p>
 
-
-                                <!-- BEDROOMS / BATHROOMS -->
-
+                                <!-- BEDROOMS -->
                                 <p>
-
-                                    🛏
+                                    <i class="fa-solid fa-bed"></i>
                                     @application.Bedrooms Bedrooms
-
-                                    &nbsp; • &nbsp;
-
-                                    🛁
-                                    @application.Bathrooms Bathrooms
-
                                 </p>
 
+                                <!-- BATHROOMS -->
+                                <p>
+                                    <i class="fa-solid fa-bath"></i>
+                                    @application.Bathrooms Bathrooms
+                                </p>
 
                                 <!-- PRICE -->
-
                                 <p class="property-price">
-
-                                    💰
-                                    R @application.Price / Month
-
+                                    <i class="fa-solid fa-money-bill"></i>
+                                    R @application.Price.ToString("N2") / Month
                                 </p>
-
-
-                                <!-- APPLICATION DATE -->
 
                                 <p class="application-date">
-
                                     Applied:
                                     @application.ApplicationDate.ToString("dd MMM yyyy")
-
                                 </p>
 
-
-                                <!-- APPLICATION STATUS -->
+                                @if (application.LeaseStartDate.HasValue &&
+                                                        application.LeaseEndDate.HasValue)
+                                {
+                                    <p class="application-date">
+                                        Lease:
+                                        @application.LeaseStartDate.Value.ToString("dd MMM yyyy")
+                                        to
+                                        @application.LeaseEndDate.Value.ToString("dd MMM yyyy")
+                                    </p>
+                                }
 
                                 <div class="application-status">
 
                                     @if (application.ApplicationStatus == "Approved")
                                     {
-
                                         <span class="status approved">
                                             ✓ Approved
                                         </span>
-
                                     }
                                     else if (application.ApplicationStatus == "Pending")
                                     {
-
                                         <span class="status pending">
                                             ⏳ Pending
                                         </span>
-
                                     }
                                     else if (application.ApplicationStatus == "Rejected")
                                     {
-
                                         <span class="status rejected">
                                             ✕ Rejected
                                         </span>
-
                                     }
                                     else
                                     {
-
                                         <span class="status">
                                             @application.ApplicationStatus
                                         </span>
-
                                     }
 
                                 </div>
 
-
-                                <!-- VIEW PROPERTY -->
-
+                                <!-- BUTTONS — KEPT SIDE-BY-SIDE -->
                                 <a asp-controller="Properties"
                                    asp-action="Details"
                                    asp-route-id="@application.PropertyId"
                                    class="view-property-button">
-
                                     View Property
-
                                 </a>
+
+                                @if (application.CanRate &&
+                                                        !application.HasRated)
+                                {
+                                    <a asp-controller="Tenant"
+                                       asp-action="RateProperty"
+                                       asp-route-applicationId="@application.RentalApplicationId"
+                                       class="rate-property-button">
+                                        ⭐ Rate Property
+                                    </a>
+                                }
+                                else if (application.HasRated)
+                                {
+                                    <span class="already-rated">
+                                        ✓ Rated
+                                    </span>
+                                }
 
                             </div>
 
@@ -436,13 +296,15 @@
 
                 </div>
 
+                <p class="no-applications"
+                   id="noFilterResults"
+                   style="display:none;">
+                    No accommodations in this category.
+                </p>
+
             }
             else
             {
-
-                <!-- =================================================
-                     NO APPLICATIONS
-                ================================================== -->
 
                 <div class="no-applications">
 
@@ -450,25 +312,20 @@
                         🏠
                     </div>
 
-
                     <h3>
                         You haven't applied for any
                         accommodation yet.
                     </h3>
-
 
                     <p>
                         Browse available properties and find
                         a place that feels like home.
                     </p>
 
-
                     <a asp-controller="Tenant"
                        asp-action="BrowseProperties"
                        class="browse-button">
-
                         Browse Properties
-
                     </a>
 
                 </div>
@@ -481,51 +338,63 @@
 
 </div>
 
-
-<!-- =========================================================
-     SIDEBAR TOGGLE SCRIPT
-========================================================= -->
 @section Scripts {
 
     <script>
 
-        document.addEventListener("DOMContentLoaded", function () {
+        function toggleMenu() {
+            var sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("show");
+        }
 
-            const sidebar =
-                document.getElementById("tenantSidebar");
+        const filterButtons =
+            document.querySelectorAll(".filter-pill");
 
-            const toggle =
-                document.getElementById("sidebarToggle");
+        const propertyCards =
+            document.querySelectorAll(".tenant-property-card");
 
-            const main =
-                document.getElementById("tenantMain");
+        const noResultsMsg =
+            document.getElementById("noFilterResults");
 
+        function applyFilter(category) {
+            let visibleCount = 0;
 
-            toggle.addEventListener("click", function () {
+            propertyCards.forEach(card => {
 
-                /*
-                 * Open / close sidebar
-                 */
+                if (card.dataset.category === category) {
+                    card.style.display = "";
+                    visibleCount++;
+                }
+                else {
+                    card.style.display = "none";
+                }
 
-                sidebar.classList.toggle("collapsed");
+            });
 
+            if (noResultsMsg) {
+                noResultsMsg.style.display =
+                    visibleCount === 0 ? "block" : "none";
+            }
+        }
 
-                /*
-                 * Expand / reduce main content
-                 */
+        filterButtons.forEach(button => {
 
-                main.classList.toggle("expanded");
+            button.addEventListener("click", function () {
 
+                filterButtons.forEach(b =>
+                    b.classList.remove("active"));
 
-                /*
-                 * Move toggle button
-                 */
+                this.classList.add("active");
 
-                toggle.classList.toggle("sidebar-closed");
+                applyFilter(this.dataset.filter);
 
             });
 
         });
+
+        if (propertyCards.length > 0) {
+            applyFilter("Current");
+        }
 
     </script>
 

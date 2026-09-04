@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Smart_Stay.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestHeadersTotalSize = 65536;
+});
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -30,7 +34,17 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddScoped<Smart_Stay.Services.IEmailService, Smart_Stay.Services.EmailService>();
+
 var app = builder.Build();
+app.Use(async (context, next) =>
+{
+    if (context.Request.Cookies.ContainsKey(".AspNetCore.Mvc.CookieTempDataProvider"))
+    {
+        context.Response.Cookies.Delete(".AspNetCore.Mvc.CookieTempDataProvider");
+    }
+    await next();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

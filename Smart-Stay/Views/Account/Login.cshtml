@@ -38,7 +38,6 @@
                 margin: 0 auto 15px;
                 animation: loginSpin 0.8s linear infinite;
             }
-
         @@keyframes loginSpin {
             to {
                 transform: rotate(360deg);
@@ -50,11 +49,33 @@
             color: #333;
             font-weight: 600;
         }
+
+        .login-left {
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #999;
+            font-size: 20px;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+            .close-btn:hover {
+                color: #333;
+            }
     </style>
 </head>
 <body>
     <div class="login-wrapper">
         <div class="login-left">
+            <a asp-controller="Home" asp-action="Index" class="close-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
+
             <div class="logo-row">
                 <i class="fa-solid fa-house"></i>
                 <span>SMART STAY</span>
@@ -92,8 +113,9 @@
                 <button type="submit" class="btn-login">Log in</button>
             </form>
             <p class="signup-text">
-                Don't you have an account? <a href="#">Sign up for free</a>
-            </p>
+             Don't you have an account?
+             @Html.ActionLink("Sign up for free", "Register", "Account", null, new { @class = "signup-link" })
+           </p>
         </div>
         <div class="login-right">
             <div class="right-text">
