@@ -130,10 +130,7 @@
 
         <h1>UPDATE PROFILE</h1>
 
-
-        <!-- BACK TO LANDLORD DASHBOARD -->
-
-        <a asp-controller="Landlord"
+        <a asp-controller="Admin"
            asp-action="Dashboard"
            class="back-button">
 
@@ -175,20 +172,18 @@
         }
 
 
-
         <!-- =================================================
              FORM
         ================================================== -->
 
-        <form asp-controller="Landlord"
-              asp-action="UpdateProfile"
+        <form asp-action="UpdateProfile"
+              asp-controller="Admin"
               method="post"
               enctype="multipart/form-data"
               id="updateProfileForm">
 
 
             @Html.AntiForgeryToken()
-
 
 
             <!-- =============================================
@@ -217,7 +212,6 @@
                             <i class="bi bi-person"></i>
 
                         </div>
-
 
                         <img id="profilePreview"
                              class="profile-image hidden"
@@ -366,14 +360,12 @@
                  NEW PASSWORD
             ============================================== -->
 
+
             <div class="form-group">
 
                 <label asp-for="NewPassword">
-
                     Change password
-
                 </label>
-
 
                 <div class="password-wrapper">
 
@@ -382,7 +374,6 @@
                            id="NewPassword"
                            class="form-control password-input"
                            placeholder="Leave blank to keep current password" />
-
 
                     <button type="button"
                             class="toggle-password"
@@ -395,12 +386,51 @@
                 </div>
 
 
+                <div class="password-requirements">
+
+                    <div id="lengthRequirement"
+                         class="password-requirement invalid">
+
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>At least 8 characters</span>
+
+                    </div>
+
+
+                    <div id="uppercaseRequirement"
+                         class="password-requirement invalid">
+
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>1 uppercase letter</span>
+
+                    </div>
+
+
+                    <div id="numberRequirement"
+                         class="password-requirement invalid">
+
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>1 number</span>
+
+                    </div>
+
+
+                    <div id="specialRequirement"
+                         class="password-requirement invalid">
+
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>1 special character</span>
+
+                    </div>
+
+                </div>
+
+
                 <span asp-validation-for="NewPassword"
                       class="validation-error">
                 </span>
 
             </div>
-
 
 
             <!-- =============================================
@@ -459,9 +489,7 @@
                 </button>
 
 
-                <!-- CANCEL TO LANDLORD DASHBOARD -->
-
-                <a asp-controller="Landlord"
+                <a asp-controller="Tenant"
                    asp-action="Dashboard"
                    class="cancel-button">
 
@@ -482,5 +510,251 @@
 <div id="profile-loader" class="global-loader">
     <div class="loader-box">
 
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        // =================================================
+        // PASSWORD EYE
+        // =================================================
+
+        function togglePassword(inputId, button) {
+
+            var input =
+                document.getElementById(inputId);
+
+            var icon =
+                button.querySelector("i");
+
+
+            if (input.type === "password") {
+
+                input.type = "text";
+
+                icon.classList.remove("bi-eye");
+
+                icon.classList.add("bi-eye-slash");
+
+            }
+            else {
+
+                input.type = "password";
+
+                icon.classList.remove("bi-eye-slash");
+
+                icon.classList.add("bi-eye");
+
+            }
+
+        }
+
+
+        // =================================================
+        // PASSWORD VALIDATION
+        // =================================================
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                var passwordInput =
+                    document.getElementById(
+                        "NewPassword"
+                    );
+
+
+                if (!passwordInput) {
+
+                    return;
+
+                }
+
+
+                passwordInput.addEventListener(
+                    "input",
+                    function () {
+
+                        var password =
+                            passwordInput.value;
+
+
+                        updateRequirement(
+                            "lengthRequirement",
+                            password.length >= 8
+                        );
+
+
+                        updateRequirement(
+                            "uppercaseRequirement",
+                            /[A-Z]/.test(password)
+                        );
+
+
+                        updateRequirement(
+                            "numberRequirement",
+                            /[0-9]/.test(password)
+                        );
+
+
+                        updateRequirement(
+                            "specialRequirement",
+                            /[^A-Za-z0-9]/.test(password)
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        // =================================================
+        // UPDATE REQUIREMENT
+        // =================================================
+
+        function updateRequirement(
+            requirementId,
+            isValid) {
+
+            var requirement =
+                document.getElementById(
+                    requirementId
+                );
+
+
+            if (!requirement) {
+
+                return;
+
+            }
+
+
+            var icon =
+                requirement.querySelector("i");
+
+
+            if (isValid) {
+
+                requirement.classList.remove(
+                    "invalid"
+                );
+
+                requirement.classList.add(
+                    "valid"
+                );
+
+
+                icon.classList.remove(
+                    "bi-x-circle-fill"
+                );
+
+                icon.classList.add(
+                    "bi-check-circle-fill"
+                );
+
+            }
+            else {
+
+                requirement.classList.remove(
+                    "valid"
+                );
+
+                requirement.classList.add(
+                    "invalid"
+                );
+
+
+                icon.classList.remove(
+                    "bi-check-circle-fill"
+                );
+
+                icon.classList.add(
+                    "bi-x-circle-fill"
+                );
+
+            }
+
+        }
+
+
+        // =================================================
+        // IMAGE PREVIEW
+        // =================================================
+
+        var imageInput =
+            document.getElementById(
+                "ProfileImage"
+            );
+
+
+        if (imageInput) {
+
+            imageInput.addEventListener(
+                "change",
+                function (event) {
+
+                    var file =
+                        event.target.files[0];
+
+
+                    if (file) {
+
+                        var reader =
+                            new FileReader();
+
+
+                        reader.onload =
+                            function (e) {
+
+                                var preview =
+                                    document.getElementById(
+                                        "profilePreview"
+                                    );
+
+
+                                var defaultProfile =
+                                    document.getElementById(
+                                        "defaultProfile"
+                                    );
+
+
+                                if (preview) {
+
+                                    preview.src =
+                                        e.target.result;
+
+                                    preview.classList.remove(
+                                        "hidden"
+                                    );
+
+                                }
+
+
+                                if (defaultProfile) {
+
+                                    defaultProfile.style.display =
+                                        "none";
+
+                                }
+
+                            };
+
+
+                        reader.readAsDataURL(
+                            file
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+    </script>
+}
         <div class="house-loader">
             <svg viewBox="0 0 100 100"
