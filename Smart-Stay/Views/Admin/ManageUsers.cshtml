@@ -34,6 +34,7 @@
             margin: 0;
         }
 
+
     /* =========================
            BACK BUTTON
            ========================= */
@@ -51,7 +52,9 @@
         .back-button:hover {
             background: #0d5fc7;
             color: white;
+            text-decoration: none;
         }
+
 
     /* =========================
            TABLE CONTAINER
@@ -70,6 +73,7 @@
         margin: 0;
     }
 
+
         /* =========================
            TABLE HEADER
            ========================= */
@@ -86,6 +90,7 @@
             text-align: left;
             white-space: nowrap;
         }
+
 
         /* =========================
            TABLE BODY
@@ -110,6 +115,7 @@
             .users-table tbody tr:last-child td {
                 border-bottom: none;
             }
+
 
     /* =========================
            ROLE BADGES
@@ -138,6 +144,7 @@
         color: #d88916;
     }
 
+
     /* =========================
            SUSPENDED BADGE
            ========================= */
@@ -152,6 +159,7 @@
         font-size: 12px;
         font-weight: 700;
     }
+
 
     /* =========================
            ACTION BUTTONS
@@ -173,6 +181,11 @@
         transition: 0.2s;
     }
 
+
+    /* =========================
+           SUSPEND BUTTON
+           ========================= */
+
     .suspend-button {
         background: #f5a623;
         color: white;
@@ -182,6 +195,11 @@
             background: #db8e0c;
         }
 
+
+    /* =========================
+           DELETE BUTTON
+           ========================= */
+
     .delete-button {
         background: #dc3545;
         color: white;
@@ -190,6 +208,7 @@
         .delete-button:hover {
             background: #bb2635;
         }
+
 
     /* =========================
            EMPTY MESSAGE
@@ -201,6 +220,7 @@
         color: #777;
         font-size: 17px;
     }
+
 
     /* =========================
            FEEDBACK MESSAGE
@@ -225,8 +245,9 @@
         border: 1px solid #f3b4b4;
     }
 
+
     /* =========================
-           MODAL BACKGROUND
+           CONFIRMATION OVERLAY
            ========================= */
 
     .confirmation-overlay {
@@ -242,6 +263,7 @@
         align-items: center;
         padding: 20px;
     }
+
 
     /* =========================
            CONFIRMATION BOX
@@ -270,6 +292,7 @@
         }
     }
 
+
     /* =========================
            MODAL HEADER
            ========================= */
@@ -284,6 +307,7 @@
             margin: 0;
             font-weight: 700;
         }
+
 
     /* =========================
            MODAL BODY
@@ -305,6 +329,7 @@
         color: #1473ea;
     }
 
+
     /* =========================
            MODAL FOOTER
            ========================= */
@@ -316,6 +341,11 @@
         padding: 0 25px 25px;
     }
 
+
+    /* =========================
+           CANCEL BUTTON
+           ========================= */
+
     .modal-cancel {
         border: none;
         background: #e9ecef;
@@ -324,11 +354,17 @@
         border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
+        transition: 0.2s;
     }
 
         .modal-cancel:hover {
             background: #d8dce0;
         }
+
+
+    /* =========================
+           CONFIRM BUTTON
+           ========================= */
 
     .modal-confirm {
         border: none;
@@ -337,7 +373,26 @@
         border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
+        transition: 0.2s;
     }
+
+
+    /* =========================
+           SUSPEND CONFIRM BUTTON
+           ========================= */
+
+    .modal-confirm-suspend {
+        background: #f5a623;
+    }
+
+        .modal-confirm-suspend:hover {
+            background: #db8e0c;
+        }
+
+
+    /* =========================
+           DELETE CONFIRM BUTTON
+           ========================= */
 
     .modal-confirm-delete {
         background: #dc3545;
@@ -347,13 +402,6 @@
             background: #bb2635;
         }
 
-    .modal-confirm-suspend {
-        background: #f5a623;
-    }
-
-        .modal-confirm-suspend:hover {
-            background: #db8e0c;
-        }
 
     /* =========================
            MOBILE
@@ -385,19 +433,25 @@
 
 <div class="manage-users-page">
 
-    <!-- =========================
+
+    <!-- ==================================================
          PAGE HEADER
-         ========================= -->
+         ================================================== -->
 
     <div class="page-header">
 
         <div>
-            <h2>Manage Users</h2>
+
+            <h2>
+                Manage Users
+            </h2>
 
             <p>
                 View, suspend and delete user accounts.
             </p>
+
         </div>
+
 
         <a asp-controller="Admin"
            asp-action="Dashboard"
@@ -410,33 +464,42 @@
     </div>
 
 
-    <!-- =========================
+
+    <!-- ==================================================
          FEEDBACK MESSAGE
-         ========================= -->
+         ================================================== -->
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="feedback-message feedback-success">
+
             ✓ @TempData["SuccessMessage"]
+
         </div>
     }
+
 
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="feedback-message feedback-error">
+
             ✕ @TempData["ErrorMessage"]
+
         </div>
     }
 
 
-    <!-- =========================
+
+    <!-- ==================================================
          USERS TABLE
-         ========================= -->
+         ================================================== -->
     @if (Model == null || !Model.Any())
     {
         <div class="users-table-container">
 
             <div class="empty-message">
+
                 No user accounts found.
+
             </div>
 
         </div>
@@ -453,19 +516,33 @@
 
                         <tr>
 
-                            <th>User ID</th>
+                            <th>
+                                User ID
+                            </th>
 
-                            <th>Name</th>
+                            <th>
+                                Name
+                            </th>
 
-                            <th>Surname</th>
+                            <th>
+                                Surname
+                            </th>
 
-                            <th>Email</th>
+                            <th>
+                                Email
+                            </th>
 
-                            <th>Phone</th>
+                            <th>
+                                Phone
+                            </th>
 
-                            <th>Role</th>
+                            <th>
+                                Role
+                            </th>
 
-                            <th>Action</th>
+                            <th>
+                                Action
+                            </th>
 
                         </tr>
 
@@ -478,82 +555,124 @@
                         {
                             <tr>
 
-                                <!-- USER ID -->
+
+                                <!-- =========================
+                                     USER ID
+                                     ========================= -->
 
                                 <td>
+
                                     @user.UserId
+
                                 </td>
 
 
-                                <!-- FIRST NAME -->
+
+                                <!-- =========================
+                                     FIRST NAME
+                                     ========================= -->
 
                                 <td>
+
                                     @user.FirstName
+
                                 </td>
 
 
-                                <!-- SURNAME -->
+
+                                <!-- =========================
+                                     SURNAME
+                                     ========================= -->
 
                                 <td>
+
                                     @user.SurName
+
                                 </td>
 
 
-                                <!-- EMAIL -->
+
+                                <!-- =========================
+                                     EMAIL
+                                     ========================= -->
 
                                 <td>
+
                                     @user.Email
+
                                 </td>
 
 
-                                <!-- PHONE -->
+
+                                <!-- =========================
+                                     PHONE
+                                     ========================= -->
 
                                 <td>
+
                                     @user.PhoneNo
+
                                 </td>
 
 
-                                <!-- ROLE -->
+
+                                <!-- =========================
+                                     ROLE
+                                     ========================= -->
 
                                 <td>
 
                                     @if (user.Role == "Admin")
                                     {
                                         <span class="role-badge role-admin">
+
                                             Admin
+
                                         </span>
                                     }
                                     else if (user.Role == "Landlord")
                                     {
                                         <span class="role-badge role-landlord">
+
                                             Landlord
+
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="role-badge role-tenant">
+
                                             Tenant
+
                                         </span>
                                     }
+
 
                                     @if (user.IsSuspended)
                                     {
                                         <span class="suspended-badge">
+
                                             Suspended
+
                                         </span>
                                     }
 
                                 </td>
 
 
-                                <!-- ACTIONS -->
+
+                                <!-- =========================
+                                     ACTIONS
+                                     ========================= -->
 
                                 <td>
 
                                     <div class="action-buttons">
 
 
-                                        <!-- SUSPEND -->
+                                        <!-- ==================================
+                                             SUSPEND / UNSUSPEND FORM
+                                             ================================== -->
 
                                         <form asp-controller="Admin"
                                               asp-action="SuspendUser"
@@ -562,16 +681,19 @@
 
                                             @Html.AntiForgeryToken()
 
+
                                             <input type="hidden"
                                                    name="id"
                                                    value="@user.UserId" />
+
 
                                             <button type="button"
                                                     class="action-button suspend-button"
                                                     onclick="openConfirmation(
                                                                 'suspend',
                                                                 '@user.UserId',
-                                                                '@user.FirstName @user.SurName'
+                                                                '@user.FirstName @user.SurName',
+                                                                @user.IsSuspended.ToString().ToLower()
                                                             )">
 
                                                 @(user.IsSuspended ? "Unsuspend" : "Suspend")
@@ -581,7 +703,10 @@
                                         </form>
 
 
-                                        <!-- DELETE -->
+
+                                        <!-- ==================================
+                                             DELETE FORM
+                                             ================================== -->
 
                                         <form asp-controller="Admin"
                                               asp-action="DeleteUser"
@@ -590,16 +715,19 @@
 
                                             @Html.AntiForgeryToken()
 
+
                                             <input type="hidden"
                                                    name="id"
                                                    value="@user.UserId" />
+
 
                                             <button type="button"
                                                     class="action-button delete-button"
                                                     onclick="openConfirmation(
                                                                 'delete',
                                                                 '@user.UserId',
-                                                                '@user.FirstName @user.SurName'
+                                                                '@user.FirstName @user.SurName',
+                                                                false
                                                             )">
 
                                                 Delete
@@ -627,6 +755,7 @@
 </div>
 
 
+
 <!-- ==================================================
      CONFIRMATION MODAL
      ================================================== -->
@@ -634,27 +763,48 @@
 <div id="confirmationOverlay"
      class="confirmation-overlay">
 
+
     <div class="confirmation-box">
+
+
+        <!-- =========================
+             MODAL HEADER
+             ========================= -->
 
         <div class="confirmation-header">
 
             <h4 id="confirmationTitle">
+
                 Confirm Action
+
             </h4>
 
         </div>
 
 
+
+        <!-- =========================
+             MODAL BODY
+             ========================= -->
+
         <div class="confirmation-body">
 
             <p id="confirmationMessage">
+
                 Are you sure?
+
             </p>
 
         </div>
 
 
+
+        <!-- =========================
+             MODAL FOOTER
+             ========================= -->
+
         <div class="confirmation-footer">
+
 
             <button type="button"
                     class="modal-cancel"
@@ -663,6 +813,7 @@
                 Cancel
 
             </button>
+
 
 
             <button type="button"
@@ -680,17 +831,31 @@
 </div>
 
 
+
 <script>
+
+    // ==================================================
+    // VARIABLES
+    // ==================================================
 
     let selectedAction = "";
     let selectedUserId = "";
     let selectedUserName = "";
+    let selectedIsSuspended = false;
 
-    function openConfirmation(action, userId, userName) {
+
+
+    // ==================================================
+    // OPEN CONFIRMATION BOX
+    // ==================================================
+
+    function openConfirmation(action, userId, userName, isSuspended) {
 
         selectedAction = action;
         selectedUserId = userId;
         selectedUserName = userName;
+        selectedIsSuspended = isSuspended;
+
 
         const overlay =
             document.getElementById("confirmationOverlay");
@@ -705,53 +870,127 @@
             document.getElementById("confirmActionButton");
 
 
-        /* =========================
-           SUSPEND
-           ========================= */
+
+        // ==================================================
+        // SUSPEND / UNSUSPEND
+        // ==================================================
 
         if (action === "suspend") {
 
-            title.innerText = "Confirm Suspension";
 
-            message.innerHTML =
-                "Are you sure you want to suspend " +
-                "<span class='user-name-confirmation'>" +
-                selectedUserName +
-                "</span>? " +
-                "The user will no longer be able to access their account.";
+            // ----------------------------------------------
+            // USER IS CURRENTLY SUSPENDED
+            // ----------------------------------------------
 
-            confirmButton.innerText = "Suspend";
+            if (isSuspended === true) {
 
-            confirmButton.className =
-                "modal-confirm modal-confirm-suspend";
+                title.innerText =
+                    "Confirm Unsuspension";
+
+
+                message.innerHTML =
+                    "Are you sure you want to unsuspend " +
+
+                    "<span class='user-name-confirmation'>" +
+
+                    selectedUserName +
+
+                    "</span>? " +
+
+                    "The user will be able to access their account again.";
+
+
+                confirmButton.innerText =
+                    "Unsuspend";
+
+
+                confirmButton.className =
+                    "modal-confirm modal-confirm-suspend";
+
+            }
+
+
+            // ----------------------------------------------
+            // USER IS NOT SUSPENDED
+            // ----------------------------------------------
+
+            else {
+
+                title.innerText =
+                    "Confirm Suspension";
+
+
+                message.innerHTML =
+                    "Are you sure you want to suspend " +
+
+                    "<span class='user-name-confirmation'>" +
+
+                    selectedUserName +
+
+                    "</span>? " +
+
+                    "The user will no longer be able to access their account.";
+
+
+                confirmButton.innerText =
+                    "Suspend";
+
+
+                confirmButton.className =
+                    "modal-confirm modal-confirm-suspend";
+
+            }
+
         }
 
 
-        /* =========================
-           DELETE
-           ========================= */
+
+        // ==================================================
+        // DELETE
+        // ==================================================
 
         if (action === "delete") {
 
-            title.innerText = "Confirm Account Deletion";
+            title.innerText =
+                "Confirm Account Deletion";
+
 
             message.innerHTML =
                 "Are you sure you want to permanently delete " +
+
                 "<span class='user-name-confirmation'>" +
+
                 selectedUserName +
+
                 "</span>? " +
+
                 "This action cannot be undone.";
 
-            confirmButton.innerText = "Delete";
+
+            confirmButton.innerText =
+                "Delete";
+
 
             confirmButton.className =
                 "modal-confirm modal-confirm-delete";
+
         }
 
 
+
+        // ==================================================
+        // SHOW MODAL
+        // ==================================================
+
         overlay.style.display = "flex";
+
     }
 
+
+
+    // ==================================================
+    // CLOSE CONFIRMATION BOX
+    // ==================================================
 
     function closeConfirmation() {
 
@@ -762,33 +1001,71 @@
     }
 
 
+
+    // ==================================================
+    // CONFIRM BUTTON
+    // ==================================================
+
     document.getElementById(
         "confirmActionButton"
     ).addEventListener("click", function () {
 
-        let form;
+
+        let form = null;
+
+
+
+        // ==================================================
+        // SUSPEND / UNSUSPEND
+        // ==================================================
 
         if (selectedAction === "suspend") {
 
-            form =
+            const input =
                 document.querySelector(
                     '.suspend-form input[name="id"][value="' +
                     selectedUserId +
                     '"]'
-                ).closest("form");
+                );
+
+
+            if (input) {
+
+                form = input.closest("form");
+
+            }
 
         }
 
+
+
+        // ==================================================
+        // DELETE
+        // ==================================================
+
         if (selectedAction === "delete") {
 
-            form =
+            const input =
                 document.querySelector(
                     '.delete-form input[name="id"][value="' +
                     selectedUserId +
                     '"]'
-                ).closest("form");
+                );
+
+
+            if (input) {
+
+                form = input.closest("form");
+
+            }
 
         }
+
+
+
+        // ==================================================
+        // SUBMIT FORM
+        // ==================================================
 
         if (form) {
 
@@ -799,13 +1076,32 @@
     });
 
 
-    /* Close when clicking outside the box */
+
+    // ==================================================
+    // CLOSE WHEN CLICKING OUTSIDE MODAL
+    // ==================================================
 
     document.getElementById(
         "confirmationOverlay"
     ).addEventListener("click", function (event) {
 
         if (event.target === this) {
+
+            closeConfirmation();
+
+        }
+
+    });
+
+
+
+    // ==================================================
+    // CLOSE WITH ESCAPE KEY
+    // ==================================================
+
+    document.addEventListener("keydown", function (event) {
+
+        if (event.key === "Escape") {
 
             closeConfirmation();
 

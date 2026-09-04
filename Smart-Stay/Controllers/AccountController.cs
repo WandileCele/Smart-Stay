@@ -57,6 +57,14 @@ namespace Smart_Stay.Controllers
                 return View();
             }
 
+            // Prevent suspended users from logging in
+            if (user.IsSuspended)
+            {
+                ModelState.AddModelError("", "Your account has been suspended. Please contact Smart Stay support.");
+                ViewData["ReturnUrl"] = returnUrl;
+                return View();
+            }
+
             bool passwordValid = false;
             var verificationResult = PasswordVerificationResult.Failed;
 

@@ -254,7 +254,7 @@
                  NEW PASSWORD
             ================================================ -->
 
-            
+
             <div class="form-group">
 
                 <label asp-for="NewPassword">
@@ -267,8 +267,7 @@
                            type="password"
                            id="NewPassword"
                            class="form-control password-input"
-                           placeholder="Leave blank to keep current password"
-                           autocomplete="new-password" />
+                           placeholder="Leave blank to keep current password" />
 
                     <button type="button"
                             class="toggle-password"
@@ -280,9 +279,6 @@
 
                 </div>
 
-                <!-- PASSWORD REQUIREMENTS -->
-
-               
 
                 <div class="password-requirements">
 
@@ -386,7 +382,7 @@
                 </button>
 
 
-                <a asp-controller="Admin"
+                <a asp-controller="Tenant"
                    asp-action="Dashboard"
                    class="cancel-button">
 
@@ -650,4 +646,5 @@
         }
 
     </script>
+}
 }
