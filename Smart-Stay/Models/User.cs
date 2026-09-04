@@ -19,6 +19,7 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
+    public bool IsSuspended { get; set; }
     public string Role { get; set; } = null!;
 
     public string? ProfileImagePath { get; set; }

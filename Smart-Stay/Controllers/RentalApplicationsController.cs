@@ -272,9 +272,9 @@ namespace Smart_Stay.Controllers
             {
                 await model.Payslip!.CopyToAsync(stream);
             }
-
             var document = new Smart_Stay.Models.Document
             {
+                UserId = tenantId,
                 RentalApplicationId = rentalApplication.RentalApplicationId,
                 DocumentType = "Payslip",
                 UploadDate = DateOnly.FromDateTime(DateTime.Now),

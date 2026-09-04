@@ -5,6 +5,8 @@ namespace Smart_Stay.Models
 {
     public class UpdateProfileViewModel
     {
+        public int UserId { get; set; }
+
         [Required(ErrorMessage = "First name is required.")]
         [Display(Name = "First Name")]
         public string FirstName { get; set; } = "";
@@ -22,10 +24,8 @@ namespace Smart_Stay.Models
             ErrorMessage = "Phone number must contain exactly 10 digits.")]
         public string PhoneNo { get; set; } = "";
 
-        // OPTIONAL
         public string? NewPassword { get; set; }
 
-        // OPTIONAL
         public string? ConfirmPassword { get; set; }
 
         public IFormFile? ProfileImage { get; set; }
