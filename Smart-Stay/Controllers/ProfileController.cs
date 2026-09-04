@@ -86,14 +86,12 @@ namespace Smart_Stay.Controllers
                 return NotFound();
             }
 
-
             // Update basic information
 
             user.FirstName = model.FirstName;
             user.SurName = model.SurName;
             user.Email = model.Email;
             user.PhoneNo = model.PhoneNo;
-
 
             // Only change password if one was entered
 
@@ -102,13 +100,11 @@ namespace Smart_Stay.Controllers
                 user.Password = model.NewPassword;
             }
 
-
             await _context.SaveChangesAsync();
 
 
             TempData["SuccessMessage"] =
                 "Your profile has been updated successfully.";
-
 
             return RedirectToAction(nameof(UpdateProfile));
         }
