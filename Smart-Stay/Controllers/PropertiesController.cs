@@ -61,29 +61,20 @@ namespace Smart_Stay.Controllers
             {
                 switch (price)
                 {
-                    case "2000-3000":
-
-                        query = query.Where(p =>
-                            p.Price >= 2000 &&
-                            p.Price <= 3000);
-
+                    case "0-2000":
+                        query = query.Where(p => p.Price >= 0 && p.Price <= 2000);
                         break;
 
+                    case "2000-3000":
+                        query = query.Where(p => p.Price > 2000 && p.Price <= 3000);
+                        break;
 
                     case "3000-5000":
-
-                        query = query.Where(p =>
-                            p.Price >= 3000 &&
-                            p.Price <= 5000);
-
+                        query = query.Where(p => p.Price > 3000 && p.Price <= 5000);
                         break;
 
-
                     case "5000+":
-
-                        query = query.Where(p =>
-                            p.Price >= 5000);
-
+                        query = query.Where(p => p.Price > 5000);
                         break;
                 }
             }

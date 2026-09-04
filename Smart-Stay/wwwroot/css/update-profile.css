@@ -23,7 +23,6 @@
     justify-content: space-between;
 }
 
-
     .profile-header h1 {
         margin: 0;
         color: #3f5570;
@@ -31,7 +30,6 @@
         font-weight: 700;
         letter-spacing: 0.5px;
     }
-
 
 .back-button {
     color: #3f5570;
@@ -41,7 +39,6 @@
     align-items: center;
     gap: 8px;
 }
-
 
     .back-button:hover {
         color: #5478aa;
@@ -78,7 +75,6 @@
     border-left: 4px solid #4b7d57;
 }
 
-
     .success-message span {
         font-size: 24px;
         margin-left: 10px;
@@ -103,7 +99,6 @@
     margin-bottom: 30px;
 }
 
-
 .profile-image-container {
     width: 125px;
     height: 125px;
@@ -113,13 +108,11 @@
     border: 2px solid #3f5570;
 }
 
-
 .profile-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
 
 .default-profile {
     width: 100%;
@@ -130,12 +123,10 @@
     align-items: center;
 }
 
-
     .default-profile i {
         font-size: 65px;
         color: #3f5570;
     }
-
 
 .hidden {
     display: none;
@@ -162,11 +153,9 @@
     border: 3px solid white;
 }
 
-
     .image-upload-overlay:hover {
         background: #3f5570;
     }
-
 
 .upload-photo-text {
     display: block;
@@ -176,7 +165,6 @@
     font-weight: 600;
     cursor: pointer;
 }
-
 
 .image-input {
     display: none;
@@ -190,7 +178,6 @@
 .form-group {
     margin-bottom: 20px;
 }
-
 
     .form-group label {
         display: block;
@@ -218,7 +205,6 @@
     transition: 0.2s;
 }
 
-
     .form-control:focus {
         outline: none;
         border-color: #5478aa;
@@ -235,11 +221,9 @@
     width: 100%;
 }
 
-
 .password-input {
     padding-right: 50px;
 }
-
 
 .toggle-password {
     position: absolute;
@@ -253,15 +237,56 @@
     cursor: pointer;
 }
 
-
     .toggle-password:hover {
         color: #5478aa;
     }
 
 
 /* =====================================================
-   VALIDATION ERROR
+   PASSWORD REQUIREMENTS
 ===================================================== */
+
+.pwd-rules {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #f8f9fa;
+    border-radius: 7px;
+    border: 1px solid #e1e5e9;
+    font-size: 14px;
+}
+
+    .pwd-rules div {
+        margin: 5px 0;
+        color: #d9534f;
+        transition: 0.2s;
+    }
+
+        .pwd-rules div.valid {
+            color: #25853b;
+        }
+
+    .pwd-rules span {
+        display: inline-block;
+        width: 22px;
+        font-weight: 700;
+    }
+
+
+/*
+   PASSWORD MATCH MESSAGE
+ */
+
+#passwordMatchMessage {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #d9534f;
+}
+
+
+/* 
+   VALIDATION ERROR
+*/
 
 .validation-error {
     display: block;
@@ -271,9 +296,9 @@
 }
 
 
-/* =====================================================
+/*
    BUTTONS
-===================================================== */
+ */
 
 .profile-buttons {
     display: flex;
@@ -281,7 +306,6 @@
     margin-top: 35px;
     width: 100%;
 }
-
 
 .submit-button {
     border: none;
@@ -296,15 +320,14 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-
     .submit-button:hover {
         background: #3f6599;
     }
 
 
-/* =====================================================
+/*
    CANCEL
-===================================================== */
+*/
 
 .cancel-button {
     min-width: 230px;
@@ -321,16 +344,10 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
-
     .cancel-button:hover {
         background: #969696;
         color: white;
     }
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
 
 @media (max-width: 768px) {
 
@@ -338,33 +355,31 @@
         padding: 20px;
     }
 
-
     .profile-header {
         margin-bottom: 20px;
     }
-
 
         .profile-header h1 {
             font-size: 22px;
         }
 
-
     .profile-card {
         padding: 25px 20px;
     }
-
 
     .profile-buttons {
         flex-direction: column;
     }
 
-
     .submit-button {
         width: 100%;
     }
 
-
     .cancel-button {
         width: 100%;
+    }
+
+    .pwd-rules {
+        font-size: 13px;
     }
 }
