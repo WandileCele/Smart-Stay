@@ -2,15 +2,25 @@
     ViewData["Title"] = "Login";
     Layout = null;
 }
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <title>Smart Stay - Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
     <link rel="stylesheet" href="~/css/login.css" />
 
     <style>
+
+        /* ==================================================
+                           GLOBAL LOADER
+                        ================================================== */
+
         .global-loader {
             display: none;
             position: fixed;
@@ -29,30 +39,124 @@
             text-align: center;
         }
 
-            .loader-box .spinner {
-                width: 48px;
-                height: 48px;
-                border: 5px solid #ddd;
-                border-top: 5px solid #0087c9;
-                border-radius: 50%;
-                margin: 0 auto 15px;
-                animation: loginSpin 0.8s linear infinite;
+
+        /* ==================================================
+                           HOUSE + KEY LOADER
+                        ================================================== */
+
+        .house-loader {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 15px;
+        }
+
+            .house-loader svg {
+                width: 100%;
+                height: 100%;
             }
-        @@keyframes loginSpin {
-            to {
-                transform: rotate(360deg);
+
+        .house-outline {
+            stroke: #0087c9;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 220;
+            stroke-dashoffset: 220;
+            animation: draw-house 2.2s ease-in-out infinite;
+        }
+
+        .house-key {
+            transform-origin: 50px 55px;
+            animation: turn-key 2.2s ease-in-out infinite;
+        }
+
+            .house-key circle {
+                fill: none;
+                stroke: #0d6efd;
+                stroke-width: 3;
+            }
+
+            .house-key line {
+                stroke: #0d6efd;
+                stroke-width: 3;
+                stroke-linecap: round;
+            }
+
+
+        /* ==================================================
+                           HOUSE ANIMATION
+                        ================================================== */
+
+        @@keyframes draw-house {
+
+            0% {
+                stroke-dashoffset: 220;
+                opacity: 0.3;
+            }
+
+            50% {
+                stroke-dashoffset: 0;
+                opacity: 1;
+            }
+
+            100% {
+                stroke-dashoffset: 0;
+                opacity: 0.3;
             }
         }
+
+
+        /* ==================================================
+                           KEY ANIMATION
+                        ================================================== */
+
+        @@keyframes turn-key {
+
+            0%, 20% {
+                transform: rotate(0deg);
+            }
+
+            40% {
+                transform: rotate(-25deg);
+            }
+
+            60% {
+                transform: rotate(15deg);
+            }
+
+            80%, 100% {
+                transform: rotate(0deg);
+            }
+        }
+
+
+        /* ==================================================
+                           LOADER TEXT
+                        ================================================== */
 
         #loader-text {
             font-size: 15px;
             color: #333;
             font-weight: 600;
+            min-height: 20px;
+            transition: opacity 0.25s ease;
         }
+
+
+        /* ==================================================
+                           LOGIN LEFT
+                        ================================================== */
 
         .login-left {
             position: relative;
         }
+
+
+        /* ==================================================
+                           CLOSE BUTTON
+                        ================================================== */
 
         .close-btn {
             position: absolute;
@@ -62,97 +166,391 @@
             font-size: 20px;
             text-decoration: none;
             transition: color 0.2s ease;
+            cursor: pointer;
+            z-index: 10;
         }
 
             .close-btn:hover {
                 color: #333;
             }
+
     </style>
 </head>
+
 <body>
+
     <div class="login-wrapper">
+
+        <!-- ==================================================
+             LEFT SIDE
+        ================================================== -->
+
         <div class="login-left">
-            <a asp-controller="Home" asp-action="Index" class="close-btn">
+
+            <!-- CLOSE / X BUTTON: navigates immediately, no delay -->
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="close-btn"
+               id="loginCloseBtn">
+
                 <i class="fa-solid fa-xmark"></i>
+
             </a>
 
+
+            <!-- LOGO -->
+
             <div class="logo-row">
+
                 <i class="fa-solid fa-house"></i>
+
                 <span>SMART STAY</span>
+
             </div>
+
+
+            <!-- TITLE -->
+
             <h2>Welcome back</h2>
-            <p class="subtext">Log in to access your rental account</p>
+
+            <p class="subtext">
+                Log in to access your rental account
+            </p>
+
+
+            <!-- ERRORS -->
             @if (!ViewData.ModelState.IsValid)
             {
                 <div class="error-box">
+
                     @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                     {
                         <p>@error.ErrorMessage</p>
                     }
+
                 </div>
             }
-            <form asp-controller="Account" asp-action="Login" method="post" id="loginForm">
-                <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
-                <label>Email <span class="required">*Required</span></label>
+
+
+            <!-- ==================================================
+                 LOGIN FORM
+            ================================================== -->
+
+            <form asp-controller="Account"
+                  asp-action="Login"
+                  method="post"
+                  id="loginForm">
+
+                <input type="hidden"
+                       name="returnUrl"
+                       value="@ViewData["ReturnUrl"]" />
+
+
+                <!-- EMAIL -->
+
+                <label>
+                    Email
+                    <span class="required">
+                        *Required
+                    </span>
+                </label>
+
                 <div class="input-group">
+
                     <i class="fa-solid fa-envelope"></i>
-                    <input type="email" name="email" placeholder="Enter your email" required />
+
+                    <input type="email"
+                           name="email"
+                           placeholder="Enter your email"
+                           required />
+
                 </div>
-                <label>Password <span class="required">*Required</span></label>
+
+
+                <!-- PASSWORD -->
+
+                <label>
+                    Password
+                    <span class="required">
+                        *Required
+                    </span>
+                </label>
+
                 <div class="input-group">
+
                     <i class="fa-solid fa-lock"></i>
-                    <input type="password" name="password" id="passwordField" placeholder="Enter your password" required />
-                    <i class="fa-solid fa-eye toggle-eye" onclick="togglePassword()"></i>
+
+                    <input type="password"
+                           name="password"
+                           id="passwordField"
+                           placeholder="Enter your password"
+                           required />
+
+                    <i class="fa-solid fa-eye toggle-eye"
+                       onclick="togglePassword()"></i>
+
                 </div>
+
+
+                <!-- REMEMBER / FORGOT -->
+
                 <div class="row-between">
+
                     <label style="font-weight:normal; display:flex; align-items:center; gap:5px;">
-                        <input type="checkbox" name="rememberMe" style="width:auto;" /> Remember me
+
+                        <input type="checkbox"
+                               name="rememberMe"
+                               style="width:auto;" />
+
+                        Remember me
+
                     </label>
-                    <a href="#">Forgot password?</a>
+
+
+                    <a href="#">
+                        Forgot password?
+                    </a>
+
                 </div>
-                <button type="submit" class="btn-login">Log in</button>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button type="submit"
+                        class="btn-login">
+
+                    Log in
+
+                </button>
+
             </form>
+
+
+            <!-- ==================================================
+                 SIGNUP LINK
+            ================================================== -->
+
             <p class="signup-text">
-             Don't you have an account?
-             @Html.ActionLink("Sign up for free", "Register", "Account", null, new { @class = "signup-link" })
-           </p>
+
+                Don't you have an account?
+
+                @Html.ActionLink(
+                "Sign up for free",
+                                "Register",
+                                "Account",
+                                null,
+                                new
+                                {
+                                    @class = "signup-link",
+                                    id = "signupLink"
+                                }
+                                )
+
+            </p>
+
         </div>
+
+
+        <!-- ==================================================
+             RIGHT SIDE
+        ================================================== -->
+
         <div class="login-right">
+
             <div class="right-text">
-                <h3>SMART STAY</h3>
-                <p>YOUR TRUSTED RENTAL PARTNER</p>
+
+                <h3>
+                    SMART STAY
+                </h3>
+
+                <p>
+                    YOUR TRUSTED RENTAL PARTNER
+                </p>
+
             </div>
+
         </div>
+
     </div>
 
-    <div id="global-loader" class="global-loader">
+
+    <!-- ==================================================
+         GLOBAL LOADER: only ever shown during the actual
+         login POST, for exactly as long as it's in flight.
+    ================================================== -->
+
+    <div id="global-loader"
+         class="global-loader">
+
         <div class="loader-box">
-            <div class="spinner"></div>
-            <p id="loader-text">Logging in...</p>
+
+            <div class="house-loader">
+
+                <svg viewBox="0 0 100 100"
+                     xmlns="http://www.w3.org/2000/svg">
+
+                    <!-- HOUSE OUTLINE -->
+
+                    <path class="house-outline"
+                          d="M15 50 L50 20 L85 50 L85 85 L15 85 Z M35 85 L35 60 L65 60 L65 85" />
+
+
+                    <!-- KEY -->
+
+                    <g class="house-key">
+
+                        <circle cx="45"
+                                cy="55"
+                                r="6" />
+
+                        <line x1="51"
+                              y1="55"
+                              x2="65"
+                              y2="55" />
+
+                        <line x1="60"
+                              y1="55"
+                              x2="60"
+                              y2="61" />
+
+                        <line x1="65"
+                              y1="55"
+                              x2="65"
+                              y2="61" />
+
+                    </g>
+
+                </svg>
+
+            </div>
+
+
+            <p id="loader-text">
+                Logging in...
+            </p>
+
         </div>
+
     </div>
+
+
+    <!-- ==================================================
+         JAVASCRIPT
+    ================================================== -->
 
     <script>
+
+
+        /* ==================================================
+           PASSWORD TOGGLE
+        ================================================== */
+
         function togglePassword() {
-            const field = document.getElementById('passwordField');
-            field.type = field.type === 'password' ? 'text' : 'password';
+
+            const field =
+                document.getElementById('passwordField');
+
+            field.type =
+                field.type === 'password'
+                    ? 'text'
+                    : 'password';
+
         }
 
+
+
+        /* ==================================================
+           LOGIN LOADER
+           Shown only while the POST is actually in flight — no
+           fixed timers, no minimum display duration. It stays up
+           until the browser navigates away with the response.
+        ================================================== */
+
         (function () {
-            const form = document.getElementById("loginForm");
-            const loader = document.getElementById("global-loader");
-            const loaderText = document.getElementById("loader-text");
-            let patienceTimer = null;
 
-            form.addEventListener("submit", function () {
-                loaderText.textContent = "Logging in...";
-                loader.classList.add("active");
+            const form =
+                document.getElementById("loginForm");
 
-                patienceTimer = setTimeout(function () {
-                    loaderText.textContent = "Please be patient...";
-                }, 6000);
-            });
+            const loader =
+                document.getElementById("global-loader");
+
+            const loaderText =
+                document.getElementById("loader-text");
+
+            if (!form || !loader || !loaderText) {
+                return;
+            }
+
+
+            const captions = [
+
+                "Logging in...",
+
+                "Waking up the server hamsters...",
+
+                "Fetching your keys...",
+
+                "Checking you're not a burglar..."
+
+            ];
+
+
+            const CAPTION_DURATION = 2200;
+
+            let captionIndex = 0;
+
+
+            function showNextCaption() {
+
+                captionIndex =
+                    (captionIndex + 1)
+                    % captions.length;
+
+
+                loaderText.style.opacity = 0;
+
+
+                setTimeout(function () {
+
+                    loaderText.textContent =
+                        captions[captionIndex];
+
+                    loaderText.style.opacity = 1;
+
+                }, 150);
+
+            }
+
+
+            form.addEventListener(
+                "submit",
+                function () {
+
+                    captionIndex = 0;
+
+                    loaderText.textContent =
+                        captions[0];
+
+                    loaderText.style.opacity = 1;
+
+
+                    loader.classList.add(
+                        "active"
+                    );
+
+
+                    setInterval(
+                        showNextCaption,
+                        CAPTION_DURATION
+                    );
+
+                }
+            );
+
         })();
+
     </script>
+
 </body>
 </html>

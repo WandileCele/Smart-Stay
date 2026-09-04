@@ -65,20 +65,20 @@
                       class="text-danger"></span>
 
             </div>
-<div class="mb-3">
- <label asp-for="Location"></label>
-    <select asp-for="Location" class="form-select">
-      <option value="">Select Area</option>
-      <option value="Walmer">Walmer</option>
-      <option value="North End">North End</option>
-      <option value="Humewood">Humewood</option>
-      <option value="Summerstrand">Summerstrand</option>
-      <option value="Newton Park">Newton Park</option>
-      <option value="Central">Central</option>
-    </select>
-    <span asp-validation-for="Location" class="text-danger"></span>
+            <div class="mb-3">
+                <label asp-for="Location"></label>
+                <select asp-for="Location" class="form-select">
+                    <option value="">Select Area</option>
+                    <option value="Walmer">Walmer</option>
+                    <option value="North End">North End</option>
+                    <option value="Humewood">Humewood</option>
+                    <option value="Summerstrand">Summerstrand</option>
+                    <option value="Newton Park">Newton Park</option>
+                    <option value="Central">Central</option>
+                </select>
+                <span asp-validation-for="Location" class="text-danger"></span>
 
-</div>
+            </div>
 
             <div class="mb-3">
 
@@ -89,8 +89,14 @@
                     <span class="input-group-text">R</span>
 
                     <input asp-for="Price"
-                           class="form-control"
-                           placeholder="0.00" />
+                           type="number"
+                           class="form-control numeric-input"
+                           placeholder="0.00"
+                           min="0"
+                           step="0.01"
+                           inputmode="decimal"
+                           onkeydown="blockInvalidNumberKeys(event, true)"
+                           oninput="clampNonNegative(this)" />
 
                 </div>
 
@@ -134,7 +140,13 @@
                         <label asp-for="Bedrooms"></label>
 
                         <input asp-for="Bedrooms"
-                               class="form-control" />
+                               type="number"
+                               class="form-control numeric-input"
+                               min="0"
+                               step="1"
+                               inputmode="numeric"
+                               onkeydown="blockInvalidNumberKeys(event, false)"
+                               oninput="clampNonNegative(this)" />
 
                     </div>
 
@@ -147,7 +159,13 @@
                         <label asp-for="Bathrooms"></label>
 
                         <input asp-for="Bathrooms"
-                               class="form-control" />
+                               type="number"
+                               class="form-control numeric-input"
+                               min="0"
+                               step="1"
+                               inputmode="numeric"
+                               onkeydown="blockInvalidNumberKeys(event, false)"
+                               oninput="clampNonNegative(this)" />
 
                     </div>
 
@@ -155,39 +173,63 @@
 
             </div>
 
-            <div class="section-box">
+            <!-- ================================================
+                 PROPERTY IMAGES UPLOAD
+            ================================================= -->
 
-                <h4>📷 Property Images</h4>
+            <div class="form-group">
 
-                <label>Upload at least 3 Images</label>
+                <div class="label-row">
+                    <label asp-for="PropertyImages">📷 Property Images</label>
+                    <span class="required">*Required (min 3)</span>
+                </div>
 
-                <input asp-for="PropertyImages"
-                       type="file"
-                       multiple
-                       class="form-control"
-                       accept=".jpg,.jpeg,.png" />
+                <div class="upload-box" id="imagesBox">
 
-                <small>
+                    <input asp-for="PropertyImages"
+                           type="file"
+                           multiple
+                           accept=".jpg,.jpeg,.png"
+                           id="imagesInput" />
 
-                    Hold <strong>Ctrl</strong> while selecting multiple images.
+                    <div class="upload-content">
+                        <div class="upload-icon">&uarr;</div>
+                        <div id="imagesUploadText">Click to upload or drag and drop</div>
+                        <small>JPG or PNG — upload at least 3 images</small>
+                    </div>
 
-                </small>
+                </div>
 
                 <span asp-validation-for="PropertyImages"
                       class="text-danger"></span>
 
             </div>
 
-            <div class="section-box mt-4">
+            <!-- ================================================
+                 AFFIDAVIT UPLOAD
+            ================================================= -->
 
-                <h4>📄 Supporting Documents</h4>
+            <div class="form-group">
 
-                <label>Affidavit (PDF)</label>
+                <div class="label-row">
+                    <label asp-for="Affidavit">📄 Affidavit</label>
+                    <span class="required">*Required</span>
+                </div>
 
-                <input asp-for="Affidavit"
-                       type="file"
-                       class="form-control"
-                       accept=".pdf" />
+                <div class="upload-box" id="affidavitBox">
+
+                    <input asp-for="Affidavit"
+                           type="file"
+                           accept=".pdf,application/pdf"
+                           id="affidavitInput" />
+
+                    <div class="upload-content">
+                        <div class="upload-icon">&uarr;</div>
+                        <div id="affidavitUploadText">Click to upload or drag and drop</div>
+                        <small>PDF document up to 3MB</small>
+                    </div>
+
+                </div>
 
                 <span asp-validation-for="Affidavit"
                       class="text-danger"></span>
@@ -219,13 +261,111 @@
 
             var alert = document.querySelector(".alert");
 
-            if (alert) 
-            {
+            if (alert) {
                 var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
                 bsAlert.close();
             }
 
         }, 4000);
+
+        // Blocks letters, minus sign, and (optionally) the decimal point
+        // from ever being typed into a numeric field.
+        function blockInvalidNumberKeys(event, allowDecimal) {
+
+            var blockedKeys = ["-", "+", "e", "E"];
+
+            if (!allowDecimal) {
+                blockedKeys.push(".");
+            }
+
+            var allowedControlKeys = [
+                "Backspace", "Delete", "Tab", "Escape", "Enter",
+                "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"
+            ];
+
+            if (allowedControlKeys.indexOf(event.key) !== -1) {
+                return;
+            }
+
+            if (blockedKeys.indexOf(event.key) !== -1 || /^[a-zA-Z]$/.test(event.key)) {
+                event.preventDefault();
+            }
+        }
+
+        function clampNonNegative(input) {
+
+            var isDecimal = input.step === "0.01";
+
+            var cleaned = isDecimal
+                ? input.value.replace(/[^0-9.]/g, "")
+                : input.value.replace(/[^0-9]/g, "");
+
+            input.value = cleaned;
+
+            if (input.value !== "" && parseFloat(input.value) < 0) {
+                input.value = 0;
+            }
+        }
+
+        // ====================================================
+        // DRAG & DROP + FILE NAME PREVIEW
+        // ====================================================
+
+        function setupUploadBox(boxId, inputId, textId) {
+
+            var box = document.getElementById(boxId);
+            var input = document.getElementById(inputId);
+            var text = document.getElementById(textId);
+
+            if (!box || !input || !text) {
+                return;
+            }
+
+            var defaultText = text.textContent;
+
+            function updateText() {
+
+                if (input.files && input.files.length > 0) {
+
+                    box.classList.add("has-files");
+
+                    if (input.files.length === 1) {
+                        text.textContent = input.files[0].name;
+                    }
+                    else {
+                        text.textContent = input.files.length + " files selected";
+                    }
+                }
+                else {
+                    box.classList.remove("has-files");
+                    text.textContent = defaultText;
+                }
+            }
+
+            input.addEventListener("change", updateText);
+
+            box.addEventListener("dragover", function (e) {
+                e.preventDefault();
+                box.classList.add("dragover");
+            });
+
+            box.addEventListener("dragleave", function () {
+                box.classList.remove("dragover");
+            });
+
+            box.addEventListener("drop", function (e) {
+                e.preventDefault();
+                box.classList.remove("dragover");
+
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    input.files = e.dataTransfer.files;
+                    updateText();
+                }
+            });
+        }
+
+        setupUploadBox("imagesBox", "imagesInput", "imagesUploadText");
+        setupUploadBox("affidavitBox", "affidavitInput", "affidavitUploadText");
 
     </script>
 

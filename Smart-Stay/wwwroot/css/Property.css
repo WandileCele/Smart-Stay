@@ -10,6 +10,7 @@
     border-radius: 15px;
     padding: 35px;
     box-shadow: 0 10px 25px rgba(0,0,0,.1);
+    position: relative;
 }
 
 .property-header {
@@ -93,7 +94,6 @@ textarea {
 }
 
 @keyframes slideDown {
-
     from {
         opacity: 0;
         transform: translateY(-15px);
@@ -106,13 +106,9 @@ textarea {
 }
 
 @media(max-width:768px) {
-
     .property-card {
         padding: 20px;
     }
-}
-.property-card {
-    position: relative;
 }
 
 .back-link {
@@ -124,7 +120,84 @@ textarea {
     font-size: 14px;
     font-weight: 500;
 }
-.back-link:hover {
-   color: #0a58ca;
-   text-decoration: underline;
+
+    .back-link:hover {
+        color: #0a58ca;
+        text-decoration: underline;
+    }
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.required {
+    color: #d9534f;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.upload-box {
+    width: 100%;
+    height: 135px;
+    border: 2px dashed #b8b8b8;
+    border-radius: 7px;
+    position: relative;
+    box-sizing: border-box;
+    background: #fafafa;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+    .upload-box:hover,
+    .upload-box.dragover {
+        border-color: #4d8de3;
+        background: #f5f9ff;
+    }
+
+    .upload-box input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+.upload-content {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 20px;
+    color: #999;
+    pointer-events: none;
+}
+
+.upload-icon {
+    font-size: 34px;
+    color: #999;
+    margin-bottom: 5px;
+}
+
+.upload-content div {
+    font-size: 14px;
+}
+
+.upload-content small {
+    display: block;
+    margin-top: 7px;
+    font-size: 12px;
+}
+
+.upload-box.has-files .upload-icon,
+.upload-box.has-files #imagesUploadText,
+.upload-box.has-files #affidavitUploadText {
+    color: #4d8de3;
 }
