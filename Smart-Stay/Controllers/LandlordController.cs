@@ -198,20 +198,21 @@ namespace Smart_Stay.Controllers
                     "Account");
             }
 
-
-            // ========================================================
-            // PASSWORD VALIDATION
-            // ========================================================
+            // =================================================
+            // CHECK PASSWORD
+            // =================================================
 
             bool passwordEntered =
                 !string.IsNullOrWhiteSpace(
                     model.NewPassword);
 
-
             bool confirmPasswordEntered =
                 !string.IsNullOrWhiteSpace(
                     model.ConfirmPassword);
 
+
+            // If one password field is entered,
+            // both must be entered
 
             if (passwordEntered ||
                 confirmPasswordEntered)
@@ -232,6 +233,8 @@ namespace Smart_Stay.Controllers
                 }
 
 
+                // Passwords must match
+
                 if (passwordEntered &&
                     confirmPasswordEntered &&
                     model.NewPassword !=
@@ -243,12 +246,51 @@ namespace Smart_Stay.Controllers
                 }
 
 
-                if (passwordEntered &&
-                    model.NewPassword!.Length < 6)
+                if (passwordEntered)
                 {
-                    ModelState.AddModelError(
-                        "NewPassword",
-                        "Password must be at least 6 characters.");
+                    string password =
+                        model.NewPassword!;
+
+
+                    // At least 8 characters
+
+                    if (password.Length < 8)
+                    {
+                        ModelState.AddModelError(
+                            "NewPassword",
+                            "Password must be at least 8 characters.");
+                    }
+
+
+                    // At least one uppercase letter
+
+                    if (!password.Any(char.IsUpper))
+                    {
+                        ModelState.AddModelError(
+                            "NewPassword",
+                            "Password must contain at least 1 uppercase letter.");
+                    }
+
+
+                    // At least one number
+
+                    if (!password.Any(char.IsDigit))
+                    {
+                        ModelState.AddModelError(
+                            "NewPassword",
+                            "Password must contain at least 1 number.");
+                    }
+
+
+                    // At least one special character
+
+                    if (!password.Any(
+                        c => !char.IsLetterOrDigit(c)))
+                    {
+                        ModelState.AddModelError(
+                            "NewPassword",
+                            "Password must contain at least 1 special character.");
+                    }
                 }
             }
 

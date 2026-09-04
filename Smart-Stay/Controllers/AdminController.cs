@@ -19,9 +19,9 @@ namespace Smart_Stay.Controllers
         }
 
 
-        // ==========================================
-        // ADMIN DASHBOARD
-        // ==========================================
+        // =====================================================
+        // DASHBOARD
+        // =====================================================
 
         public async Task<IActionResult> Dashboard()
         {
@@ -31,99 +31,101 @@ namespace Smart_Stay.Controllers
                 User.FindFirstValue(
                     ClaimTypes.NameIdentifier)!);
 
+
             model.FirstName = await _context.Users
                 .Where(u => u.UserId == adminUserId)
                 .Select(u => u.FirstName)
                 .FirstOrDefaultAsync() ?? "Admin";
 
 
-            model.PendingApplications = await _context.ListingApplications
-                .CountAsync(a =>
-                    a.ApplicationStatus == "Pending");
+            model.PendingApplications =
+                await _context.ListingApplications
+                    .CountAsync(a =>
+                        a.ApplicationStatus == "Pending");
 
 
-            model.ApprovedApplications = await _context.ListingApplications
-                .CountAsync(a =>
-                    a.ApplicationStatus == "Approved");
+            model.ApprovedApplications =
+                await _context.ListingApplications
+                    .CountAsync(a =>
+                        a.ApplicationStatus == "Approved");
 
 
-            model.RejectedApplications = await _context.ListingApplications
-                .CountAsync(a =>
-                    a.ApplicationStatus == "Rejected");
+            model.RejectedApplications =
+                await _context.ListingApplications
+                    .CountAsync(a =>
+                        a.ApplicationStatus == "Rejected");
 
 
-            model.Applications = await _context.ListingApplications
+            model.Applications =
+                await _context.ListingApplications
 
-                .Include(a => a.Property)
+                    .Include(a => a.Property)
 
-                .Include(a => a.Landlord)
-                    .ThenInclude(l => l.User)
+                    .Include(a => a.Landlord)
+                        .ThenInclude(l => l.User)
 
-                .Where(a =>
-                    a.ApplicationStatus == "Pending")
+                    .Where(a =>
+                        a.ApplicationStatus == "Pending")
 
-                .Select(a =>
-                    new ListingApplicationCardViewModel
-                    {
-                        ListingApplicationId =
-                            a.ListingApplicationId,
+                    .Select(a =>
+                        new ListingApplicationCardViewModel
+                        {
+                            ListingApplicationId =
+                                a.ListingApplicationId,
 
-                        PropertyId =
-                            a.PropertyId ?? 0,
+                            PropertyId =
+                                a.PropertyId ?? 0,
 
-                        PropertyTitle =
-                            a.Property != null
-                            ? a.Property.Title
-                            : "",
+                            PropertyTitle =
+                                a.Property != null
+                                    ? a.Property.Title
+                                    : "",
 
-                        LandlordName =
-                            a.Landlord != null
-                            ? a.Landlord.User.FirstName +
-                              " " +
-                              a.Landlord.User.SurName
-                            : "",
+                            LandlordName =
+                                a.Landlord != null
+                                    ? a.Landlord.User.FirstName +
+                                      " " +
+                                      a.Landlord.User.SurName
+                                    : "",
 
-                        Location =
-                            a.Property != null
-                            ? a.Property.Location
-                            : "",
+                            Location =
+                                a.Property != null
+                                    ? a.Property.Location
+                                    : "",
 
-                        Price =
-                            a.Property != null
-                            ? a.Property.Price
-                            : 0,
+                            Price =
+                                a.Property != null
+                                    ? a.Property.Price
+                                    : 0,
 
-                        PropertyType =
-                            a.Property != null
-                            ? a.Property.PropertyType
-                            : "",
+                            PropertyType =
+                                a.Property != null
+                                    ? a.Property.PropertyType
+                                    : "",
 
-                        ApplicationDate =
-                            a.ApplicationDate,
+                            ApplicationDate =
+                                a.ApplicationDate,
 
-                        ApplicationStatus =
-                            a.ApplicationStatus
-                    })
+                            ApplicationStatus =
+                                a.ApplicationStatus
+                        })
 
-                .ToListAsync();
+                    .ToListAsync();
 
 
             return View(model);
         }
 
 
-        // ==========================================
-        // APPROVE LISTING APPLICATION
-        // ==========================================
+        // =====================================================
+        // APPROVE APPLICATION
+        // =====================================================
 
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Approve(int id)
         {
             var application =
                 await _context.ListingApplications
-
                     .Include(a => a.Property)
-
                     .FirstOrDefaultAsync(a =>
                         a.ListingApplicationId == id);
 
@@ -134,37 +136,31 @@ namespace Smart_Stay.Controllers
             }
 
 
-            application.ApplicationStatus =
-                "Approved";
+            application.ApplicationStatus = "Approved";
 
 
             if (application.Property != null)
             {
-                application.Property.Status =
-                    "Approved";
+                application.Property.Status = "Approved";
             }
 
 
             await _context.SaveChangesAsync();
 
 
-            return RedirectToAction(
-                nameof(Dashboard));
+            return RedirectToAction(nameof(Dashboard));
         }
 
 
-        // ==========================================
-        // REJECT LISTING APPLICATION
-        // ==========================================
+        // =====================================================
+        // REJECT APPLICATION
+        // =====================================================
 
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Reject(int id)
         {
             var application =
                 await _context.ListingApplications
-
                     .Include(a => a.Property)
-
                     .FirstOrDefaultAsync(a =>
                         a.ListingApplicationId == id);
 
@@ -175,30 +171,26 @@ namespace Smart_Stay.Controllers
             }
 
 
-            application.ApplicationStatus =
-                "Rejected";
+            application.ApplicationStatus = "Rejected";
 
 
             if (application.Property != null)
             {
-                application.Property.Status =
-                    "Rejected";
+                application.Property.Status = "Rejected";
             }
 
 
             await _context.SaveChangesAsync();
 
 
-            return RedirectToAction(
-                nameof(Dashboard));
+            return RedirectToAction(nameof(Dashboard));
         }
 
 
-        // ==========================================
+        // =====================================================
         // APPLICATION DETAILS
-        // ==========================================
+        // =====================================================
 
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ApplicationDetails(int id)
         {
             var application =
@@ -269,18 +261,17 @@ namespace Smart_Stay.Controllers
 
                     LandlordName =
                         application.Landlord != null
-                        ? application.Landlord.User.FirstName +
-                          " " +
-                          application.Landlord.User.SurName
-                        : "",
+                            ? application.Landlord.User.FirstName +
+                              " " +
+                              application.Landlord.User.SurName
+                            : "",
 
 
                     AffidavitPath =
                         documents
 
                             .Where(d =>
-                                d.DocumentType ==
-                                "Affidavit")
+                                d.DocumentType == "Affidavit")
 
                             .Select(d =>
                                 d.DocumentPath)
@@ -292,8 +283,7 @@ namespace Smart_Stay.Controllers
                         documents
 
                             .Where(d =>
-                                d.DocumentType ==
-                                "Image")
+                                d.DocumentType == "Image")
 
                             .Select(d =>
                                 d.DocumentPath)
@@ -306,9 +296,9 @@ namespace Smart_Stay.Controllers
         }
 
 
-        // ==========================================
+        // =====================================================
         // MANAGE LANDLORDS
-        // ==========================================
+        // =====================================================
 
         public async Task<IActionResult> ManageLandlords()
         {
@@ -326,9 +316,9 @@ namespace Smart_Stay.Controllers
         }
 
 
-        // ==========================================
+        // =====================================================
         // DELETE LANDLORD
-        // ==========================================
+        // =====================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -356,9 +346,7 @@ namespace Smart_Stay.Controllers
 
             try
             {
-                // ==========================================
-                // 1. GET LANDLORD'S PROPERTIES
-                // ==========================================
+                // GET LANDLORD PROPERTIES
 
                 var properties =
                     await _context.Properties
@@ -378,9 +366,7 @@ namespace Smart_Stay.Controllers
                         .ToList();
 
 
-                // ==========================================
-                // 2. DELETE PROPERTY REVIEWS
-                // ==========================================
+                // DELETE REVIEWS
 
                 if (propertyIds.Any())
                 {
@@ -394,14 +380,11 @@ namespace Smart_Stay.Controllers
                             .ToListAsync();
 
 
-                    _context.Reviews.RemoveRange(
-                        reviews);
+                    _context.Reviews.RemoveRange(reviews);
                 }
 
 
-                // ==========================================
-                // 3. GET LISTING APPLICATIONS
-                // ==========================================
+                // GET LISTING APPLICATIONS
 
                 var listingApplications =
                     await _context.ListingApplications
@@ -421,9 +404,7 @@ namespace Smart_Stay.Controllers
                         .ToList();
 
 
-                // ==========================================
-                // 4. DELETE LISTING DOCUMENTS
-                // ==========================================
+                // DELETE LISTING DOCUMENTS
 
                 if (listingApplicationIds.Any())
                 {
@@ -431,9 +412,7 @@ namespace Smart_Stay.Controllers
                         await _context.Documents
 
                             .Where(d =>
-
                                 d.ListingApplication != null &&
-
                                 listingApplicationIds.Contains(
                                     d.ListingApplication.Value))
 
@@ -445,13 +424,11 @@ namespace Smart_Stay.Controllers
                 }
 
 
-                _context.ListingApplications.RemoveRange(
-                    listingApplications);
+                _context.ListingApplications
+                    .RemoveRange(listingApplications);
 
 
-                // ==========================================
-                // 5. GET RENTAL APPLICATIONS
-                // ==========================================
+                // GET RENTAL APPLICATIONS
 
                 var rentalApplications =
                     await _context.RentalApplications
@@ -471,9 +448,7 @@ namespace Smart_Stay.Controllers
                         .ToList();
 
 
-                // ==========================================
-                // 6. DELETE RENTAL DOCUMENTS
-                // ==========================================
+                // DELETE RENTAL DOCUMENTS
 
                 if (rentalApplicationIds.Any())
                 {
@@ -481,14 +456,9 @@ namespace Smart_Stay.Controllers
                         await _context.Documents
 
                             .Where(d =>
-
-                                d.RentalApplicationId
-                                    .HasValue &&
-
-                                rentalApplicationIds
-                                    .Contains(
-                                        d.RentalApplicationId
-                                            .Value))
+                                d.RentalApplicationId.HasValue &&
+                                rentalApplicationIds.Contains(
+                                    d.RentalApplicationId.Value))
 
                             .ToListAsync();
 
@@ -498,40 +468,31 @@ namespace Smart_Stay.Controllers
                 }
 
 
-                _context.RentalApplications.RemoveRange(
-                    rentalApplications);
+                _context.RentalApplications
+                    .RemoveRange(rentalApplications);
 
 
-                // ==========================================
-                // 7. DELETE PROPERTIES
-                // ==========================================
+                // DELETE PROPERTIES
 
-                _context.Properties.RemoveRange(
-                    properties);
+                _context.Properties
+                    .RemoveRange(properties);
 
 
-                // ==========================================
-                // 8. DELETE LANDLORD
-                // ==========================================
+                // DELETE LANDLORD
 
-                _context.Landlords.Remove(
-                    landlord);
+                _context.Landlords
+                    .Remove(landlord);
 
 
-                // ==========================================
-                // 9. DELETE USER ACCOUNT
-                // ==========================================
+                // DELETE USER
 
-                _context.Users.Remove(
-                    landlord.User);
+                _context.Users
+                    .Remove(landlord.User);
 
 
-                // ==========================================
-                // 10. SAVE CHANGES
-                // ==========================================
+                // SAVE DATABASE
 
                 await _context.SaveChangesAsync();
-
 
                 await transaction.CommitAsync();
 
@@ -539,7 +500,6 @@ namespace Smart_Stay.Controllers
                 return RedirectToAction(
                     nameof(ManageLandlords));
             }
-
             catch
             {
                 await transaction.RollbackAsync();
@@ -549,9 +509,9 @@ namespace Smart_Stay.Controllers
         }
 
 
-        // ==========================================
-        // GET: UPDATE ADMIN PROFILE
-        // ==========================================
+        // =====================================================
+        // GET UPDATE PROFILE
+        // =====================================================
 
         [HttpGet]
         public async Task<IActionResult> UpdateProfile()
@@ -571,13 +531,8 @@ namespace Smart_Stay.Controllers
             }
 
 
-            // ==========================================
-            // GET CURRENT ADMIN
-            // ==========================================
-
             var user =
                 await _context.Users
-
                     .FirstOrDefaultAsync(u =>
                         u.UserId == userId);
 
@@ -589,10 +544,6 @@ namespace Smart_Stay.Controllers
                     "Account");
             }
 
-
-            // ==========================================
-            // LOAD DATA INTO VIEW MODEL
-            // ==========================================
 
             var model =
                 new UpdateProfileViewModel
@@ -618,9 +569,9 @@ namespace Smart_Stay.Controllers
         }
 
 
-        // ==========================================
-        // POST: UPDATE ADMIN PROFILE
-        // ==========================================
+        // =====================================================
+        // POST UPDATE PROFILE
+        // =====================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -642,13 +593,12 @@ namespace Smart_Stay.Controllers
             }
 
 
-            // ==========================================
-            // GET CURRENT ADMIN
-            // ==========================================
+            // =================================================
+            // GET CURRENT USER
+            // =================================================
 
             var user =
                 await _context.Users
-
                     .FirstOrDefaultAsync(u =>
                         u.UserId == userId);
 
@@ -661,14 +611,13 @@ namespace Smart_Stay.Controllers
             }
 
 
-            // ==========================================
-            // PASSWORD VALIDATION
-            // ==========================================
+            // =================================================
+            // CHECK PASSWORD
+            // =================================================
 
             bool passwordEntered =
                 !string.IsNullOrWhiteSpace(
                     model.NewPassword);
-
 
             bool confirmPasswordEntered =
                 !string.IsNullOrWhiteSpace(
@@ -697,7 +646,7 @@ namespace Smart_Stay.Controllers
                 }
 
 
-                // Check passwords match
+                // Passwords must match
 
                 if (passwordEntered &&
                     confirmPasswordEntered &&
@@ -710,27 +659,62 @@ namespace Smart_Stay.Controllers
                 }
 
 
-                // Password minimum length
-
-                if (passwordEntered &&
-                    model.NewPassword!.Length < 6)
+                if (passwordEntered)
                 {
-                    ModelState.AddModelError(
-                        "NewPassword",
-                        "Password must be at least 6 characters.");
+                    string password =
+                        model.NewPassword!;
+
+
+                    // At least 8 characters
+
+                    if (password.Length < 8)
+                    {
+                        ModelState.AddModelError(
+                            "NewPassword",
+                            "Password must be at least 8 characters.");
+                    }
+
+
+                    // At least one uppercase letter
+
+                    if (!password.Any(char.IsUpper))
+                    {
+                        ModelState.AddModelError(
+                            "NewPassword",
+                            "Password must contain at least 1 uppercase letter.");
+                    }
+
+
+                    // At least one number
+
+                    if (!password.Any(char.IsDigit))
+                    {
+                        ModelState.AddModelError(
+                            "NewPassword",
+                            "Password must contain at least 1 number.");
+                    }
+
+
+                    // At least one special character
+
+                    if (!password.Any(
+                        c => !char.IsLetterOrDigit(c)))
+                    {
+                        ModelState.AddModelError(
+                            "NewPassword",
+                            "Password must contain at least 1 special character.");
+                    }
                 }
             }
 
 
-            // ==========================================
-            // CHECK IF EMAIL EXISTS
-            // ==========================================
+            // =================================================
+            // CHECK IF EMAIL ALREADY EXISTS
+            // =================================================
 
             var emailExists =
                 await _context.Users.AnyAsync(u =>
-
                     u.Email == model.Email &&
-
                     u.UserId != userId);
 
 
@@ -742,46 +726,39 @@ namespace Smart_Stay.Controllers
             }
 
 
-            // ==========================================
+            // =================================================
             // VALIDATION FAILED
-            // ==========================================
+            // =================================================
 
             if (!ModelState.IsValid)
             {
                 model.CurrentImagePath =
                     user.ProfileImagePath;
 
-
                 return View(model);
             }
 
 
-            // ==========================================
+            // =================================================
             // UPDATE USER INFORMATION
-            // ==========================================
+            // =================================================
 
             user.FirstName =
                 model.FirstName.Trim();
 
-
             user.SurName =
                 model.SurName.Trim();
 
-
             user.Email =
                 model.Email.Trim();
-
 
             user.PhoneNo =
                 model.PhoneNo.Trim();
 
 
-            // ==========================================
+            // =================================================
             // UPDATE PASSWORD
-            // ==========================================
-
-            // Password only changes if the Admin
-            // entered a new password
+            // =================================================
 
             if (!string.IsNullOrWhiteSpace(
                 model.NewPassword))
@@ -791,17 +768,13 @@ namespace Smart_Stay.Controllers
             }
 
 
-            // ==========================================
+            // =================================================
             // PROFILE IMAGE UPLOAD
-            // ==========================================
+            // =================================================
 
             if (model.ProfileImage != null &&
                 model.ProfileImage.Length > 0)
             {
-                // ==========================================
-                // ALLOWED IMAGE TYPES
-                // ==========================================
-
                 var allowedExtensions =
                     new[]
                     {
@@ -815,13 +788,10 @@ namespace Smart_Stay.Controllers
                 var extension =
                     Path.GetExtension(
                         model.ProfileImage.FileName)
-
                     .ToLowerInvariant();
 
 
-                // ==========================================
-                // VALIDATE FILE TYPE
-                // ==========================================
+                // CHECK FILE TYPE
 
                 if (!allowedExtensions.Contains(
                     extension))
@@ -830,19 +800,14 @@ namespace Smart_Stay.Controllers
                         "ProfileImage",
                         "Only JPG, JPEG, PNG and GIF files are allowed.");
 
-
                     model.CurrentImagePath =
                         user.ProfileImagePath;
-
 
                     return View(model);
                 }
 
 
-                // ==========================================
-                // VALIDATE FILE SIZE
-                // Maximum: 5MB
-                // ==========================================
+                // CHECK FILE SIZE
 
                 if (model.ProfileImage.Length >
                     5 * 1024 * 1024)
@@ -851,78 +816,56 @@ namespace Smart_Stay.Controllers
                         "ProfileImage",
                         "Image must be smaller than 5MB.");
 
-
                     model.CurrentImagePath =
                         user.ProfileImagePath;
-
 
                     return View(model);
                 }
 
 
-                // ==========================================
-                // CREATE UPLOAD FOLDER
-                // ==========================================
+                // CREATE FOLDER
 
                 var uploadFolder =
                     Path.Combine(
-
                         Directory.GetCurrentDirectory(),
-
                         "wwwroot",
-
                         "uploads",
-
                         "profile-images");
 
 
-                if (!Directory.Exists(
-                    uploadFolder))
+                if (!Directory.Exists(uploadFolder))
                 {
                     Directory.CreateDirectory(
                         uploadFolder);
                 }
 
 
-                // ==========================================
                 // CREATE UNIQUE FILE NAME
-                // ==========================================
 
                 var fileName =
-                    Guid.NewGuid()
-                        .ToString() +
-
+                    Guid.NewGuid().ToString() +
                     extension;
 
 
                 var filePath =
                     Path.Combine(
-
                         uploadFolder,
-
                         fileName);
 
 
-                // ==========================================
-                // SAVE IMAGE TO FOLDER
-                // ==========================================
+                // SAVE IMAGE
 
                 using (var stream =
                     new FileStream(
-
                         filePath,
-
                         FileMode.Create))
                 {
                     await model.ProfileImage
-                        .CopyToAsync(
-                            stream);
+                        .CopyToAsync(stream);
                 }
 
 
-                // ==========================================
                 // SAVE IMAGE PATH TO DATABASE
-                // ==========================================
 
                 user.ProfileImagePath =
                     "/uploads/profile-images/" +
@@ -930,24 +873,23 @@ namespace Smart_Stay.Controllers
             }
 
 
-            // ==========================================
+            // =================================================
             // SAVE ALL CHANGES TO DATABASE
-            // ==========================================
+            // =================================================
 
             await _context.SaveChangesAsync();
 
 
-            // ==========================================
+            // =================================================
             // SUCCESS MESSAGE
-            // ==========================================
+            // =================================================
 
             TempData["SuccessMessage"] =
                 "Profile updated successfully!";
 
 
-            // ==========================================
-            // RETURN TO UPDATE PROFILE PAGE
-            // ==========================================
+            // IMPORTANT:
+            // Redirect back to Admin UpdateProfile
 
             return RedirectToAction(
                 nameof(UpdateProfile));
