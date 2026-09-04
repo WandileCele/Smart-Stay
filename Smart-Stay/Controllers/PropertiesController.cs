@@ -12,14 +12,11 @@ namespace Smart_Stay.Controllers
         private readonly SmartDbContext _context;
         private readonly IWebHostEnvironment _environment;
 
-        public PropertiesController(
-            SmartDbContext context,
-            IWebHostEnvironment environment)
+        public PropertiesController(SmartDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
             _environment = environment;
         }
-
         [HttpGet]
         public async Task<IActionResult> viewAll(
             string? search,
@@ -30,6 +27,11 @@ namespace Smart_Stay.Controllers
                 .Where(p => p.Status == "Available")
                 .AsQueryable();
 
+
+            // ========================================================
+            // SEARCH
+            // ========================================================
+
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.Trim();
@@ -39,34 +41,44 @@ namespace Smart_Stay.Controllers
                     p.Location.Contains(search));
             }
 
+
+            // ========================================================
+            // LOCATION FILTER
+            // ========================================================
+
             if (!string.IsNullOrWhiteSpace(location))
             {
                 query = query.Where(p =>
                     p.Location == location);
             }
 
+
+            // ========================================================
+            // PRICE FILTER
+            // ========================================================
+
             if (!string.IsNullOrWhiteSpace(price))
             {
                 switch (price)
                 {
+                    case "0-2000":
+                        query = query.Where(p => p.Price >= 0 && p.Price <= 2000);
+                        break;
+
                     case "2000-3000":
-                        query = query.Where(p =>
-                            p.Price >= 2000 &&
-                            p.Price <= 3000);
+                        query = query.Where(p => p.Price > 2000 && p.Price <= 3000);
                         break;
 
                     case "3000-5000":
-                        query = query.Where(p =>
-                            p.Price >= 3000 &&
-                            p.Price <= 5000);
+                        query = query.Where(p => p.Price > 3000 && p.Price <= 5000);
                         break;
 
                     case "5000+":
-                        query = query.Where(p =>
-                            p.Price >= 5000);
+                        query = query.Where(p => p.Price > 5000);
                         break;
                 }
             }
+
 
             var properties = await query
                 .OrderByDescending(p => p.DateListed)
@@ -87,8 +99,7 @@ namespace Smart_Stay.Controllers
                     ImagePath = _context.ListingApplications
                         .Where(la => la.PropertyId == p.PropertyId)
                         .Join(
-                            _context.Documents.Where(
-                                d => d.DocumentType == "Image"),
+                            _context.Documents.Where(d => d.DocumentType == "Image"),
                             la => la.ListingApplicationId,
                             d => d.ListingApplication,
                             (la, d) => d.DocumentPath
@@ -97,35 +108,38 @@ namespace Smart_Stay.Controllers
 
                     Status = p.Status,
 
-                    ApplicationCount =
-                        p.RentalApplications.Count(),
+                    ApplicationCount = p.RentalApplications.Count(),
 
                     AverageRating = p.Reviews.Any()
-                        ? p.Reviews.Average(
-                            r => (double)r.Rating)
+                        ? p.Reviews.Average(r => (double)r.Rating)
                         : null,
 
                     ReviewCount = p.Reviews.Count()
                 })
                 .ToListAsync();
 
+
+            // ========================================================
+            // SEND CURRENT FILTER VALUES BACK TO VIEW
+            // ========================================================
+
             ViewBag.Search = search;
+
             ViewBag.Location = location;
+
             ViewBag.Price = price;
+
 
             return View(properties);
         }
 
-        public async Task<IActionResult> Details(
-            int id,
-            string? returnUrl)
+        public async Task<IActionResult> Details(int id, string? returnUrl)
         {
             var property = await _context.Properties
                 .Include(p => p.RentalApplications)
                 .Include(p => p.Reviews)
                 .ThenInclude(r => r.Tenant)
-                .FirstOrDefaultAsync(
-                    p => p.PropertyId == id);
+                .FirstOrDefaultAsync(p => p.PropertyId == id);
 
             if (property == null)
             {
@@ -133,54 +147,39 @@ namespace Smart_Stay.Controllers
             }
 
             var imagePaths = await _context.Documents
-                .Where(d =>
-                    d.DocumentType == "Image" &&
-                    d.ListingApplicationNavigation.PropertyId == id)
-                .OrderBy(d => d.DocumentId)
-                .Select(d => d.DocumentPath)
-                .ToListAsync();
+           .Where(d => d.DocumentType == "Image"
+               && d.ListingApplicationNavigation.PropertyId == id)
+           .OrderBy(d => d.DocumentId)
+           .Select(d => d.DocumentPath)
+           .ToListAsync();
 
-            string? candidateReturnUrl =
-                returnUrl ??
-                Request.Headers["Referer"].ToString();
+            string? candidateReturnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
 
-            string safeReturnUrl =
-                (!string.IsNullOrWhiteSpace(candidateReturnUrl) &&
-                 Url.IsLocalUrl(candidateReturnUrl))
-                    ? candidateReturnUrl
-                    : Url.Action("Index", "Home")!;
+            string safeReturnUrl = (!string.IsNullOrWhiteSpace(candidateReturnUrl)
+                                     && Url.IsLocalUrl(candidateReturnUrl))
+                ? candidateReturnUrl
+                : Url.Action("Index", "Home")!;
 
             bool canApply = true;
             string? applyBlockedReason = null;
 
-            if (User.Identity != null &&
-                User.Identity.IsAuthenticated &&
-                User.IsInRole("Tenant"))
+            if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Tenant"))
             {
-                var tenantIdString =
-                    User.FindFirstValue(
-                        ClaimTypes.NameIdentifier);
+                var tenantIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (int.TryParse(
-                    tenantIdString,
-                    out int tenantId))
+                if (int.TryParse(tenantIdString, out int tenantId))
                 {
                     var existing = property.RentalApplications
                         .Where(a => a.TenantId == tenantId)
-                        .OrderByDescending(
-                            a => a.ApplicationDate)
+                        .OrderByDescending(a => a.ApplicationDate)
                         .FirstOrDefault();
 
-                    if (existing != null &&
-                        existing.RentalApplicationStatus != "Rejected")
+                    if (existing != null && existing.RentalApplicationStatus != "Rejected")
                     {
                         canApply = false;
-
-                        applyBlockedReason =
-                            existing.RentalApplicationStatus ==
-                            "Pending"
-                                ? "Your application for this property is pending review."
-                                : "You already have an approved application for this property.";
+                        applyBlockedReason = existing.RentalApplicationStatus == "Pending"
+                            ? "Your application for this property is pending review."
+                            : "You already have an approved application for this property.";
                     }
                 }
             }
@@ -209,8 +208,7 @@ namespace Smart_Stay.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var property = await _context.Properties
-                .FirstOrDefaultAsync(
-                    p => p.PropertyId == id);
+                .FirstOrDefaultAsync(p => p.PropertyId == id);
 
             if (property == null)
             {
@@ -218,9 +216,8 @@ namespace Smart_Stay.Controllers
             }
 
             var existingImages = await _context.Documents
-                .Where(d =>
-                    d.DocumentType == "Image" &&
-                    d.ListingApplicationNavigation.PropertyId == id)
+                .Where(d => d.DocumentType == "Image"
+                    && d.ListingApplicationNavigation.PropertyId == id)
                 .OrderBy(d => d.DocumentId)
                 .Select(d => new ExistingPropertyImageViewModel
                 {
@@ -245,40 +242,41 @@ namespace Smart_Stay.Controllers
             return View(model);
         }
 
+
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(
-            PropertyEditViewModel model)
+        public async Task<IActionResult> Edit(PropertyEditViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                model.ExistingImages =
-                    await _context.Documents
-                        .Where(d =>
-                            d.DocumentType == "Image" &&
-                            d.ListingApplicationNavigation.PropertyId ==
-                            model.PropertyId)
-                        .OrderBy(d => d.DocumentId)
-                        .Select(d =>
-                            new ExistingPropertyImageViewModel
-                            {
-                                DocumentId = d.DocumentId,
-                                ImagePath = d.DocumentPath
-                            })
-                        .ToListAsync();
+                // Reload existing images so they are still displayed
+                // if validation fails.
+                model.ExistingImages = await _context.Documents
+                    .Where(d => d.DocumentType == "Image"
+                        && d.ListingApplicationNavigation.PropertyId == model.PropertyId)
+                    .OrderBy(d => d.DocumentId)
+                    .Select(d => new ExistingPropertyImageViewModel
+                    {
+                        DocumentId = d.DocumentId,
+                        ImagePath = d.DocumentPath
+                    })
+                    .ToListAsync();
 
                 return View(model);
             }
 
             var property = await _context.Properties
-                .FirstOrDefaultAsync(
-                    p => p.PropertyId == model.PropertyId);
+                .FirstOrDefaultAsync(p => p.PropertyId == model.PropertyId);
 
             if (property == null)
             {
                 return NotFound();
             }
+
+            // ============================================================
+            // UPDATE PROPERTY INFORMATION
+            // ============================================================
 
             property.Title = model.Title;
             property.Description = model.Description;
@@ -288,145 +286,120 @@ namespace Smart_Stay.Controllers
             property.Bedrooms = model.Bedrooms;
             property.Bathrooms = model.Bathrooms;
 
-            if (model.ImagesToDelete != null &&
-                model.ImagesToDelete.Any())
+
+            // ============================================================
+            // DELETE SELECTED EXISTING IMAGES
+            // ============================================================
+
+            if (model.ImagesToDelete != null && model.ImagesToDelete.Any())
             {
-                var imagesToDelete =
-                    await _context.Documents
-                        .Where(d =>
-                            model.ImagesToDelete.Contains(
-                                d.DocumentId) &&
-                            d.DocumentType == "Image" &&
-                            d.ListingApplicationNavigation.PropertyId ==
-                            model.PropertyId)
-                        .ToListAsync();
+                var imagesToDelete = await _context.Documents
+                    .Where(d => model.ImagesToDelete.Contains(d.DocumentId)
+                        && d.DocumentType == "Image"
+                        && d.ListingApplicationNavigation.PropertyId == model.PropertyId)
+                    .ToListAsync();
 
                 foreach (var image in imagesToDelete)
                 {
-                    if (!string.IsNullOrEmpty(
-                        image.DocumentPath))
+                    // Delete physical image from wwwroot/uploads
+                    if (!string.IsNullOrEmpty(image.DocumentPath))
                     {
-                        string relativePath =
-                            image.DocumentPath
-                                .TrimStart('/')
-                                .Replace(
-                                    "/",
-                                    Path.DirectorySeparatorChar
-                                        .ToString());
+                        string relativePath = image.DocumentPath.TrimStart('/')
+                            .Replace("/", Path.DirectorySeparatorChar.ToString());
 
-                        string physicalPath =
-                            Path.Combine(
-                                _environment.WebRootPath,
-                                relativePath);
+                        string physicalPath = Path.Combine(
+                            _environment.WebRootPath,
+                            relativePath
+                        );
 
-                        if (System.IO.File.Exists(
-                            physicalPath))
+                        if (System.IO.File.Exists(physicalPath))
                         {
-                            System.IO.File.Delete(
-                                physicalPath);
+                            System.IO.File.Delete(physicalPath);
                         }
                     }
                 }
 
-                _context.Documents.RemoveRange(
-                    imagesToDelete);
+                _context.Documents.RemoveRange(imagesToDelete);
             }
 
-            if (model.NewImages != null &&
-                model.NewImages.Any())
+
+            // ============================================================
+            // ADD NEW IMAGES
+            // ============================================================
+
+            if (model.NewImages != null && model.NewImages.Any())
             {
-                var listingApplication =
-                    await _context.ListingApplications
-                        .Where(la =>
-                            la.PropertyId ==
-                            model.PropertyId)
-                        .OrderByDescending(
-                            la =>
-                                la.ListingApplicationId)
-                        .FirstOrDefaultAsync();
+                var listingApplication = await _context.ListingApplications
+                    .Where(la => la.PropertyId == model.PropertyId)
+                    .OrderByDescending(la => la.ListingApplicationId)
+                    .FirstOrDefaultAsync();
 
                 if (listingApplication == null)
                 {
                     return NotFound();
                 }
 
-                int userId = int.Parse(
-                    User.FindFirstValue(
-                        ClaimTypes.NameIdentifier)!);
-
-                string uploadFolder =
-                    Path.Combine(
-                        _environment.WebRootPath,
-                        "uploads");
+                string uploadFolder = Path.Combine(
+                    _environment.WebRootPath,
+                    "uploads"
+                );
 
                 if (!Directory.Exists(uploadFolder))
                 {
-                    Directory.CreateDirectory(
-                        uploadFolder);
+                    Directory.CreateDirectory(uploadFolder);
                 }
 
                 foreach (var image in model.NewImages)
                 {
-                    if (image == null ||
-                        image.Length == 0)
+                    if (image == null || image.Length == 0)
                     {
                         continue;
                     }
 
-                    string imageName =
-                        Guid.NewGuid() +
-                        Path.GetExtension(
-                            image.FileName);
+                    string imageName = Guid.NewGuid()
+                        + Path.GetExtension(image.FileName);
 
-                    string imagePath =
-                        Path.Combine(
-                            uploadFolder,
-                            imageName);
+                    string imagePath = Path.Combine(
+                        uploadFolder,
+                        imageName
+                    );
 
-                    using (var stream =
-                        new FileStream(
-                            imagePath,
-                            FileMode.Create))
+                    using (var stream = new FileStream(imagePath, FileMode.Create))
                     {
                         await image.CopyToAsync(stream);
                     }
 
-                    _context.Documents.Add(
-                        new Document
-                        {
-                            UserId = userId,
-                            ListingApplication =
-                                listingApplication
-                                    .ListingApplicationId,
-                            RentalApplicationId = null,
-                            DocumentType = "Image",
-                            UploadDate =
-                                DateOnly.FromDateTime(
-                                    DateTime.Now),
-                            DocumentPath =
-                                "/uploads/" + imageName
-                        });
+                    _context.Documents.Add(new Document
+                    {
+                        ListingApplication = listingApplication.ListingApplicationId,
+                        RentalApplicationId = null,
+                        DocumentType = "Image",
+                        UploadDate = DateOnly.FromDateTime(DateTime.Now),
+                        DocumentPath = "/uploads/" + imageName
+                    });
                 }
             }
 
+
+            // ============================================================
+            // SAVE EVERYTHING
+            // ============================================================
+
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] =
-                "Property updated successfully.";
+            TempData["SuccessMessage"] = "Property updated successfully.";
 
-            return RedirectToAction(
-                "Dashboard",
-                "Landlord");
+            return RedirectToAction("Dashboard", "Landlord");
         }
+
+
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> UpdateStatus(
-            int id)
+        public async Task<IActionResult> UpdateStatus(int id)
         {
             var property = await _context.Properties
-                .FirstOrDefaultAsync(
-                    p => p.PropertyId == id);
+            .FirstOrDefaultAsync(p => p.PropertyId == id);
 
             if (property == null)
             {
@@ -441,30 +414,30 @@ namespace Smart_Stay.Controllers
             };
 
             return View(model);
-        }
 
+        }
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateStatus(
-            PropertyStatusViewModel model)
+        public async Task<IActionResult> UpdateStatus(PropertyStatusViewModel model)
         {
             var property = await _context.Properties
-                .FirstOrDefaultAsync(
-                    p => p.PropertyId == model.PropertyId);
+                .FirstOrDefaultAsync(p => p.PropertyId == model.PropertyId);
+
 
             if (property == null)
             {
                 return NotFound();
             }
 
+
             property.Status = model.Status;
+
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(
-                "Dashboard",
-                "Landlord");
+
+            return RedirectToAction("Dashboard", "Landlord");
         }
 
         [Authorize]
@@ -476,113 +449,82 @@ namespace Smart_Stay.Controllers
                 .Include(p => p.ListingApplications)
                 .Include(p => p.RentalApplications)
                 .Include(p => p.Reviews)
-                .FirstOrDefaultAsync(
-                    p => p.PropertyId == id);
+                .FirstOrDefaultAsync(p => p.PropertyId == id);
 
             if (property == null)
             {
                 return NotFound();
             }
 
-            var listingIds =
-                property.ListingApplications
-                    .Select(l =>
-                        l.ListingApplicationId)
-                    .ToList();
 
-            var listingDocuments =
-                await _context.Documents
-                    .Where(d =>
-                        d.ListingApplication != null &&
-                        listingIds.Contains(
-                            d.ListingApplication.Value))
-                    .ToListAsync();
+            var listingIds = property.ListingApplications
+                .Select(l => l.ListingApplicationId)
+                .ToList();
 
-            _context.Documents.RemoveRange(
-                listingDocuments);
+            var listingDocuments = await _context.Documents
+                .Where(d => d.ListingApplication != null &&
+                            listingIds.Contains(d.ListingApplication.Value))
+                .ToListAsync();
 
-            var rentalIds =
-                property.RentalApplications
-                    .Select(r =>
-                        r.RentalApplicationId)
-                    .ToList();
+            _context.Documents.RemoveRange(listingDocuments);
 
-            var rentalDocuments =
-                await _context.Documents
-                    .Where(d =>
-                        d.RentalApplicationId != null &&
-                        rentalIds.Contains(
-                            d.RentalApplicationId.Value))
-                    .ToListAsync();
 
-            _context.Documents.RemoveRange(
-                rentalDocuments);
+            var rentalIds = property.RentalApplications
+                .Select(r => r.RentalApplicationId)
+                .ToList();
 
-            _context.Reviews.RemoveRange(
-                property.Reviews);
+            var rentalDocuments = await _context.Documents
+                .Where(d => d.RentalApplicationId != null &&
+                            rentalIds.Contains(d.RentalApplicationId.Value))
+                .ToListAsync();
 
-            _context.RentalApplications.RemoveRange(
-                property.RentalApplications);
+            _context.Documents.RemoveRange(rentalDocuments);
+            _context.Reviews.RemoveRange(property.Reviews);
+            _context.RentalApplications.RemoveRange(property.RentalApplications);
 
-            _context.ListingApplications.RemoveRange(
-                property.ListingApplications);
+
+            _context.ListingApplications.RemoveRange(property.ListingApplications);
+
 
             _context.Properties.Remove(property);
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(
-                "Dashboard",
-                "Landlord");
+            return RedirectToAction("Dashboard", "Landlord");
         }
-
         public IActionResult ListYourProperty()
         {
-            if (User.Identity == null ||
-                !User.Identity.IsAuthenticated)
+            // User is not logged in
+            if (User.Identity == null || !User.Identity.IsAuthenticated)
             {
-                return RedirectToAction(
-                    "Login",
-                    "Account");
+                return RedirectToAction("Login", "Account");
             }
 
+            // User is logged in but is NOT a landlord
             if (!User.IsInRole("Landlord"))
             {
-                return RedirectToAction(
-                    "Login",
-                    "Account");
+                return RedirectToAction("Login", "Account");
             }
 
-            return RedirectToAction(
-                "Create",
-                "Properties");
+            // User is a landlord
+            return RedirectToAction("Create", "Properties");
         }
-
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            PropertyCreateViewModel model)
+        public async Task<IActionResult> Create(PropertyCreateViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-
-            if (model.PropertyImages == null ||
-                model.PropertyImages.Count < 3)
+            if (model.PropertyImages == null || model.PropertyImages.Count < 3)
             {
-                ModelState.AddModelError(
-                    "PropertyImages",
-                    "Please upload at least 3 property images.");
-
+                ModelState.AddModelError("PropertyImages", "Please upload at least 3 property images.");
                 return View(model);
             }
 
-            int landlordId = int.Parse(
-                User.FindFirstValue(
-                    ClaimTypes.NameIdentifier)!);
-
+            int landlordId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var property = new Property
             {
                 LandlordId = landlordId,
@@ -593,161 +535,94 @@ namespace Smart_Stay.Controllers
                 PropertyType = model.PropertyType,
                 Bedrooms = model.Bedrooms,
                 Bathrooms = model.Bathrooms,
-                DateListed =
-                    DateOnly.FromDateTime(
-                        DateTime.Now),
+                DateListed = DateOnly.FromDateTime(DateTime.Now),
                 Status = "Pending"
             };
 
             _context.Properties.Add(property);
-
             await _context.SaveChangesAsync();
 
+            // Look up an existing Admin instead of hardcoding an ID, so this
+            // keeps working even if the database is wiped/reseeded and Admin
+            // records get new IDs.
             int? adminId = await _context.Admins
                 .Select(a => (int?)a.UserId)
                 .FirstOrDefaultAsync();
 
             if (adminId == null)
             {
-                ModelState.AddModelError(
-                    string.Empty,
+                ModelState.AddModelError(string.Empty,
                     "No admin account is available to review this listing. Please contact support.");
-
                 return View(model);
             }
 
-            var listingApplication =
-                new ListingApplication
-                {
-                    PropertyId =
-                        property.PropertyId,
+            var listingApplication = new ListingApplication
+            {
+                PropertyId = property.PropertyId,
+                LandlordId = landlordId,
+                AdminId = adminId.Value,
+                ApplicationStatus = "Pending",
+                ApplicationDate = DateOnly.FromDateTime(DateTime.Now)
+            };
 
-                    LandlordId =
-                        landlordId,
-
-                    AdminId =
-                        adminId.Value,
-
-                    ApplicationStatus =
-                        "Pending",
-
-                    ApplicationDate =
-                        DateOnly.FromDateTime(
-                            DateTime.Now)
-                };
-
-            _context.ListingApplications.Add(
-                listingApplication);
-
+            _context.ListingApplications.Add(listingApplication);
             await _context.SaveChangesAsync();
 
-            string uploadFolder =
-                Path.Combine(
-                    _environment.WebRootPath,
-                    "uploads");
+            string uploadFolder = Path.Combine(_environment.WebRootPath, "uploads");
 
             if (!Directory.Exists(uploadFolder))
             {
-                Directory.CreateDirectory(
-                    uploadFolder);
+                Directory.CreateDirectory(uploadFolder);
             }
+
 
             if (model.Affidavit != null)
             {
-                string affidavitName =
-                    Guid.NewGuid() +
-                    Path.GetExtension(
-                        model.Affidavit.FileName);
+                string affidavitName = Guid.NewGuid() + Path.GetExtension(model.Affidavit.FileName);
 
-                string affidavitPath =
-                    Path.Combine(
-                        uploadFolder,
-                        affidavitName);
+                string affidavitPath = Path.Combine(uploadFolder, affidavitName);
 
-                using (var stream =
-                    new FileStream(
-                        affidavitPath,
-                        FileMode.Create))
+                using (var stream = new FileStream(affidavitPath, FileMode.Create))
                 {
-                    await model.Affidavit.CopyToAsync(
-                        stream);
+                    await model.Affidavit.CopyToAsync(stream);
                 }
 
-                _context.Documents.Add(
-                    new Document
-                    {
-                        UserId = landlordId,
-
-                        ListingApplication =
-                            listingApplication
-                                .ListingApplicationId,
-
-                        RentalApplicationId = null,
-
-                        DocumentType = "Affidavit",
-
-                        UploadDate =
-                            DateOnly.FromDateTime(
-                                DateTime.Now),
-
-                        DocumentPath =
-                            "/uploads/" +
-                            affidavitName
-                    });
+                _context.Documents.Add(new Document
+                {
+                    ListingApplication = listingApplication.ListingApplicationId,
+                    RentalApplicationId = null,
+                    DocumentType = "Affidavit",
+                    UploadDate = DateOnly.FromDateTime(DateTime.Now),
+                    DocumentPath = "/uploads/" + affidavitName
+                });
             }
 
             foreach (var image in model.PropertyImages)
             {
-                string imageName =
-                    Guid.NewGuid() +
-                    Path.GetExtension(
-                        image.FileName);
+                string imageName = Guid.NewGuid() + Path.GetExtension(image.FileName);
 
-                string imagePath =
-                    Path.Combine(
-                        uploadFolder,
-                        imageName);
+                string imagePath = Path.Combine(uploadFolder, imageName);
 
-                using (var stream =
-                    new FileStream(
-                        imagePath,
-                        FileMode.Create))
+                using (var stream = new FileStream(imagePath, FileMode.Create))
                 {
-                    await image.CopyToAsync(
-                        stream);
+                    await image.CopyToAsync(stream);
                 }
 
-                _context.Documents.Add(
-                    new Document
-                    {
-                        UserId = landlordId,
-
-                        ListingApplication =
-                            listingApplication
-                                .ListingApplicationId,
-
-                        RentalApplicationId = null,
-
-                        DocumentType = "Image",
-
-                        UploadDate =
-                            DateOnly.FromDateTime(
-                                DateTime.Now),
-
-                        DocumentPath =
-                            "/uploads/" +
-                            imageName
-                    });
+                _context.Documents.Add(new Document
+                {
+                    ListingApplication = listingApplication.ListingApplicationId,
+                    RentalApplicationId = null,
+                    DocumentType = "Image",
+                    UploadDate = DateOnly.FromDateTime(DateTime.Now),
+                    DocumentPath = "/uploads/" + imageName
+                });
             }
 
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] =
-                "Property submitted successfully. Waiting for Admin approval.";
+            TempData["SuccessMessage"] = "Property submitted successfully. Waiting for Admin approval.";
 
-            return RedirectToAction(
-                "Dashboard",
-                "Landlord");
+            return RedirectToAction("Dashboard", "Landlord");
         }
     }
 }

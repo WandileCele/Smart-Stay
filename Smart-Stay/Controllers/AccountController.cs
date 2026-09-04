@@ -19,13 +19,19 @@ namespace Smart_Stay.Controllers
         private readonly SmartDbContext _context;
         private readonly IEmailService _emailService;
         private readonly IDataProtector _protector;
+        private readonly ILogger<AccountController> _logger;
         private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
 
-        public AccountController(SmartDbContext context, IEmailService emailService, IDataProtectionProvider dpProvider)
+        public AccountController(
+            SmartDbContext context,
+            IEmailService emailService,
+            IDataProtectionProvider dpProvider,
+            ILogger<AccountController> logger)
         {
             _context = context;
             _emailService = emailService;
             _protector = dpProvider.CreateProtector("Smart_Stay.EmailVerification.v1");
+            _logger = logger;
         }
 
         [HttpGet]
@@ -39,8 +45,10 @@ namespace Smart_Stay.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string email, string password, string? returnUrl = null)
         {
+            var normalizedEmail = email.Trim().ToLowerInvariant();
+
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
+                .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
 
             if (user == null)
             {
@@ -75,6 +83,8 @@ namespace Smart_Stay.Controllers
             }
             else if (user.Password == password)
             {
+                // Legacy plaintext fallback for pre-hash accounts. Remove once all
+                // rows are confirmed migrated to hashed passwords.
                 passwordValid = true;
                 user.Password = _passwordHasher.HashPassword(user, password);
                 _context.Users.Update(user);
@@ -138,7 +148,6 @@ namespace Smart_Stay.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
@@ -152,14 +161,14 @@ namespace Smart_Stay.Controllers
                 return View(model);
             }
 
-            if (model.Password != model.ConfirmPassword)
-            {
-                ModelState.AddModelError("", "Passwords do not match.");
-                return View(model);
-            }
+            var normalizedEmail = model.Email.Trim().ToLowerInvariant();
 
+            var connection = _context.Database.GetDbConnection();    /*--------this is the added part collen*/
+
+            // Comparing directly against a normalized value (instead of wrapping the
+            // column in ToLower() in the query) lets the DB use the index on Email.
             var existingUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email.ToLower() == model.Email.ToLower());
+                .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
 
             if (existingUser != null)
             {
@@ -179,7 +188,7 @@ namespace Smart_Stay.Controllers
             {
                 FirstName = firstName,
                 SurName = surName,
-                Email = model.Email,
+                Email = normalizedEmail,
                 PhoneNo = model.PhoneNo,
                 PasswordHash = passwordHash,
                 Role = model.Role,
@@ -198,20 +207,29 @@ namespace Smart_Stay.Controllers
                 <h1 style='letter-spacing:6px;'>{code}</h1>
                 <p>Enter this code on the verification page to activate your account. It expires in 24 hours.</p>";
 
-            try
-            {
-                await _emailService.SendEmailAsync(model.Email, "Your Smart Stay verification code", body);
-            }
-            catch (Exception)
-            {
-                ViewBag.EmailFailed = true;
-            }
+            // Fire-and-forget: don't make the user wait on the SMTP round-trip before
+            // the registration form returns. In production, replace this with a proper
+            // background queue (IHostedService + Channel<T>, Hangfire, etc.) so a
+            // crashed process can't silently drop the email mid-send.
+            _ = SendVerificationEmailInBackground(normalizedEmail, body);
 
             ViewBag.Token = token;
-            ViewBag.PendingEmail = model.Email;
+            ViewBag.PendingEmail = normalizedEmail;
             ViewBag.AwaitingCode = true;
 
             return View(new RegisterViewModel());
+        }
+
+        private async Task SendVerificationEmailInBackground(string toEmail, string body)
+        {
+            try
+            {
+                await _emailService.SendEmailAsync(toEmail, "Your Smart Stay verification code", body);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send verification email to {Email}", toEmail);
+            }
         }
 
         [HttpPost]
@@ -241,7 +259,7 @@ namespace Smart_Stay.Controllers
             }
 
             var alreadyExists = await _context.Users
-                .AnyAsync(u => u.Email.ToLower() == pending.Email.ToLower());
+                .AnyAsync(u => u.Email == pending.Email);
 
             if (alreadyExists)
             {

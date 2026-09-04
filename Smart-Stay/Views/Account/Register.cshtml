@@ -1,4 +1,5 @@
 ﻿@model Smart_Stay.Models.RegisterViewModel
+
 @{
     ViewData["Title"] = "Register";
     Layout = null;
@@ -9,8 +10,13 @@
 <head>
     <meta charset="utf-8" />
     <title>Smart Stay - Register</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
     <link rel="stylesheet" href="~/css/register.css" />
+
     <style>
         .pwd-rules {
             list-style: none;
@@ -39,219 +45,1106 @@
                     font-weight: bold;
                 }
 
-    .pwd-rules li.valid i {
-       color: #27ae60;
-    }
+                    .pwd-rules li.valid i {
+                        color: #27ae60;
+                    }
+
+        .global-loader {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .global-loader.active {
+                display: flex;
+            }
+
+        .loader-box {
+            text-align: center;
+        }
+
+        .house-loader {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 15px;
+        }
+
+            .house-loader svg {
+                width: 100%;
+                height: 100%;
+            }
+
+        .house-outline {
+            stroke: #0087c9;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 220;
+            stroke-dashoffset: 220;
+            animation: draw-house 2.2s ease-in-out infinite;
+        }
+
+        .house-key {
+            transform-origin: 50px 55px;
+            animation: turn-key 2.2s ease-in-out infinite;
+        }
+
+            .house-key circle {
+                fill: none;
+                stroke: #0d6efd;
+                stroke-width: 3;
+            }
+
+            .house-key line {
+                stroke: #0d6efd;
+                stroke-width: 3;
+                stroke-linecap: round;
+            }
+
+        @@keyframes draw-house {
+            0% {
+                stroke-dashoffset: 220;
+                opacity: 0.3;
+            }
+
+            50% {
+                stroke-dashoffset: 0;
+                opacity: 1;
+            }
+
+            100% {
+                stroke-dashoffset: 0;
+                opacity: 0.3;
+            }
+        }
+
+        @@keyframes turn-key {
+            0%, 20% {
+                transform: rotate(0deg);
+            }
+
+            40% {
+                transform: rotate(-25deg);
+            }
+
+            60% {
+                transform: rotate(15deg);
+            }
+
+            80%, 100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        #loader-text {
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+            min-height: 20px;
+            transition: opacity 0.25s ease;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            z-index: 10;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="register-wrapper">
-        <div class="register-left">
-            <a asp-controller="Home" asp-action="Index" class="close-btn">
-                <i class="fa-solid fa-xmark"></i>
-            </a>
 
-            <h2 class="title">REGISTER ACCOUNT</h2>
+        <div class="register-left">
+
+            <!-- X BUTTON: navigates immediately, no artificial delay -->
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="close-btn"
+               id="registerCloseBtn">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </a>
 
             @if (ViewBag.AwaitingCode == true)
             {
                 <h2 class="title">VERIFY YOUR EMAIL</h2>
-                <p>We sent a 4-digit code to <strong>@ViewBag.PendingEmail</strong>. Enter it below.</p>
+
+                <p>
+                    We sent a 4-digit code to
+                    <strong>@ViewBag.PendingEmail</strong>.
+                    Enter it below.
+                </p>
 
                 @if (ViewBag.CodeError != null)
                 {
-                    <div class="field-error"><p>@ViewBag.CodeError</p></div>
+                    <div class="field-error">
+                        <p>@ViewBag.CodeError</p>
+                    </div>
                 }
 
-                <form asp-controller="Account" asp-action="VerifyCode" method="post">
-                    <input type="hidden" name="Token" value="@ViewBag.Token" />
+                <form asp-controller="Account"
+                      asp-action="VerifyCode"
+                      method="post">
 
-                    <label class="field-label">4-Digit Code <span class="required">*Required</span></label>
+                    <input type="hidden"
+                           name="Token"
+                           value="@ViewBag.Token" />
+
+                    <label class="field-label">
+                        4-Digit Code
+                        <span class="required">*Required</span>
+                    </label>
+
                     <div class="input-group">
+
                         <i class="fa-solid fa-key"></i>
-                        <input type="text" name="Code" maxlength="4" pattern="\d{4}" inputmode="numeric"
-                               placeholder="0000" required style="letter-spacing:6px; text-align:center;" />
+
+                        <input type="text"
+                               name="Code"
+                               maxlength="4"
+                               pattern="\d{4}"
+                               inputmode="numeric"
+                               placeholder="0000"
+                               required
+                               style="letter-spacing:6px; text-align:center;" />
+
                     </div>
 
-                    <button type="submit" class="btn-register">Verify Code</button>
+                    <button type="submit"
+                            class="btn-register">
+
+                        Verify Code
+
+                    </button>
+
                 </form>
             }
             else
             {
+                <h2 class="title">REGISTER ACCOUNT</h2>
+
                 @if (!ViewData.ModelState.IsValid)
                 {
                     <div class="field-error">
+
                         @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                         {
-                            <p>@error.ErrorMessage</p>
+                            if (!string.IsNullOrWhiteSpace(error.ErrorMessage))
+                            {
+                                <p>@error.ErrorMessage</p>
+                            }
                         }
+
                     </div>
                 }
 
-                <form asp-controller="Account" asp-action="Register" method="post">
+                <form asp-controller="Account"
+                      asp-action="Register"
+                      method="post"
+                      id="registerForm">
+
+                    <!-- ROLE -->
+
                     <div class="role-toggle">
+
                         <label>
-                            <input type="radio" name="Role" value="Tenant" checked />
-                            <span><i class="fa-solid fa-user"></i> TENANT</span>
+
+                            <input type="radio"
+                                   name="Role"
+                                   value="Tenant"
+                                   @(Model?.Role == "Tenant" || string.IsNullOrEmpty(Model?.Role) ? "checked" : "") />
+
+                            <span>
+                                <i class="fa-solid fa-user"></i>
+                                TENANT
+                            </span>
+
                         </label>
+
                         <label>
-                            <input type="radio" name="Role" value="Landlord" />
-                            <span><i class="fa-solid fa-house"></i> LANDLORD</span>
+
+                            <input type="radio"
+                                   name="Role"
+                                   value="Landlord"
+                                   @(Model?.Role == "Landlord" ? "checked" : "") />
+
+                            <span>
+                                <i class="fa-solid fa-house"></i>
+                                LANDLORD
+                            </span>
+
                         </label>
+
                         <label>
-                            <input type="radio" name="Role" value="Admin" />
-                            <span><i class="fa-solid fa-user-tie"></i> ADMIN</span>
+
+                            <input type="radio"
+                                   name="Role"
+                                   value="Admin"
+                                   @(Model?.Role == "Admin" ? "checked" : "") />
+
+                            <span>
+                                <i class="fa-solid fa-user-tie"></i>
+                                ADMIN
+                            </span>
+
                         </label>
+
                     </div>
 
-                    <label class="field-label">Name and Surname <span class="required">*Required</span></label>
+
+                    <!-- NAME -->
+
+                    <label class="field-label">
+
+                        Name and Surname
+                        <span class="required">*Required</span>
+
+                    </label>
+
                     <div class="input-group">
+
                         <i class="fa-solid fa-user"></i>
-                        <input type="text" name="FullName" placeholder="Enter your name and surname" required />
+
+                        <input asp-for="FullName"
+                               type="text"
+                               placeholder="Enter your name and surname"
+                               required />
+
                     </div>
 
-                    <label class="field-label">Email Address <span class="required">*Required</span></label>
+
+                    <!-- EMAIL -->
+
+                    <label class="field-label">
+
+                        Email Address
+                        <span class="required">*Required</span>
+
+                    </label>
+
                     <div class="input-group">
+
                         <i class="fa-solid fa-envelope"></i>
-                        <input type="email" name="Email" placeholder="Enter your email" required value="@Model?.Email" />
+
+                        <input asp-for="Email"
+                               type="email"
+                               placeholder="Enter your email"
+                               required />
+
                     </div>
+
+
                     @if (ViewBag.EmailTaken == true)
                     {
-                        <div class="field-error">⚠ This email is already registered! Try to login.</div>
+                        <div class="field-error">
+
+                            ⚠ This email is already registered!
+                            Try to login.
+
+                        </div>
                     }
 
-                    <label class="field-label">Phone Number <span class="required">*Required</span></label>
+
+                    <!-- PHONE -->
+
+                    <label class="field-label">
+
+                        Phone Number
+                        <span class="required">*Required</span>
+
+                    </label>
+
                     <div class="input-group">
+
                         <i class="fa-solid fa-phone"></i>
-                        <input type="text" name="PhoneNo" placeholder="Phone number e.g 0786739981" required />
+
+                        <input asp-for="PhoneNo"
+                               type="tel"
+                               id="phoneNo"
+                               placeholder="Phone number e.g 0786739981"
+                               maxlength="10"
+                               minlength="10"
+                               pattern="[0-9]{10}"
+                               inputmode="numeric"
+                               required />
+
                     </div>
 
-                    <div id="tenantFields" style="display:none;">
-                        <label class="field-label">Employment Status</label>
+
+                    <!-- TENANT -->
+
+                    <div id="tenantFields"
+                         style="display:none;">
+
+                        <label class="field-label">
+
+                            Employment Status
+
+                        </label>
+
                         <div class="input-group">
+
                             <i class="fa-solid fa-briefcase"></i>
-                            <select name="EmploymentStatus" style="width:100%; padding:10px 40px; border:1px solid #ccc; border-radius:4px; font-size:14px;">
-                                <option value="Employed">Employed</option>
-                                <option value="Self-employed">Self-employed</option>
-                                <option value="Unemployed">Unemployed</option>
-                                <option value="Student">Student</option>
+
+                            <select asp-for="EmploymentStatus"
+                                    style="width:100%;
+                                               padding:10px 40px;
+                                               border:1px solid #ccc;
+                                               border-radius:4px;
+                                               font-size:14px;">
+
+                                <option value="Employed">
+                                    Employed
+                                </option>
+
+                                <option value="Self-employed">
+                                    Self-employed
+                                </option>
+
+                                <option value="Unemployed">
+                                    Unemployed
+                                </option>
+
+                                <option value="Student">
+                                    Student
+                                </option>
+
                             </select>
+
                         </div>
+
                     </div>
 
-                    <div id="landlordFields" style="display:none;">
-                        <p style="font-size:13px; color:#666; margin-bottom:15px;">
-                            <i class="fa-solid fa-circle-info"></i> Your landlord account will be reviewed and verified by our team before you can list properties.
+
+                    <!-- LANDLORD -->
+
+                    <div id="landlordFields"
+                         style="display:none;">
+
+                        <p style="font-size:13px;
+                                      color:#666;
+                                      margin-bottom:15px;">
+
+                            <i class="fa-solid fa-circle-info"></i>
+
+                            Your landlord account will be reviewed and
+                            verified by our team before you can list
+                            properties.
+
                         </p>
+
                     </div>
 
-                    <label class="field-label">Password <span class="required">*Required</span></label>
+
+                    <!-- PASSWORD -->
+
+                    <label class="field-label">
+
+                        Password
+                        <span class="required">*Required</span>
+
+                    </label>
+
                     <div class="input-group">
+
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" name="Password" id="passwordField"
-                               placeholder="Enter a strong password" required
-                               pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@@#$%^&amp;*(),.?&quot;:{}|&lt;&gt;]).{8,}$"
+
+                        <input asp-for="Password"
+                               type="password"
+                               id="passwordField"
+                               placeholder="Enter a strong password"
+                               required
+                               autocomplete="new-password"
+                               pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@@#$%^&*(),.?&quot;:{}|&lt;&gt;]).{8,}$"
                                title="At least 8 characters, 1 uppercase letter, 1 number, and 1 special character" />
-                        <i class="fa-solid fa-eye toggle-eye" onclick="toggleField('passwordField')"></i>
+
+                        <i class="fa-solid fa-eye toggle-eye"
+                           onclick="toggleField('passwordField')">
+                        </i>
+
                     </div>
-                    <ul id="pwdRules" class="pwd-rules">
-                        <li id="ruleLength"><i class="fa-solid fa-circle-xmark"></i> At least 8 characters</li>
-                        <li id="ruleUpper"><i class="fa-solid fa-circle-xmark"></i> 1 uppercase letter</li>
-                        <li id="ruleNumber"><i class="fa-solid fa-circle-xmark"></i> 1 number</li>
-                        <li id="ruleSpecial"><i class="fa-solid fa-circle-xmark"></i> 1 special character</li>
+
+
+                    <!-- PASSWORD RULES -->
+
+                    <ul id="pwdRules"
+                        class="pwd-rules">
+
+                        <li id="ruleLength">
+
+                            <i class="fa-solid fa-circle-xmark"></i>
+
+                            At least 8 characters
+
+                        </li>
+
+                        <li id="ruleUpper">
+
+                            <i class="fa-solid fa-circle-xmark"></i>
+
+                            1 uppercase letter
+
+                        </li>
+
+                        <li id="ruleNumber">
+
+                            <i class="fa-solid fa-circle-xmark"></i>
+
+                            1 number
+
+                        </li>
+
+                        <li id="ruleSpecial">
+
+                            <i class="fa-solid fa-circle-xmark"></i>
+
+                            1 special character
+
+                        </li>
+
                     </ul>
 
-                    <label class="field-label">Confirm Password <span class="required">*Required</span></label>
-                    <div class="input-group">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" name="ConfirmPassword" id="confirmField" placeholder="Confirm password" required />
-                        <i class="fa-solid fa-eye toggle-eye" onclick="toggleField('confirmField')"></i>
-                    </div>
-                    <p id="confirmError" class="field-error" style="display:none;">Passwords do not match</p>
 
-                    <button type="submit" class="btn-register">Register Account</button>
+                    <!-- CONFIRM PASSWORD -->
+
+                    <label class="field-label">
+
+                        Confirm Password
+                        <span class="required">*Required</span>
+
+                    </label>
+
+                    <div class="input-group">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input asp-for="ConfirmPassword"
+                               type="password"
+                               id="confirmField"
+                               placeholder="Confirm password"
+                               required
+                               autocomplete="new-password" />
+
+                        <i class="fa-solid fa-eye toggle-eye"
+                           onclick="toggleField('confirmField')">
+                        </i>
+
+                    </div>
+
+                    <p id="confirmError"
+                       class="field-error"
+                       style="display:none;">
+
+                        Passwords do not match
+
+                    </p>
+
+
+                    <!-- REGISTER BUTTON -->
+
+                    <button type="submit"
+                            class="btn-register"
+                            id="registerButton">
+
+                        Register Account
+
+                    </button>
+
                 </form>
 
+
+                <!-- LOGIN LINK -->
+
                 <p class="login-text">
-                    Already have an account? <a asp-controller="Account" asp-action="Login">Log in</a>
+
+                    Already have an account?
+
+                    <a asp-controller="Account"
+                       asp-action="Login"
+                       id="loginLink">
+
+                        Log in
+
+                    </a>
+
                 </p>
             }
+
         </div>
+
+
+        <!-- RIGHT SIDE -->
 
         <div class="register-right">
+
             <div class="right-content">
+
                 <div class="right-brand">
+
                     <h3>SMART STAY</h3>
+
                     <p>YOUR TRUSTED RENTAL PARTNER</p>
+
                 </div>
+
                 <div class="right-features">
+
                     <p>Easy property listing</p>
+
                     <p>24/7 customer support</p>
+
                     <p>Instant help seamless renting</p>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
 
+
+    <!-- GLOBAL LOADER: only ever shown during the actual form submit,
+         and only for as long as the browser takes to leave this page. -->
+
+    <div id="global-loader"
+         class="global-loader">
+
+        <div class="loader-box">
+
+            <div class="house-loader">
+
+                <svg viewBox="0 0 100 100"
+                     xmlns="http://www.w3.org/2000/svg">
+
+                    <path class="house-outline"
+                          d="M15 50 L50 20 L85 50 L85 85 L15 85 Z M35 85 L35 60 L65 60 L65 85" />
+
+                    <g class="house-key">
+
+                        <circle cx="45"
+                                cy="55"
+                                r="6" />
+
+                        <line x1="51"
+                              y1="55"
+                              x2="65"
+                              y2="55" />
+
+                        <line x1="60"
+                              y1="55"
+                              x2="60"
+                              y2="61" />
+
+                        <line x1="65"
+                              y1="55"
+                              x2="65"
+                              y2="61" />
+
+                    </g>
+
+                </svg>
+
+            </div>
+
+            <p id="loader-text">
+                Creating your account...
+            </p>
+
+        </div>
+
+    </div>
+
+
     <script>
+
+        /* ==================================================
+           PASSWORD SHOW / HIDE
+        ================================================== */
+
         function toggleField(id) {
-            const field = document.getElementById(id);
-            field.type = field.type === 'password' ? 'text' : 'password';
+
+            const field =
+                document.getElementById(id);
+
+            if (!field) {
+                return;
+            }
+
+            field.type =
+                field.type === 'password'
+                    ? 'text'
+                    : 'password';
         }
+
+
+        /* ==================================================
+           ROLE FIELDS
+        ================================================== */
 
         function toggleRoleFields() {
-            const role = document.querySelector('input[name="Role"]:checked').value;
-            document.getElementById('tenantFields').style.display = role === 'Tenant' ? 'block' : 'none';
-            document.getElementById('landlordFields').style.display = role === 'Landlord' ? 'block' : 'none';
+
+            const selectedRole =
+                document.querySelector(
+                    'input[name="Role"]:checked'
+                );
+
+            if (!selectedRole) {
+                return;
+            }
+
+            const role =
+                selectedRole.value;
+
+            const tenantFields =
+                document.getElementById('tenantFields');
+
+            const landlordFields =
+                document.getElementById('landlordFields');
+
+            if (tenantFields) {
+
+                tenantFields.style.display =
+                    role === 'Tenant'
+                        ? 'block'
+                        : 'none';
+
+            }
+
+            if (landlordFields) {
+
+                landlordFields.style.display =
+                    role === 'Landlord'
+                        ? 'block'
+                        : 'none';
+
+            }
         }
 
-        document.querySelectorAll('input[name="Role"]').forEach(function (radio) {
-            radio.addEventListener('change', toggleRoleFields);
-        });
 
-        document.addEventListener('DOMContentLoaded', toggleRoleFields);
+        /* ==================================================
+           PASSWORD RULES
+        ================================================== */
 
-        // Password requirement checklist
-        const pwdField = document.getElementById('passwordField');
+        const pwdField =
+            document.getElementById('passwordField');
+
         const rules = {
-            ruleLength: pwd => pwd.length >= 8,
-            ruleUpper: pwd => /[A-Z]/.test(pwd),
-            ruleNumber: pwd => /\d/.test(pwd),
-            ruleSpecial: pwd => /[!@@#$%^&*(),.?":{}|<>]/.test(pwd)
+
+            ruleLength: function (pwd) {
+                return pwd.length >= 8;
+            },
+
+            ruleUpper: function (pwd) {
+                return /[A-Z]/.test(pwd);
+            },
+
+            ruleNumber: function (pwd) {
+                return /\d/.test(pwd);
+            },
+
+            ruleSpecial: function (pwd) {
+                return /[!@@#$%^&*(),.?":{}|<>]/.test(pwd);
+            }
+
         };
 
-        pwdField.addEventListener('input', function () {
-            const value = pwdField.value;
-            for (const [id, check] of Object.entries(rules)) {
-                const el = document.getElementById(id);
-                const passed = check(value);
-                const icon = el.querySelector('i');
 
-                el.classList.toggle('valid', passed);
-                icon.classList.toggle('fa-circle-xmark', !passed);
-                icon.classList.toggle('fa-circle-check', passed);
+        function updatePasswordRules() {
+
+            if (!pwdField) {
+                return;
             }
-        });
 
-        // Confirm password match check
-        const confirmField = document.getElementById('confirmField');
-        const confirmError = document.getElementById('confirmError');
+            const value =
+                pwdField.value;
+
+            for (
+                const [id, check]
+                of Object.entries(rules)
+            ) {
+
+                const element =
+                    document.getElementById(id);
+
+                if (!element) {
+                    continue;
+                }
+
+                const icon =
+                    element.querySelector('i');
+
+                const passed =
+                    check(value);
+
+                element.classList.toggle(
+                    'valid',
+                    passed
+                );
+
+                if (icon) {
+
+                    icon.classList.toggle(
+                        'fa-circle-xmark',
+                        !passed
+                    );
+
+                    icon.classList.toggle(
+                        'fa-circle-check',
+                        passed
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        function isPasswordValid() {
+
+            if (!pwdField) {
+                return false;
+            }
+
+            const password =
+                pwdField.value;
+
+            return (
+
+                password.length >= 8 &&
+
+                /[A-Z]/.test(password) &&
+
+                /\d/.test(password) &&
+
+                /[!@@#$%^&*(),.?":{}|<>]/.test(password)
+
+            );
+
+        }
+
+
+        /* ==================================================
+           CONFIRM PASSWORD
+        ================================================== */
+
+        const confirmField =
+            document.getElementById('confirmField');
+
+        const confirmError =
+            document.getElementById('confirmError');
+
 
         function checkPasswordsMatch() {
-            const match = pwdField.value === confirmField.value;
-            confirmError.style.display = (confirmField.value.length > 0 && !match) ? 'block' : 'none';
+
+            if (!pwdField || !confirmField) {
+                return false;
+            }
+
+            const password =
+                pwdField.value;
+
+            const confirmation =
+                confirmField.value;
+
+            const match =
+                password === confirmation;
+
+            if (confirmError) {
+
+                confirmError.style.display =
+                    confirmation.length > 0 && !match
+                        ? 'block'
+                        : 'none';
+
+            }
+
             return match;
         }
 
-        confirmField.addEventListener('input', checkPasswordsMatch);
-        pwdField.addEventListener('input', checkPasswordsMatch);
 
-        document.querySelector('form').addEventListener('submit', function (e) {
-            if (!checkPasswordsMatch()) {
-                e.preventDefault();
+        /* ==================================================
+           ROLE EVENT
+        ================================================== */
+
+        document
+            .querySelectorAll('input[name="Role"]')
+            .forEach(function (radio) {
+
+                radio.addEventListener(
+                    'change',
+                    toggleRoleFields
+                );
+
+            });
+
+
+        document.addEventListener(
+            'DOMContentLoaded',
+            function () {
+
+                toggleRoleFields();
+
+                updatePasswordRules();
+
             }
-        });
+        );
+
+
+        /* ==================================================
+           PASSWORD EVENTS
+        ================================================== */
+
+        if (pwdField) {
+
+            pwdField.addEventListener(
+                'input',
+                function () {
+
+                    updatePasswordRules();
+
+                    checkPasswordsMatch();
+
+                }
+            );
+
+        }
+
+
+        if (confirmField) {
+
+            confirmField.addEventListener(
+                'input',
+                checkPasswordsMatch
+            );
+
+        }
+
+
+        /* ==================================================
+           REGISTER FORM LOADER
+           Shown only while the actual POST is in flight — no fixed
+           timers, no artificial minimum duration. It's simply left
+           on screen until the browser navigates away with the
+           server's response (success view or validation errors).
+        ================================================== */
+
+        (function () {
+
+            const form =
+                document.getElementById("registerForm");
+
+            const loader =
+                document.getElementById("global-loader");
+
+            const loaderText =
+                document.getElementById("loader-text");
+
+            const registerButton =
+                document.getElementById("registerButton");
+
+            if (!form || !loader || !loaderText) {
+                return;
+            }
+
+
+            const captions = [
+
+                "Creating your account...",
+
+                "Rolling out the welcome mat...",
+
+                "Setting up your new address book...",
+
+                "Cutting you a spare key...",
+
+                "Teaching the system your name..."
+
+            ];
+
+
+            const CAPTION_DURATION = 2200;
+
+            let captionInterval = null;
+
+            let captionIndex = 0;
+
+
+            function showNextCaption() {
+
+                captionIndex =
+                    (captionIndex + 1)
+                    % captions.length;
+
+                loaderText.style.opacity = 0;
+
+                setTimeout(function () {
+
+                    loaderText.textContent =
+                        captions[captionIndex];
+
+                    loaderText.style.opacity = 1;
+
+                }, 150);
+
+            }
+
+
+            form.addEventListener(
+                "submit",
+                function (e) {
+
+                    if (!form.checkValidity()) {
+
+                        e.preventDefault();
+
+                        form.reportValidity();
+
+                        return;
+
+                    }
+
+
+                    if (!isPasswordValid()) {
+
+                        e.preventDefault();
+
+                        updatePasswordRules();
+
+                        pwdField.focus();
+
+                        return;
+
+                    }
+
+
+                    if (!checkPasswordsMatch()) {
+
+                        e.preventDefault();
+
+                        confirmField.focus();
+
+                        return;
+
+                    }
+
+
+                    const phoneField =
+                        document.getElementById("phoneNo");
+
+
+                    if (phoneField) {
+
+                        const phone =
+                            phoneField.value.trim();
+
+
+                        if (!/^\d{10}$/.test(phone)) {
+
+                            e.preventDefault();
+
+                            phoneField.setCustomValidity(
+                                "Phone number must be exactly 10 digits."
+                            );
+
+                            form.reportValidity();
+
+                            phoneField.setCustomValidity("");
+
+                            phoneField.focus();
+
+                            return;
+
+                        }
+
+                    }
+
+                    // Passed validation — the form is genuinely submitting now.
+                    // Show the loader for however long the real request takes,
+                    // nothing more.
+
+                    captionIndex = 0;
+
+                    loaderText.textContent =
+                        captions[0];
+
+                    loaderText.style.opacity = 1;
+
+
+                    loader.classList.add(
+                        "active"
+                    );
+
+
+                    if (registerButton) {
+
+                        registerButton.disabled =
+                            true;
+
+                    }
+
+
+                    captionInterval =
+                        setInterval(
+                            showNextCaption,
+                            CAPTION_DURATION
+                        );
+
+                }
+            );
+
+        })();
+
+
+        /* ==================================================
+           PHONE NUMBER
+        ================================================== */
+
+        const phoneInput =
+            document.getElementById("phoneNo");
+
+
+        if (phoneInput) {
+
+            phoneInput.addEventListener(
+                "input",
+                function () {
+
+                    this.value =
+                        this.value
+                            .replace(/\D/g, "")
+                            .slice(0, 10);
+
+                }
+            );
+
+        }
+
+
+        /* ==================================================
+           REGISTER → LOGIN — navigates immediately, no delay.
+           The browser's own page-load progress is the only
+           feedback needed for a same-site link.
+        ================================================== */
+
+        // (No JS needed here — the anchor's href does its job natively.)
+
+
+        /* ==================================================
+           REGISTER → HOME — same as above, no artificial delay.
+        ================================================== */
+
+        // (No JS needed here either — plain navigation.)
+
     </script>
 
 </body>

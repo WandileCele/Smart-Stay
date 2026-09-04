@@ -15,10 +15,14 @@ namespace Smart_Stay.Models
         public string Email { get; set; }
 
         [Required]
+        [RegularExpression(@"^\d{10}$",
+            ErrorMessage = "Phone number must be exactly 10 digits.")]
         public string PhoneNo { get; set; }
 
         [Required]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?"":{}|<>]).{8,}$", ErrorMessage = "Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character.")]
+        [RegularExpression(
+            @"^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?""\:{}|<>]).{8,}$",
+            ErrorMessage = "Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character.")]
         public string Password { get; set; }
 
         [Required]
