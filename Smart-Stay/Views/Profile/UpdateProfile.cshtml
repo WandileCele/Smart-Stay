@@ -1,0 +1,311 @@
+﻿@model Smart_Stay.Models.UpdateProfileViewModel
+
+@{
+    ViewData["Title"] = "Update Profile";
+}
+
+<style>
+
+    body {
+        background: #f5f7fb;
+    }
+
+    .profile-page {
+        min-height: 100vh;
+        padding: 50px 20px;
+    }
+
+    .profile-container {
+        max-width: 850px;
+        margin: auto;
+    }
+
+    .profile-header {
+        background: #1769ff;
+        color: white;
+        padding: 30px 35px;
+        border-radius: 18px 18px 0 0;
+    }
+
+        .profile-header h2 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .profile-header p {
+            margin: 8px 0 0;
+            opacity: 0.9;
+        }
+
+    .profile-card {
+        background: white;
+        padding: 40px;
+        border-radius: 0 0 18px 18px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .phone-error {
+        color: #dc3545;
+        font-size: 13px;
+        display: block;
+        margin-top: 5px;
+    }
+
+    .form-control {
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+        .form-control:focus {
+            border-color: #1769ff;
+            box-shadow: 0 0 0 3px rgba(23, 105, 255, 0.12);
+        }
+
+    .update-button {
+        background: #1769ff;
+        color: white;
+        border: none;
+        padding: 13px 28px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+        .update-button:hover {
+            background: #0d5be0;
+        }
+
+    .back-button {
+        background: #6c757d;
+        color: white;
+        padding: 13px 25px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-left: 10px;
+    }
+
+    .success-message {
+        background: #d1e7dd;
+        color: #0f5132;
+        padding: 14px 18px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+
+    .password-info {
+        color: #777;
+        font-size: 14px;
+        margin-top: 6px;
+    }
+
+</style>
+
+
+<div class="profile-page">
+
+    <div class="profile-container">
+
+        <!-- HEADER -->
+
+        <div class="profile-header">
+
+            <h2>
+                <i class="bi bi-person-circle"></i>
+                Update Profile
+            </h2>
+
+            <p>
+                Update your personal information and account details.
+            </p>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <div class="profile-card">
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="success-message">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    @TempData["SuccessMessage"]
+
+                </div>
+            }
+
+
+            <form asp-controller="Profile"
+                  asp-action="UpdateProfile"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       asp-for="UserId" />
+
+
+                <div class="row">
+
+                    <!-- FIRST NAME -->
+
+                    <div class="col-md-6 mb-4">
+
+                        <label asp-for="FirstName"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="FirstName"
+                               class="form-control" />
+
+                        <span asp-validation-for="FirstName"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- SURNAME -->
+
+                    <div class="col-md-6 mb-4">
+
+                        <label asp-for="SurName"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="SurName"
+                               class="form-control" />
+
+                        <span asp-validation-for="SurName"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="col-md-6 mb-4">
+
+                        <label asp-for="Email"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Email"
+                               class="form-control" />
+
+                        <span asp-validation-for="Email"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="col-md-6 mb-4">
+
+                        <label asp-for="PhoneNo"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="PhoneNo"
+                               class="form-control"
+                               placeholder="e.g. 0812345678"
+                               maxlength="10"
+                               inputmode="numeric" />
+
+                        <span asp-validation-for="PhoneNo"
+                              class="phone-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="col-12 mb-4">
+
+                        <label asp-for="NewPassword"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="NewPassword"
+                               type="password"
+                               class="form-control"
+                               placeholder="Leave blank to keep current password" />
+
+                        <div class="password-info">
+                            Leave this field blank if you do not want to change your password.
+                        </div>
+
+                        <span asp-validation-for="NewPassword"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="mt-3">
+
+                    <button type="submit"
+                            class="update-button">
+
+                        <i class="bi bi-check-lg"></i>
+
+                        Save Changes
+
+                    </button>
+
+
+                    @if (User.IsInRole("Landlord"))
+                    {
+                        <a asp-controller="Landlord"
+                           asp-action="Dashboard"
+                           class="back-button">
+
+                            Cancel
+
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Tenant"
+                           asp-action="Dashboard"
+                           class="back-button">
+
+                            Cancel
+
+                        </a>
+                    }
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

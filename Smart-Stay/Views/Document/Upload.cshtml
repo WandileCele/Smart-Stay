@@ -1,0 +1,208 @@
+﻿@model Smart_Stay.Models.UploadDocumentViewModel
+
+@{
+    ViewData["Title"] = "Upload Documents";
+}
+
+<div class="container mt-5">
+
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold" style="color:#1769e0;">
+            Upload Documents
+        </h2>
+
+        <p class="text-muted">
+            Upload your required documents.
+        </p>
+
+    </div>
+
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body p-4">
+
+            <form asp-controller="Document"
+                  asp-action="Upload"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                @Html.AntiForgeryToken()
+
+                <!-- Document Type -->
+
+                <div class="mb-3">
+
+                    <label asp-for="DocumentType"
+                           class="form-label fw-bold">
+                        Document Type
+                    </label>
+
+                    <select asp-for="DocumentType"
+                            class="form-select">
+
+                        <option value="">
+                            Select document type
+                        </option>
+
+                        <option value="ID">
+                            Identity Document
+                        </option>
+
+                        <option value="Proof of Address">
+                            Proof of Address
+                        </option>
+
+                        <option value="Proof of Income">
+                            Proof of Income
+                        </option>
+
+                        <option value="Affidavit">
+                            Affidavit
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="DocumentType"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- File -->
+
+                <div class="mb-3">
+
+                    <label asp-for="File"
+                           class="form-label fw-bold">
+                        Select Document
+                    </label>
+
+                    <input asp-for="File"
+                           type="file"
+                           class="form-control"
+                           accept=".pdf,.jpg,.jpeg,.png" />
+
+                    <small class="text-muted">
+                        Maximum size: 5 MB.
+                        Allowed formats: PDF, JPG, JPEG and PNG.
+                    </small>
+
+                    <span asp-validation-for="File"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- Upload -->
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    Upload Document
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Existing Documents -->
+
+    <div class="mt-5">
+
+        <h4 class="fw-bold">
+            My Uploaded Documents
+        </h4>
+
+        @{
+            var documents =
+            ViewBag.Documents as
+            List<Smart_Stay.Models.Document>;
+        }
+
+        @if (documents == null || !documents.Any())
+        {
+            <div class="alert alert-info mt-3">
+                You have not uploaded any documents yet.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive mt-3">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-primary">
+
+                        <tr>
+                            <th>Document Type</th>
+                            <th>Upload Date</th>
+                            <th>Document</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var document in documents)
+                        {
+                            <tr>
+
+                                <td>
+                                    @document.DocumentType
+                                </td>
+
+                                <td>
+                                    @document.UploadDate
+                                </td>
+
+                                <td>
+
+                                    <a href="@document.DocumentPath"
+                                       target="_blank"
+                                       class="btn btn-sm btn-success">
+
+                                        View
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
