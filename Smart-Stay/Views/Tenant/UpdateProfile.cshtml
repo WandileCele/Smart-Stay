@@ -253,11 +253,8 @@
             <div class="form-group">
 
                 <label asp-for="NewPassword">
-
                     Change password
-
                 </label>
-
 
                 <div class="password-wrapper">
 
@@ -266,7 +263,6 @@
                            id="NewPassword"
                            class="form-control password-input"
                            placeholder="Leave blank to keep current password" />
-
 
                     <button type="button"
                             class="toggle-password"
@@ -279,12 +275,51 @@
                 </div>
 
 
+                <div class="password-requirements">
+
+                    <div id="lengthRequirement"
+                         class="password-requirement invalid">
+
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>At least 8 characters</span>
+
+                    </div>
+
+
+                    <div id="uppercaseRequirement"
+                         class="password-requirement invalid">
+
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>1 uppercase letter</span>
+
+                    </div>
+
+
+                    <div id="numberRequirement"
+                         class="password-requirement invalid">
+
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>1 number</span>
+
+                    </div>
+
+
+                    <div id="specialRequirement"
+                         class="password-requirement invalid">
+
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>1 special character</span>
+
+                    </div>
+
+                </div>
+
+
                 <span asp-validation-for="NewPassword"
                       class="validation-error">
                 </span>
 
             </div>
-
 
 
             <!-- =============================================
@@ -367,7 +402,6 @@
 {
     <partial name="_ValidationScriptsPartial" />
 
-
     <script>
 
         // =================================================
@@ -405,14 +439,147 @@
         }
 
 
+        // =================================================
+        // PASSWORD VALIDATION
+        // =================================================
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                var passwordInput =
+                    document.getElementById(
+                        "NewPassword"
+                    );
+
+
+                if (!passwordInput) {
+
+                    return;
+
+                }
+
+
+                passwordInput.addEventListener(
+                    "input",
+                    function () {
+
+                        var password =
+                            passwordInput.value;
+
+
+                        updateRequirement(
+                            "lengthRequirement",
+                            password.length >= 8
+                        );
+
+
+                        updateRequirement(
+                            "uppercaseRequirement",
+                            /[A-Z]/.test(password)
+                        );
+
+
+                        updateRequirement(
+                            "numberRequirement",
+                            /[0-9]/.test(password)
+                        );
+
+
+                        updateRequirement(
+                            "specialRequirement",
+                            /[^A-Za-z0-9]/.test(password)
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        // =================================================
+        // UPDATE REQUIREMENT
+        // =================================================
+
+        function updateRequirement(
+            requirementId,
+            isValid) {
+
+            var requirement =
+                document.getElementById(
+                    requirementId
+                );
+
+
+            if (!requirement) {
+
+                return;
+
+            }
+
+
+            var icon =
+                requirement.querySelector("i");
+
+
+            if (isValid) {
+
+                requirement.classList.remove(
+                    "invalid"
+                );
+
+                requirement.classList.add(
+                    "valid"
+                );
+
+
+                icon.classList.remove(
+                    "bi-x-circle-fill"
+                );
+
+                icon.classList.add(
+                    "bi-check-circle-fill"
+                );
+
+            }
+            else {
+
+                requirement.classList.remove(
+                    "valid"
+                );
+
+                requirement.classList.add(
+                    "invalid"
+                );
+
+
+                icon.classList.remove(
+                    "bi-check-circle-fill"
+                );
+
+                icon.classList.add(
+                    "bi-x-circle-fill"
+                );
+
+            }
+
+        }
+
 
         // =================================================
         // IMAGE PREVIEW
         // =================================================
 
-        document
-            .getElementById("ProfileImage")
-            .addEventListener(
+        var imageInput =
+            document.getElementById(
+                "ProfileImage"
+            );
+
+
+        if (imageInput) {
+
+            imageInput.addEventListener(
                 "change",
                 function (event) {
 
@@ -431,19 +598,26 @@
 
                                 var preview =
                                     document.getElementById(
-                                        "profilePreview");
+                                        "profilePreview"
+                                    );
+
 
                                 var defaultProfile =
                                     document.getElementById(
-                                        "defaultProfile");
+                                        "defaultProfile"
+                                    );
 
 
-                                preview.src =
-                                    e.target.result;
+                                if (preview) {
 
+                                    preview.src =
+                                        e.target.result;
 
-                                preview.classList.remove(
-                                    "hidden");
+                                    preview.classList.remove(
+                                        "hidden"
+                                    );
+
+                                }
 
 
                                 if (defaultProfile) {
@@ -456,11 +630,16 @@
                             };
 
 
-                        reader.readAsDataURL(file);
+                        reader.readAsDataURL(
+                            file
+                        );
 
                     }
 
-                });
+                }
+            );
+
+        }
 
     </script>
 }
