@@ -23,25 +23,19 @@ namespace Smart_Stay.Controllers
 
         [HttpGet]
         public async Task<IActionResult> viewAll(
-            string? search,
-            string? location,
-            string? price)
+    string? search,
+    string? location,
+    string? price)
         {
+            // FIXED: Show both Available AND Approved
             var query = _context.Properties
-                .Where(p => p.Status == "Available")
-                .AsQueryable();
-
-            // ========================================================
-            // SEARCH
-            // ========================================================
+               .Where(p => p.Status == "Available" || p.Status == "Approved")
+               .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.Trim();
-
-                query = query.Where(p =>
-                    p.Title.Contains(search) ||
-                    p.Location.Contains(search));
+                query = query.Where(p => p.Title.Contains(search) || p.Location.Contains(search));
             }
 
             // ========================================================
@@ -50,8 +44,7 @@ namespace Smart_Stay.Controllers
 
             if (!string.IsNullOrWhiteSpace(location))
             {
-                query = query.Where(p =>
-                    p.Location == location);
+                query = query.Where(p => p.Location == location);
             }
 
             // ========================================================
@@ -66,17 +59,14 @@ namespace Smart_Stay.Controllers
                         query = query.Where(p =>
                             p.Price >= 0 && p.Price <= 2000);
                         break;
-
                     case "2000-3000":
                         query = query.Where(p =>
                             p.Price > 2000 && p.Price <= 3000);
                         break;
-
                     case "3000-5000":
                         query = query.Where(p =>
                             p.Price > 3000 && p.Price <= 5000);
                         break;
-
                     case "5000+":
                         query = query.Where(p =>
                             p.Price > 5000);

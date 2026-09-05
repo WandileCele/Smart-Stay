@@ -24,39 +24,27 @@ namespace Smart_Stay.Controllers
 
         public async Task<IActionResult> Index()
         {
-            
-
             var properties = await _context.Properties
-           .Where(p => p.Status == "Available")
-           .OrderByDescending(p => p.DateListed)
-           .Take(3)
-           .Select(p => new PropertyCardViewModel
-        {
-          PropertyID = p.PropertyId,
-           Title = p.Title,
-           Location = p.Location,
-           Price = p.Price,
-          Bedrooms = p.Bedrooms ?? 0,
-          Bathrooms = p.Bathrooms ?? 0,
-
-       AverageRating = p.Reviews.Any()
-        ? p.Reviews.Average(r => (double)r.Rating)
-        : null,
-
-       ReviewCount = p.Reviews.Count(),
-
-       ImagePath = _context.ListingApplications
-        .Where(la => la.PropertyId == p.PropertyId)
-        .Join(
-            _context.Documents.Where(d => d.DocumentType == "Image"),
-            la => la.ListingApplicationId,
-            d => d.ListingApplication,
-            (la, d) => d.DocumentPath
-        )
-        .FirstOrDefault(),
-         LandlordPhoneNo = p.Landlord.User.PhoneNo
-           })
-    .ToListAsync();
+              .Where(p => p.Status == "Available" || p.Status == "Approved")
+              .OrderByDescending(p => p.DateListed)
+              .Take(3)
+              .Select(p => new PropertyCardViewModel
+              {
+                  PropertyID = p.PropertyId,
+                  Title = p.Title,
+                  Location = p.Location,
+                  Price = p.Price,
+                  Bedrooms = p.Bedrooms ?? 0,
+                  Bathrooms = p.Bathrooms ?? 0,
+                  AverageRating = p.Reviews.Any() ? p.Reviews.Average(r => (double)r.Rating) : null,
+                  ReviewCount = p.Reviews.Count(),
+                  ImagePath = _context.Documents
+                   .Where(d => d.DocumentType == "Image" && d.ListingApplicationNavigation.PropertyId == p.PropertyId)
+                   .Select(d => d.DocumentPath)
+                   .FirstOrDefault() ?? p.ImagePath ?? "",
+                  LandlordPhoneNo = p.Landlord.User.PhoneNo
+              })
+              .ToListAsync();
 
             return View(properties);
         }
