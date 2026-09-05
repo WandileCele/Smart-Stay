@@ -288,6 +288,31 @@
                 color: #777;
             }
 
+        .active-filters-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: -20px auto 30px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .clear-filters-link {
+            color: #0087c9;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 14px;
+            border: 1px solid #0087c9;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+
+            .clear-filters-link:hover {
+                background: #0087c9;
+                color: white;
+            }
+
 
         /* =========================================================
                    RESPONSIVE
@@ -474,7 +499,25 @@
         </button>
 
     </form>
+    @if (!string.IsNullOrWhiteSpace((string)ViewBag.Search) ||
+        !string.IsNullOrWhiteSpace((string)ViewBag.Location) ||
+        !string.IsNullOrWhiteSpace((string)ViewBag.Price))
+    {
+        <div class="active-filters-bar">
+            <span>
+                Filters applied
+            </span>
 
+            <a asp-controller="Properties"
+               asp-action="viewAll"
+               class="clear-filters-link">
+
+                ✕ Clear Filters
+
+            </a>
+
+        </div>
+    }
 
 
     <!-- =========================================================
