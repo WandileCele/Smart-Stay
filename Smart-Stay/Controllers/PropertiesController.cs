@@ -19,43 +19,25 @@ namespace Smart_Stay.Controllers
         }
         [HttpGet]
         public async Task<IActionResult> viewAll(
-            string? search,
-            string? location,
-            string? price)
+    string? search,
+    string? location,
+    string? price)
         {
+            // FIXED: Show both Available AND Approved
             var query = _context.Properties
-                .Where(p => p.Status == "Available")
-                .AsQueryable();
-
-
-            // ========================================================
-            // SEARCH
-            // ========================================================
+               .Where(p => p.Status == "Available" || p.Status == "Approved")
+               .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.Trim();
-
-                query = query.Where(p =>
-                    p.Title.Contains(search) ||
-                    p.Location.Contains(search));
+                query = query.Where(p => p.Title.Contains(search) || p.Location.Contains(search));
             }
-
-
-            // ========================================================
-            // LOCATION FILTER
-            // ========================================================
 
             if (!string.IsNullOrWhiteSpace(location))
             {
-                query = query.Where(p =>
-                    p.Location == location);
+                query = query.Where(p => p.Location == location);
             }
-
-
-            // ========================================================
-            // PRICE FILTER
-            // ========================================================
 
             if (!string.IsNullOrWhiteSpace(price))
             {
@@ -64,71 +46,43 @@ namespace Smart_Stay.Controllers
                     case "0-2000":
                         query = query.Where(p => p.Price >= 0 && p.Price <= 2000);
                         break;
-
                     case "2000-3000":
                         query = query.Where(p => p.Price > 2000 && p.Price <= 3000);
                         break;
-
                     case "3000-5000":
                         query = query.Where(p => p.Price > 3000 && p.Price <= 5000);
                         break;
-
                     case "5000+":
                         query = query.Where(p => p.Price > 5000);
                         break;
                 }
             }
 
-
             var properties = await query
-                .OrderByDescending(p => p.DateListed)
-                .Select(p => new PropertyCardViewModel
-                {
-                    PropertyID = p.PropertyId,
-
-                    Title = p.Title,
-
-                    Location = p.Location,
-
-                    Price = p.Price,
-
-                    Bedrooms = p.Bedrooms ?? 0,
-
-                    Bathrooms = p.Bathrooms ?? 0,
-
-                    ImagePath = _context.ListingApplications
-                        .Where(la => la.PropertyId == p.PropertyId)
-                        .Join(
-                            _context.Documents.Where(d => d.DocumentType == "Image"),
-                            la => la.ListingApplicationId,
-                            d => d.ListingApplication,
-                            (la, d) => d.DocumentPath
-                        )
-                        .FirstOrDefault() ?? "",
-
-                    Status = p.Status,
-
-                    ApplicationCount = p.RentalApplications.Count(),
-
-                    AverageRating = p.Reviews.Any()
-                        ? p.Reviews.Average(r => (double)r.Rating)
-                        : null,
-
-                    ReviewCount = p.Reviews.Count()
-                })
-                .ToListAsync();
-
-
-            // ========================================================
-            // SEND CURRENT FILTER VALUES BACK TO VIEW
-            // ========================================================
+               .OrderByDescending(p => p.DateListed)
+               .Select(p => new PropertyCardViewModel
+               {
+                   PropertyID = p.PropertyId,
+                   Title = p.Title,
+                   Location = p.Location,
+                   Price = p.Price,
+                   Bedrooms = p.Bedrooms ?? 0,
+                   Bathrooms = p.Bathrooms ?? 0,
+                   // FIXED: Use Property.ImagePath as fallback if no Document
+                   ImagePath = _context.Documents
+                       .Where(d => d.DocumentType == "Image" && d.ListingApplicationNavigation.PropertyId == p.PropertyId)
+                       .Select(d => d.DocumentPath)
+                       .FirstOrDefault() ?? p.ImagePath ?? "",
+                   Status = p.Status,
+                   ApplicationCount = p.RentalApplications.Count(),
+                   AverageRating = p.Reviews.Any() ? p.Reviews.Average(r => (double)r.Rating) : null,
+                   ReviewCount = p.Reviews.Count()
+               })
+               .ToListAsync();
 
             ViewBag.Search = search;
-
             ViewBag.Location = location;
-
             ViewBag.Price = price;
-
 
             return View(properties);
         }

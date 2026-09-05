@@ -445,76 +445,23 @@
 
 
 
-        <!-- LOCATION -->
-
         <select name="location">
-
-            <option value="">
-                Filter by location
-            </option>
-
-            <option value="Walmer"
-                    selected="@(ViewBag.Location == "Walmer")">
-                Walmer
-            </option>
-
-            <option value="Humewood"
-                    selected="@(ViewBag.Location == "Humewood")">
-                Humewood
-            </option>
-
-            <option value="Summerstrand"
-                    selected="@(ViewBag.Location == "Summerstrand")">
-                Summerstrand
-            </option>
-
-            <option value="North End"
-                    selected="@(ViewBag.Location == "North End")">
-                North End
-            </option>
-
-            <option value="Newton Park"
-                    selected="@(ViewBag.Location == "Newton Park")">
-                Newton Park
-            </option>
-
-            <option value="Central"
-                    selected="@(ViewBag.Location == "Central")">
-                Central
-            </option>
-
+            <option value="">Filter by location</option>
+            <option value="Walmer" selected="@(ViewBag.Location == "Walmer" ? "selected" : null)">Walmer</option>
+            <option value="Humewood" selected="@(ViewBag.Location == "Humewood" ? "selected" : null)">Humewood</option>
+            <option value="Summerstrand" selected="@(ViewBag.Location == "Summerstrand" ? "selected" : null)">Summerstrand</option>
+            <option value="North End" selected="@(ViewBag.Location == "North End" ? "selected" : null)">North End</option>
+            <option value="Newton Park" selected="@(ViewBag.Location == "Newton Park" ? "selected" : null)">Newton Park</option>
+            <option value="Central" selected="@(ViewBag.Location == "Central" ? "selected" : null)">Central</option>
+            <option value="Barrydale" selected="@(ViewBag.Location == "Barrydale" ? "selected" : null)">Barrydale</option>
         </select>
 
-
-
-        <!-- PRICE -->
-
         <select name="price">
-
-            <option value="">
-                Filter by price
-            </option>
-
-            <option value="0-2000"
-                    selected="@(ViewBag.Price == "0-2000")">
-                R0 - R2 000
-            </option>
-
-            <option value="2000-3000"
-                    selected="@(ViewBag.Price == "2000-3000")">
-                R2 000 - R3 000
-            </option>
-
-            <option value="3000-5000"
-                    selected="@(ViewBag.Price == "3000-5000")">
-                R3 000 - R5 000
-            </option>
-
-            <option value="5000+"
-                    selected="@(ViewBag.Price == "5000+")">
-                R5 000+
-            </option>
-
+            <option value="">Filter by price</option>
+            <option value="0-2000" selected="@(ViewBag.Price == "0-2000" ? "selected" : null)">R0 - R2 000</option>
+            <option value="2000-3000" selected="@(ViewBag.Price == "2000-3000" ? "selected" : null)">R2 000 - R3 000</option>
+            <option value="3000-5000" selected="@(ViewBag.Price == "3000-5000" ? "selected" : null)">R3 000 - R5 000</option>
+            <option value="5000+" selected="@(ViewBag.Price == "5000+" ? "selected" : null)">R5 000+</option>
         </select>
 
         <!-- SEARCH BUTTON -->
