@@ -130,7 +130,7 @@
 
         <h1>UPDATE PROFILE</h1>
 
-        <a asp-controller="Admin"
+        <a asp-controller="Landlord"
            asp-action="Dashboard"
            class="back-button">
 
@@ -153,10 +153,6 @@
 
         <!-- =================================================
              SUCCESS MESSAGE
-             Note: on a successful save the controller now
-             redirects to Dashboard, so this banner will only
-             appear here if TempData was set some other way
-             (e.g. validation passed but you navigate back).
         ================================================== -->
         @if (TempData["SuccessMessage"] != null)
         {
@@ -177,7 +173,7 @@
         ================================================== -->
 
         <form asp-action="UpdateProfile"
-              asp-controller="Admin"
+              asp-controller="Landlord"
               method="post"
               enctype="multipart/form-data"
               id="updateProfileForm">
@@ -489,7 +485,7 @@
                 </button>
 
 
-                <a asp-controller="Tenant"
+                <a asp-controller="Landlord"
                    asp-action="Dashboard"
                    class="cancel-button">
 
@@ -509,7 +505,19 @@
 
 <div id="profile-loader" class="global-loader">
     <div class="loader-box">
-
+        <div class="house-loader">
+            <svg viewBox="0 0 100 100">
+                <path class="house-outline"
+                      d="M10 55 L50 20 L90 55 L80 55 L80 90 L20 90 L20 55 Z" />
+                <g class="house-key">
+                    <circle cx="50" cy="55" r="6" />
+                    <line x1="56" y1="55" x2="70" y2="55" />
+                </g>
+            </svg>
+        </div>
+        <div id="profile-loader-text">Saving changes...</div>
+    </div>
+</div>
 
 @section Scripts
 {
@@ -606,6 +614,27 @@
 
                     }
                 );
+
+
+                // =============================================
+                // SHOW LOADER ON SUBMIT
+                // =============================================
+
+                var form =
+                    document.getElementById("updateProfileForm");
+
+                var loader =
+                    document.getElementById("profile-loader");
+
+                if (form && loader) {
+
+                    form.addEventListener("submit", function () {
+
+                        loader.classList.add("active");
+
+                    });
+
+                }
 
             }
         );
@@ -756,5 +785,3 @@
 
     </script>
 }
-        <div class="house-loader">
-            <svg viewBox="0 0 100 100"

@@ -228,6 +228,18 @@
 
     /* =========================================
    PASSWORD INPUT
+========================================= */
+
+    .password-wrapper .password-input {
+        width: 100%;
+        padding-right: 50px;
+    }
+
+
+/* =========================================
+   EYE BUTTON
+========================================= */
+
 .toggle-password {
     position: absolute;
     right: 12px;
@@ -243,6 +255,7 @@
     font-size: 20px;
     color: #34495e;
 }
+
 
     .toggle-password:hover {
         color: #5274a8;
@@ -291,47 +304,6 @@
         font-size: 16px;
     }
 
-
-/* =====================================================
-   PASSWORD REQUIREMENTS
-===================================================== */
-
-.pwd-rules {
-    margin-top: 10px;
-    padding: 10px 12px;
-    background: #f8f9fa;
-    border-radius: 7px;
-    border: 1px solid #e1e5e9;
-    font-size: 14px;
-}
-
-    .pwd-rules div {
-        margin: 5px 0;
-        color: #d9534f;
-        transition: 0.2s;
-    }
-
-        .pwd-rules div.valid {
-            color: #25853b;
-        }
-
-    .pwd-rules span {
-        display: inline-block;
-        width: 22px;
-        font-weight: 700;
-    }
-
-
-/*
-   PASSWORD MATCH MESSAGE
- */
-
-#passwordMatchMessage {
-    display: block;
-    margin-top: 5px;
-    font-size: 14px;
-    color: #d9534f;
-}
 
 
 /* 
