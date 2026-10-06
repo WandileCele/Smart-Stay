@@ -103,7 +103,13 @@ namespace Smart_Stay.Controllers
                 new TenantDashboardViewModel
                 {
                     TenantName =
-                        tenantName ?? "Tenant",
+                    tenantName ?? "Tenant",
+
+                    ProfileImagePath =
+                    await _context.Users
+                   .Where(u => u.UserId == tenantId)
+                   .Select(u => u.ProfileImagePath)
+                   .FirstOrDefaultAsync(),
 
                     TotalApplications =
                         applications.Count,

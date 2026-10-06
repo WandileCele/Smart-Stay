@@ -6,25 +6,324 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/AdminSidebar.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/ReviewListing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+
+    <style>
+
+        .review-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .review-view-map-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            background: none;
+            border: 1px solid #0d6efd;
+            color: #0d6efd;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+            .review-view-map-btn:hover {
+                background: #0d6efd;
+                color: #fff;
+            }
+
+        .review-map-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .review-map-modal-overlay.active {
+                display: flex;
+            }
+
+        .review-map-modal {
+            background: #fff;
+            border-radius: 10px;
+            width: min(600px, 92vw);
+            overflow: hidden;
+        }
+
+        .review-map-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .review-map-modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        #reviewMap {
+            height: 360px;
+            width: 100%;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: baseline;
+        }
+
+        .detail-label {
+            flex: 0 0 150px;
+            font-weight: bold;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .review-image-thumb {
+            cursor: zoom-in;
+        }
+
+        .review-lightbox-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .review-lightbox-overlay.active {
+                display: flex;
+            }
+
+        .review-lightbox-img {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+        }
+
+        .review-lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 36px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .review-lightbox-navbtn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            padding: 10px 16px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+            .review-lightbox-navbtn:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
+
+        .review-lightbox-prev {
+            left: 20px;
+        }
+
+        .review-lightbox-next {
+            right: 20px;
+        }
+
+        .review-lightbox-counter {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .reject-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2500;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .reject-modal-overlay.active {
+                display: flex;
+            }
+
+        .reject-modal {
+            background: #fff;
+            border-radius: 10px;
+            width: min(480px, 92vw);
+            overflow: hidden;
+        }
+
+        .reject-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .reject-modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .reject-modal-body {
+            padding: 18px;
+        }
+
+            .reject-modal-body label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 6px;
+            }
+
+            .reject-modal-body textarea {
+                width: 100%;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                padding: 10px;
+                font-family: inherit;
+                resize: vertical;
+            }
+
+        .reject-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .reject-modal-cancel-btn {
+            background: none;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        .reject-modal-confirm-btn {
+            background: #dc3545;
+            border: none;
+            color: #fff;
+            border-radius: 6px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+    </style>
 }
 
 <partial name="_AdminSidebar" />
 
 <div class="review-container">
-    <h2>Review Listing Application</h2>
+
+    <div class="review-header-row">
+        <h2>Review Listing Application</h2>
+
+        @if (Model.Latitude != null && Model.Longitude != null)
+        {
+            <button type="button" id="reviewViewMapBtn" class="review-view-map-btn">
+                View On Map
+                <i class="bi bi-map-fill"></i>
+            </button>
+        }
+    </div>
+
     <hr />
 
     <div class="property-details">
         <h3>@Model.Title</h3>
-        <p><strong>Landlord:</strong> @Model.LandlordName</p>
-        <p><strong>Description:</strong> @Model.Description</p>
-        <p><strong>Location:</strong> @Model.Location</p>
-        <p><strong>Price:</strong> R @Model.Price.ToString("N2")</p>
-        <p><strong>Property Type:</strong> @Model.PropertyType</p>
-        <p><strong>Bedrooms:</strong> @(Model.Bedrooms?.ToString() ?? "N/A")</p>
-        <p><strong>Bathrooms:</strong> @(Model.Bathrooms?.ToString() ?? "N/A")</p>
-        <p><strong>Application Date:</strong> @Model.ApplicationDate.ToString("yyyy/MM/dd")</p>
-        <p><strong>Status:</strong> <span class="status-badge @Model.ApplicationStatus.ToLower()">@Model.ApplicationStatus</span></p>
+
+        <div class="detail-row">
+            <span class="detail-label">Landlord:</span>
+            <span class="detail-value">@Model.LandlordName</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Description:</span>
+            <span class="detail-value">@Model.Description</span>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Address))
+        {
+            <div class="detail-row">
+                <span class="detail-label">Address:</span>
+                <span class="detail-value">@Model.Address</span>
+            </div>
+        }
+
+        <div class="detail-row">
+            <span class="detail-label">Location:</span>
+            <span class="detail-value">@Model.Location</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Price:</span>
+            <span class="detail-value">R @Model.Price.ToString("N2")</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Property Type:</span>
+            <span class="detail-value">@Model.PropertyType</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Bedrooms:</span>
+            <span class="detail-value">@(Model.Bedrooms?.ToString() ?? "N/A")</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Bathrooms:</span>
+            <span class="detail-value">@(Model.Bathrooms?.ToString() ?? "N/A")</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Application Date:</span>
+            <span class="detail-value">@Model.ApplicationDate.ToString("yyyy/MM/dd")</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value">
+                <span class="status-badge @Model.ApplicationStatus.ToLower()">@Model.ApplicationStatus</span>
+            </span>
+        </div>
     </div>
 
     <div class="affidavit-section">
@@ -44,9 +343,9 @@
         @if (Model.ImagePaths != null && Model.ImagePaths.Any())
         {
             <div class="image-grid">
-                @foreach (var imagePath in Model.ImagePaths)
+                @for (int i = 0; i < Model.ImagePaths.Count; i++)
                 {
-                    <img src="@imagePath" alt="Property Image" />
+                    <img src="@Model.ImagePaths[i]" alt="Property Image" class="review-image-thumb" data-index="@i" />
                 }
             </div>
         }
@@ -58,6 +357,198 @@
 
     <div class="actions">
         <a asp-action="Approve" asp-route-id="@Model.ListingApplicationId" class="approve-btn">✔ Approve</a>
-        <a asp-action="Reject" asp-route-id="@Model.ListingApplicationId" class="reject-btn">✖ Reject</a>
+        <button type="button" id="openRejectModalBtn" class="reject-btn">✖ Reject</button>
     </div>
 </div>
+
+@if (Model.ImagePaths != null && Model.ImagePaths.Any())
+{
+    <div id="reviewLightboxOverlay" class="review-lightbox-overlay">
+        <button type="button" id="reviewLightboxClose" class="review-lightbox-close">&times;</button>
+
+        @if (Model.ImagePaths.Count > 1)
+        {
+            <button type="button" id="reviewLightboxPrev" class="review-lightbox-navbtn review-lightbox-prev">&laquo;</button>
+        }
+
+        <img id="reviewLightboxImg" class="review-lightbox-img" src="" alt="Property Image" />
+
+        @if (Model.ImagePaths.Count > 1)
+        {
+            <button type="button" id="reviewLightboxNext" class="review-lightbox-navbtn review-lightbox-next">&raquo;</button>
+            <span id="reviewLightboxCounter" class="review-lightbox-counter"></span>
+        }
+    </div>
+}
+
+@if (Model.Latitude != null && Model.Longitude != null)
+{
+    <div id="reviewMapModalOverlay" class="review-map-modal-overlay">
+        <div class="review-map-modal">
+            <div class="review-map-modal-header">
+                <strong>@Model.Title</strong>
+                <button type="button" id="reviewMapModalClose" class="review-map-modal-close">&times;</button>
+            </div>
+            <div id="reviewMap"></div>
+        </div>
+    </div>
+}
+
+<div id="rejectModalOverlay" class="reject-modal-overlay">
+    <div class="reject-modal">
+        <div class="reject-modal-header">
+            <strong>Reject Application</strong>
+            <button type="button" id="rejectModalClose" class="reject-modal-close">&times;</button>
+        </div>
+
+        <form asp-controller="Admin" asp-action="Reject" method="post" class="reject-modal-body">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.ListingApplicationId" />
+
+            <label for="rejectReason">Reason for rejection</label>
+            <textarea id="rejectReason" name="reason" rows="4" required
+                      placeholder="Explain why this listing is being rejected — this will be emailed to the landlord."></textarea>
+
+            <div class="reject-modal-actions">
+                <button type="button" id="rejectModalCancel" class="reject-modal-cancel-btn">Cancel</button>
+                <button type="submit" class="reject-modal-confirm-btn">Confirm Rejection</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        const rejectModalOverlay = document.getElementById("rejectModalOverlay");
+
+        document.getElementById("openRejectModalBtn")?.addEventListener("click", function () {
+            rejectModalOverlay.classList.add("active");
+            document.getElementById("rejectReason").focus();
+        });
+
+        document.getElementById("rejectModalClose")?.addEventListener("click", function () {
+            rejectModalOverlay.classList.remove("active");
+        });
+
+        document.getElementById("rejectModalCancel")?.addEventListener("click", function () {
+            rejectModalOverlay.classList.remove("active");
+        });
+
+        rejectModalOverlay.addEventListener("click", function (e) {
+            if (e.target === this) {
+                rejectModalOverlay.classList.remove("active");
+            }
+        });
+    </script>
+
+    @if (Model.ImagePaths != null && Model.ImagePaths.Any())
+    {
+        <script>
+            const reviewImages = @Html.Raw(Json.Serialize(Model.ImagePaths));
+            let reviewLightboxIndex = 0;
+
+            const reviewLightboxOverlay = document.getElementById("reviewLightboxOverlay");
+            const reviewLightboxImg = document.getElementById("reviewLightboxImg");
+            const reviewLightboxCounter = document.getElementById("reviewLightboxCounter");
+
+            function reviewRenderLightbox() {
+                reviewLightboxImg.src = reviewImages[reviewLightboxIndex];
+                if (reviewLightboxCounter) {
+                    reviewLightboxCounter.textContent = (reviewLightboxIndex + 1) + " / " + reviewImages.length;
+                }
+            }
+
+            function reviewOpenLightbox(index) {
+                reviewLightboxIndex = index;
+                reviewRenderLightbox();
+                reviewLightboxOverlay.classList.add("active");
+            }
+
+            function reviewCloseLightbox() {
+                reviewLightboxOverlay.classList.remove("active");
+            }
+
+            document.querySelectorAll(".review-image-thumb").forEach(function (thumb) {
+                thumb.addEventListener("click", function () {
+                    reviewOpenLightbox(parseInt(this.dataset.index, 10));
+                });
+            });
+
+            document.getElementById("reviewLightboxClose")?.addEventListener("click", reviewCloseLightbox);
+
+            document.getElementById("reviewLightboxPrev")?.addEventListener("click", function () {
+                reviewLightboxIndex = (reviewLightboxIndex - 1 + reviewImages.length) % reviewImages.length;
+                reviewRenderLightbox();
+            });
+
+            document.getElementById("reviewLightboxNext")?.addEventListener("click", function () {
+                reviewLightboxIndex = (reviewLightboxIndex + 1) % reviewImages.length;
+                reviewRenderLightbox();
+            });
+
+            reviewLightboxOverlay.addEventListener("click", function (e) {
+                if (e.target === this) {
+                    reviewCloseLightbox();
+                }
+            });
+
+            document.addEventListener("keydown", function (e) {
+                if (!reviewLightboxOverlay.classList.contains("active")) return;
+
+                if (e.key === "Escape") reviewCloseLightbox();
+                if (e.key === "ArrowLeft") document.getElementById("reviewLightboxPrev")?.click();
+                if (e.key === "ArrowRight") document.getElementById("reviewLightboxNext")?.click();
+            });
+        </script>
+    }
+
+    @if (Model.Latitude != null && Model.Longitude != null)
+    {
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                crossorigin=""></script>
+
+        <script>
+            const reviewLat = @Model.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            const reviewLng = @Model.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            const reviewAddress = @Html.Raw(Json.Serialize(Model.Address ?? Model.Location));
+
+            let reviewMap = null;
+
+            function reviewOpenMapModal() {
+                document.getElementById("reviewMapModalOverlay").classList.add("active");
+
+                if (!reviewMap) {
+                    reviewMap = L.map("reviewMap").setView([reviewLat, reviewLng], 16);
+
+                    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                        maxZoom: 19,
+                        attribution: "&copy; OpenStreetMap contributors"
+                    }).addTo(reviewMap);
+
+                    L.marker([reviewLat, reviewLng])
+                        .addTo(reviewMap)
+                        .bindPopup(reviewAddress)
+                        .openPopup();
+                }
+                else {
+                    setTimeout(() => reviewMap.invalidateSize(), 100);
+                }
+            }
+
+            function reviewCloseMapModal() {
+                document.getElementById("reviewMapModalOverlay").classList.remove("active");
+            }
+
+            document.getElementById("reviewViewMapBtn")?.addEventListener("click", reviewOpenMapModal);
+            document.getElementById("reviewMapModalClose")?.addEventListener("click", reviewCloseMapModal);
+
+            document.getElementById("reviewMapModalOverlay")?.addEventListener("click", function (e) {
+                if (e.target === this) {
+                    reviewCloseMapModal();
+                }
+            });
+        </script>
+    }
+}

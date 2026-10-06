@@ -29,6 +29,11 @@ public partial class Property
 
     public int? Bathrooms { get; set; }
 
+    public string? Address { get; set; }
+
+    public double? Latitude { get; set; }
+
+    public double? Longitude { get; set; }
     public virtual Landlord Landlord { get; set; } = null!;
 
     public virtual ICollection<ListingApplication> ListingApplications { get; set; } = new List<ListingApplication>();

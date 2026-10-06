@@ -15,7 +15,25 @@
         <h1>Edit Property</h1>
         <p>Update your property information and manage its photos.</p>
     </div>
+    @if (Model.IsRejected)
+    {
+        <div class="rejection-message">
+            <h3>Application Rejected</h3>
 
+            <p>
+                Your property listing was rejected by the Admin.
+                Please make the necessary changes and resubmit your application.
+            </p>
+
+            @if (!string.IsNullOrWhiteSpace(Model.RejectionReason))
+            {
+                <div class="rejection-reason">
+                    <strong>Reason for rejection:</strong>
+                    <p>@Model.RejectionReason</p>
+                </div>
+            }
+        </div>
+    }
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
 
         <input type="hidden" asp-for="PropertyId" />
@@ -178,11 +196,21 @@
                class="cancel-button">
                 Cancel
             </a>
-
-            <button type="submit" class="save-button">
-                Save Changes
-            </button>
-
+            @if (Model.IsRejected)
+            {
+                <button type="submit"
+                        formaction="@Url.Action("Resubmit", "Properties")"
+                        class="save-button">
+                    Resubmit Application
+                </button>
+            }
+            else
+            {
+                <button type="submit"
+                        class="save-button">
+                    Save Changes
+                </button>
+            }
         </div>
 
     </form>

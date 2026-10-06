@@ -753,3 +753,64 @@ nav {
     .clear-filter-button:hover {
         background: #1877F2;
     }
+/* ============================================================
+   RESPONSIVE NAV + HERO  (keep this at the END of the file)
+============================================================ */
+
+.buttons {
+    display: flex;
+    align-items: center;
+}
+
+    .buttons .btn {
+        white-space: nowrap;
+        text-align: center;
+    }
+
+@media (max-width: 768px) {
+
+    nav {
+        padding: 15px 20px;
+        gap: 10px;
+    }
+
+    .logo img {
+        width: 40px;
+        margin-right: 10px;
+    }
+
+    .logo h1 {
+        font-size: 20px;
+    }
+
+    .buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+        .buttons .btn {
+            margin-left: 0;
+            padding: 8px 20px;
+            font-size: 13px;
+        }
+
+    .hero {
+        height: auto;
+        min-height: 650px;
+        padding-bottom: 40px;
+    }
+
+    .hero-content {
+        width: 90%;
+        margin-top: 40px;
+    }
+
+        .hero-content h2 {
+            font-size: 20px;
+        }
+
+    .popular {
+        padding: 30px 20px;
+    }
+}

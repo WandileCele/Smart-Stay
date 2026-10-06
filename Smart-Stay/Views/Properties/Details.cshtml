@@ -4,10 +4,101 @@
 }
 @section Styles {
     <link rel="stylesheet" href="~/css/PropertyDetails.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+
+    <style>
+
+        .pd-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .pd-view-map-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            background: none;
+            border: 1px solid #0d6efd;
+            color: #0d6efd;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+            .pd-view-map-btn:hover {
+                background: #0d6efd;
+                color: #fff;
+            }
+
+        .pd-map-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .pd-map-modal-overlay.active {
+                display: flex;
+            }
+
+        .pd-map-modal {
+            background: #fff;
+            border-radius: 10px;
+            width: min(600px, 92vw);
+            overflow: hidden;
+        }
+
+        .pd-map-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .pd-map-modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        #pdMap {
+            height: 360px;
+            width: 100%;
+        }
+
+    </style>
 }
 <div class="pd-wrap">
-    <h1 class="pd-title">@Model.Property.Title</h1>
-    <p class="pd-sub">@Model.Property.Location &middot; @Model.Property.PropertyType</p>
+
+    <div class="pd-header-row">
+
+        <div>
+            <h1 class="pd-title">@Model.Property.Title</h1>
+            <p class="pd-sub">@Model.Property.Location &middot; @Model.Property.PropertyType</p>
+        </div>
+
+        @if (Model.Property.Latitude != null && Model.Property.Longitude != null)
+        {
+            <button type="button" id="pdViewMapBtn" class="pd-view-map-btn">
+                View On Map
+                <i class="bi bi-map-fill"></i>
+            </button>
+        }
+
+    </div>
+
     @if (Model.ImagePaths.Any())
     {
         <img id="pdImage" class="pd-image" src="@Model.ImagePaths[0]" alt="@Model.Property.Title" />
@@ -29,6 +120,13 @@
             <span class="pd-info-label">Description:</span>
             <span class="pd-info-value">@Model.Property.Description</span>
         </div>
+        @if (!string.IsNullOrWhiteSpace(Model.Property.Address))
+        {
+            <div class="pd-info-row">
+                <span class="pd-info-label">Address:</span>
+                <span class="pd-info-value">@Model.Property.Address</span>
+            </div>
+        }
         <div class="pd-info-row">
             <span class="pd-info-label">Price:</span>
             <span class="pd-info-value pd-price">R @Model.Property.Price.ToString("N2") / Month</span>
@@ -95,7 +193,26 @@
         </a>
     </div>
 </div>
+
+@if (Model.Property.Latitude != null && Model.Property.Longitude != null)
+{
+    <div id="pdMapModalOverlay" class="pd-map-modal-overlay">
+        <div class="pd-map-modal">
+            <div class="pd-map-modal-header">
+                <strong>@Model.Property.Title</strong>
+                <button type="button" id="pdMapModalClose" class="pd-map-modal-close">&times;</button>
+            </div>
+            <div id="pdMap"></div>
+        </div>
+    </div>
+}
+
 @section Scripts {
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
     <script>
         const pdImages = @Html.Raw(Json.Serialize(Model.ImagePaths));
         let pdIndex = 0;
@@ -113,5 +230,50 @@
             pdIndex = (pdIndex + 1) % pdImages.length;
             pdRender();
         });
+
+        @if (Model.Property.Latitude != null && Model.Property.Longitude != null)
+        {
+                <text>
+                const pdLat = @Model.Property.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                const pdLng = @Model.Property.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                const pdAddress = @Html.Raw(Json.Serialize(Model.Property.Address ?? Model.Property.Location));
+
+                let pdMap = null;
+
+                function pdOpenMapModal() {
+                    document.getElementById("pdMapModalOverlay").classList.add("active");
+
+                    if (!pdMap) {
+                        pdMap = L.map("pdMap").setView([pdLat, pdLng], 16);
+
+                        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                            maxZoom: 19,
+                            attribution: "&copy; OpenStreetMap contributors"
+                        }).addTo(pdMap);
+
+                        L.marker([pdLat, pdLng])
+                            .addTo(pdMap)
+                            .bindPopup(pdAddress)
+                            .openPopup();
+                    }
+                    else {
+                        setTimeout(() => pdMap.invalidateSize(), 100);
+                    }
+                }
+
+                function pdCloseMapModal() {
+                    document.getElementById("pdMapModalOverlay").classList.remove("active");
+                }
+
+                document.getElementById("pdViewMapBtn")?.addEventListener("click", pdOpenMapModal);
+                document.getElementById("pdMapModalClose")?.addEventListener("click", pdCloseMapModal);
+
+                document.getElementById("pdMapModalOverlay")?.addEventListener("click", function (e) {
+                    if (e.target === this) {
+                        pdCloseMapModal();
+                    }
+                });
+                </text>
+        }
     </script>
 }

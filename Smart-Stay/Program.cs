@@ -56,8 +56,7 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
@@ -69,4 +68,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 //app.MapRazorPages();
 
-app.Run();
+app.Run("http://0.0.0.0:5000");
