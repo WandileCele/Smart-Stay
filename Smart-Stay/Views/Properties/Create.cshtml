@@ -5,6 +5,9 @@
 }
 
 <link rel="stylesheet" href="~/css/Property.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="" />
 
 <div class="container mt-5">
 
@@ -65,6 +68,30 @@
                       class="text-danger"></span>
 
             </div>
+
+            <div class="mb-3">
+
+                <label>Pin Your Property's Location</label>
+
+                <div style="position: relative;">
+                    <input type="text"
+                           id="address-search"
+                           class="form-control mb-2"
+                           autocomplete="off"
+                           placeholder="Search an address, or drag the pin on the map below" />
+
+                    <div id="address-suggestions"
+                         class="list-group"
+                         style="position:absolute; z-index:1000; width:100%; display:none; max-height:220px; overflow-y:auto;">
+                    </div>
+                </div>
+
+                <div id="property-map" style="height: 320px; border-radius: 8px;"></div>
+
+                <small class="text-muted d-block mt-1">Map data © OpenStreetMap contributors</small>
+
+            </div>
+
             <div class="mb-3">
                 <label asp-for="Location"></label>
                 <select asp-for="Location" class="form-select">
@@ -77,8 +104,35 @@
                     <option value="Central">Central</option>
                 </select>
                 <span asp-validation-for="Location" class="text-danger"></span>
+                <small id="area-warning" class="text-danger" style="display:none;">
+                    <strong>Warning:</strong> This pin is outside our current service areas
+                    (Walmer, North End, Humewood, Summerstrand, Newton Park and Central).
+                    If you list a property outside these areas, your application will be rejected.
+                    Please move the pin into one of these areas.
+                </small>
+            </div>
+
+            <div class="mb-3">
+
+                <label asp-for="Address"></label>
+
+                <input asp-for="Address"
+                       class="form-control"
+                       readonly
+                       placeholder="Drop or drag the pin above to auto-fill your address" />
+
+                <span asp-validation-for="Address"
+                      class="text-danger"></span>
+
+                <small id="address-manual-note" class="text-muted" style="display:none;">
+                    We couldn't recognize this exact location — please type the address manually.
+                    Your pin position will still be saved.
+                </small>
 
             </div>
+
+            <input asp-for="Latitude" type="hidden" />
+            <input asp-for="Longitude" type="hidden" />
 
             <div class="mb-3">
 
@@ -147,6 +201,7 @@
                                inputmode="numeric"
                                onkeydown="blockInvalidNumberKeys(event, false)"
                                oninput="clampNonNegative(this)" />
+                        <span asp-validation-for="Bedrooms" class="text-danger"></span>
 
                     </div>
 
@@ -166,16 +221,13 @@
                                inputmode="numeric"
                                onkeydown="blockInvalidNumberKeys(event, false)"
                                oninput="clampNonNegative(this)" />
+                        <span asp-validation-for="Bathrooms" class="text-danger"></span>
 
                     </div>
 
                 </div>
 
             </div>
-
-            <!-- ================================================
-                 PROPERTY IMAGES UPLOAD
-            ================================================= -->
 
             <div class="form-group">
 
@@ -204,10 +256,6 @@
                       class="text-danger"></span>
 
             </div>
-
-            <!-- ================================================
-                 AFFIDAVIT UPLOAD
-            ================================================= -->
 
             <div class="form-group">
 
@@ -249,6 +297,10 @@
 
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
 @section Scripts {
 
     @{
@@ -268,8 +320,6 @@
 
         }, 4000);
 
-        // Blocks letters, minus sign, and (optionally) the decimal point
-        // from ever being typed into a numeric field.
         function blockInvalidNumberKeys(event, allowDecimal) {
 
             var blockedKeys = ["-", "+", "e", "E"];
@@ -306,10 +356,6 @@
                 input.value = 0;
             }
         }
-
-        // ====================================================
-        // DRAG & DROP + FILE NAME PREVIEW
-        // ====================================================
 
         function setupUploadBox(boxId, inputId, textId) {
 
@@ -366,6 +412,286 @@
 
         setupUploadBox("imagesBox", "imagesInput", "imagesUploadText");
         setupUploadBox("affidavitBox", "affidavitInput", "affidavitUploadText");
+
+        var ALLOWED_AREAS = {
+            "walmer": "Walmer",
+            "north end": "North End",
+            "humewood": "Humewood",
+            "summerstrand": "Summerstrand",
+            "newton park": "Newton Park",
+            "central": "Central"
+        };
+
+        var ALLOW_MANUAL_FALLBACK = false;
+
+        var DEFAULT_CENTER = [-33.9608, 25.6022];
+
+        // Circles only appear when the map is zoomed in to this level or closer
+        var CIRCLE_MIN_ZOOM = 14;
+
+        // Approximate circles (radius in metres) - adjust to match the real suburbs
+        var SERVICE_AREAS = [
+            { name: "Walmer",       lat: -33.9800, lng: 25.5800, radius: 2000 },
+            { name: "Humewood",     lat: -33.9740, lng: 25.6450, radius: 1200 },
+            { name: "Summerstrand", lat: -33.9840, lng: 25.6650, radius: 1500 },
+            { name: "North End",    lat: -33.9430, lng: 25.6000, radius: 1800 },
+            { name: "Newton Park",  lat: -33.9440, lng: 25.5560, radius: 1800 },
+            { name: "Central",      lat: -33.9600, lng: 25.6150, radius: 1300 }
+        ];
+
+        var map, marker, searchDebounceTimer, areaLayer;
+
+        function initPropertyMap() {
+
+            map = L.map("property-map").setView(DEFAULT_CENTER, 12);
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap contributors"
+            }).addTo(map);
+
+            areaLayer = L.layerGroup();
+
+            SERVICE_AREAS.forEach(function (a) {
+                L.circle([a.lat, a.lng], {
+                    radius: a.radius,
+                    color: "#0d6efd",
+                    weight: 2,
+                    fillColor: "#0d6efd",
+                    fillOpacity: 0.15,
+                    interactive: false
+                })
+                .bindTooltip(a.name, { permanent: true, direction: "center" })
+                .addTo(areaLayer);
+            });
+
+            function updateAreaCircles() {
+                if (map.getZoom() >= CIRCLE_MIN_ZOOM) {
+                    if (!map.hasLayer(areaLayer)) {
+                        areaLayer.addTo(map);
+                    }
+                }
+                else {
+                    if (map.hasLayer(areaLayer)) {
+                        map.removeLayer(areaLayer);
+                    }
+                }
+            }
+
+            map.on("zoomend", updateAreaCircles);
+            updateAreaCircles();
+
+            marker = L.marker(DEFAULT_CENTER, { draggable: true }).addTo(map);
+
+            marker.on("dragend", function () {
+                var pos = marker.getLatLng();
+                reverseGeocode(pos.lat, pos.lng);
+            });
+
+            map.on("click", function (e) {
+                marker.setLatLng(e.latlng);
+                reverseGeocode(e.latlng.lat, e.latlng.lng);
+            });
+
+            setupAddressSearch();
+        }
+
+        // Returns the name of the service area the point is inside, or null.
+        // If circles overlap, the area whose centre is closest wins.
+        function findServiceArea(lat, lng) {
+
+            var best = null;
+            var bestDistance = Infinity;
+
+            SERVICE_AREAS.forEach(function (a) {
+                var d = map.distance([lat, lng], [a.lat, a.lng]);
+                if (d <= a.radius && d < bestDistance) {
+                    best = a.name;
+                    bestDistance = d;
+                }
+            });
+
+            return best;
+        }
+
+        function setupAddressSearch() {
+
+            var input = document.getElementById("address-search");
+            var suggestionsBox = document.getElementById("address-suggestions");
+
+            input.addEventListener("input", function () {
+
+                var query = input.value.trim();
+                clearTimeout(searchDebounceTimer);
+
+                if (query.length < 3) {
+                    suggestionsBox.style.display = "none";
+                    return;
+                }
+
+                searchDebounceTimer = setTimeout(function () {
+                    searchAddress(query, suggestionsBox);
+                }, 500);
+            });
+
+            document.addEventListener("click", function (e) {
+                if (e.target !== input) {
+                    suggestionsBox.style.display = "none";
+                }
+            });
+        }
+
+        function searchAddress(query, suggestionsBox) {
+
+            var url = "https://nominatim.openstreetmap.org/search"
+                + "?format=jsonv2&addressdetails=1&limit=5&countrycodes=za"
+                + "&q=" + encodeURIComponent(query);
+
+            fetch(url, { headers: { "Accept-Language": "en" } })
+                .then(function (res) { return res.json(); })
+                .then(function (results) {
+
+                    suggestionsBox.innerHTML = "";
+
+                    if (!results || results.length === 0) {
+                        suggestionsBox.style.display = "none";
+                        return;
+                    }
+
+                    results.forEach(function (place) {
+                        var item = document.createElement("button");
+                        item.type = "button";
+                        item.className = "list-group-item list-group-item-action";
+                        item.textContent = place.display_name;
+
+                        item.addEventListener("click", function () {
+                            var lat = parseFloat(place.lat);
+                            var lon = parseFloat(place.lon);
+
+                            document.getElementById("address-search").value = place.display_name;
+                            suggestionsBox.style.display = "none";
+
+                            map.setView([lat, lon], 16);
+                            marker.setLatLng([lat, lon]);
+
+                            applyRecognizedResult(lat, lon, place);
+                        });
+
+                        suggestionsBox.appendChild(item);
+                    });
+
+                    suggestionsBox.style.display = "block";
+                })
+                .catch(function (err) {
+                    console.error("Address search failed:", err);
+                });
+        }
+
+        function reverseGeocode(lat, lng) {
+
+            document.getElementById("Latitude").value = lat;
+            document.getElementById("Longitude").value = lng;
+
+            var url = "https://nominatim.openstreetmap.org/reverse"
+                + "?format=jsonv2&addressdetails=1&lat=" + lat + "&lon=" + lng;
+
+            fetch(url, { headers: { "Accept-Language": "en" } })
+                .then(function (res) { return res.json(); })
+                .then(function (result) {
+
+                    if (result && result.address && !result.error) {
+                        applyRecognizedResult(lat, lng, result);
+                    }
+                    else {
+                        applyUnrecognizedResult(lat, lng);
+                    }
+                })
+                .catch(function (err) {
+                    console.error("Reverse geocode failed:", err);
+                    applyUnrecognizedResult(lat, lng);
+                });
+        }
+
+        function applyRecognizedResult(lat, lng, place) {
+
+            document.getElementById("Latitude").value = lat;
+            document.getElementById("Longitude").value = lng;
+
+            var addressInput = document.getElementById("Address");
+            var manualNote = document.getElementById("address-manual-note");
+
+            addressInput.value = place.display_name;
+            addressInput.readOnly = true;
+            manualNote.style.display = "none";
+
+            applyAreaMatch(matchAreaFromAddress(place.address || {}), lat, lng);
+        }
+
+        function applyUnrecognizedResult(lat, lng) {
+
+            var addressInput = document.getElementById("Address");
+            var manualNote = document.getElementById("address-manual-note");
+
+            console.warn("Nominatim did not recognize this pin.");
+            addressInput.readOnly = false;
+            addressInput.value = "";
+            addressInput.placeholder = "Type the address for this location";
+            manualNote.style.display = "block";
+            addressInput.focus();
+
+            applyAreaMatch(null, lat, lng);
+        }
+
+        function applyAreaMatch(matchedArea, lat, lng) {
+
+            var dropdown = document.getElementById("Location");
+            var warning = document.getElementById("area-warning");
+
+            // The circle the pin sits in wins; otherwise fall back to the address match
+            var finalArea = findServiceArea(lat, lng) || matchedArea;
+
+            if (finalArea) {
+                dropdown.value = finalArea;
+                warning.style.display = "none";
+            }
+            else {
+                warning.style.display = "block";
+                if (!ALLOW_MANUAL_FALLBACK) {
+                    dropdown.value = "";
+                }
+            }
+        }
+
+        function matchAreaFromAddress(address) {
+
+            var candidateKeys = [
+                "suburb",
+                "neighbourhood",
+                "city_district",
+                "quarter",
+                "town",
+                "village"
+            ];
+
+            for (var i = 0; i < candidateKeys.length; i++) {
+                var value = address[candidateKeys[i]];
+                if (value && ALLOWED_AREAS[value.toLowerCase()]) {
+                    return ALLOWED_AREAS[value.toLowerCase()];
+                }
+            }
+
+            var allText = Object.keys(address)
+                .map(function (k) { return String(address[k]).toLowerCase(); })
+                .join(" ");
+
+            for (var key in ALLOWED_AREAS) {
+                if (allText.indexOf(key) !== -1) return ALLOWED_AREAS[key];
+            }
+
+            return null;
+        }
+
+        initPropertyMap();
 
     </script>
 

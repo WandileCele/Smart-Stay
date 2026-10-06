@@ -6,6 +6,9 @@ namespace Smart_Stay.Models
     public class TenantDashboardViewModel
     {
         public string TenantName { get; set; } = "";
+
+        public string? ProfileImagePath { get; set; }
+
         public int TotalApplications { get; set; }
         public int ApprovedApplications { get; set; }
         public int PendingApplications { get; set; }

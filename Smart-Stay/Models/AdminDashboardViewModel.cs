@@ -6,7 +6,7 @@ namespace Smart_Stay.Models
     {
         public string FirstName { get; set; } = "";
         public int PendingApplications { get; set; }
-
+          public string? ProfileImagePath { get; set; }
         public int ApprovedApplications { get; set; }
 
         public int RejectedApplications { get; set; }

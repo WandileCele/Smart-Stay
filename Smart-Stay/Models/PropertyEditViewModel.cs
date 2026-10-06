@@ -31,6 +31,12 @@ namespace Smart_Stay.Models
         public List<int> ImagesToDelete { get; set; } = new();
 
         public List<IFormFile> NewImages { get; set; } = new();
+
+        // Used to determine whether this property was rejected
+        public bool IsRejected { get; set; }
+
+        // Reason provided by the Admin when rejecting
+        public string? RejectionReason { get; set; }
     }
 
     public class ExistingPropertyImageViewModel

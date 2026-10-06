@@ -10,6 +10,7 @@ namespace Smart_Stay.Models
 
         public int AvailableProperties { get; set; }
 
+        public string? ProfileImagePath { get; set; } 
         public string FirstName { get; set; } = string.Empty;
         public List<PropertyCardViewModel> Properties { get; set; } = new();
 

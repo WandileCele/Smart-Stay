@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Smart_Stay.Models;
+﻿using Smart_Stay.Models;
 
 public partial class ListingApplication
 {
@@ -16,6 +13,8 @@ public partial class ListingApplication
     public string ApplicationStatus { get; set; } = null!;
 
     public DateOnly ApplicationDate { get; set; }
+
+    public string? RejectionReason { get; set; }
 
     public virtual Admin Admin { get; set; } = null!;
 

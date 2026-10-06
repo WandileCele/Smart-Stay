@@ -36,7 +36,8 @@ namespace Smart_Stay.Controllers
 
             var model = new LandlordDashboardViewModel
             {
-                FirstName = landlord.User.FirstName
+                FirstName = landlord.User.FirstName,
+                ProfileImagePath = landlord.User.ProfileImagePath
             };
 
             model.TotalProperties =
@@ -70,6 +71,8 @@ namespace Smart_Stay.Controllers
                         Title = p.Title,
 
                         Location = p.Location,
+
+                        Address = p.Address,
 
                         Price = p.Price,
 

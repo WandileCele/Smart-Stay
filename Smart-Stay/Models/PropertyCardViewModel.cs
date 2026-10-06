@@ -1,5 +1,4 @@
-﻿
-namespace Smart_Stay.Models
+﻿namespace Smart_Stay.Models
 {
     public class PropertyCardViewModel
     {
@@ -8,6 +7,8 @@ namespace Smart_Stay.Models
         public string Title { get; set; }
 
         public string Location { get; set; }
+
+        public string? Address { get; set; }
 
         public decimal Price { get; set; }
 
@@ -28,4 +29,3 @@ namespace Smart_Stay.Models
         public string LandlordPhoneNo { get; set; } = string.Empty;
     }
 }
-

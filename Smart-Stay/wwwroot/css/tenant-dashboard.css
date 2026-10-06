@@ -475,8 +475,6 @@
         grid-template-columns: 1fr;
     }
 }
-
-
 @media (max-width: 768px) {
 
     .tenant-main {
@@ -485,20 +483,22 @@
 
     .tenant-header {
         min-height: 150px;
+        flex-direction: column;
+        padding-top: 70px;
     }
 
         .tenant-header h1 {
-            font-size: 30px;
+            font-size: 24px;
+        }
+
+        .tenant-header p {
+            font-size: 14px;
         }
 
         .tenant-header > form {
             position: static;
             margin-top: 20px;
         }
-
-    .tenant-header {
-        flex-direction: column;
-    }
 
     .dashboard-summary {
         grid-template-columns: 1fr;
@@ -518,4 +518,13 @@
         min-height: 200px;
     }
 }
+/* =========================================================
+   TABLET + PHONE: keep heading clear of the fixed buttons
+========================================================= */
 
+@media (max-width: 1100px) {
+
+    .tenant-header {
+        padding-top: 70px;
+    }
+}
