@@ -25,28 +25,55 @@ namespace Smart_Stay.Controllers
         public async Task<IActionResult> Index()
         {
             var properties = await _context.Properties
-              .Where(p => p.Status == "Available" || p.Status == "Approved")
-              .OrderByDescending(p => p.DateListed)
-              .Take(3)
-              .Select(p => new PropertyCardViewModel
-              {
-                  PropertyID = p.PropertyId,
-                  Title = p.Title,
-                  Location = p.Location,
-                  Price = p.Price,
-                  Bedrooms = p.Bedrooms ?? 0,
-                  Bathrooms = p.Bathrooms ?? 0,
-                  AverageRating = p.Reviews.Any() ? p.Reviews.Average(r => (double)r.Rating) : null,
-                  ReviewCount = p.Reviews.Count(),
-                  ImagePath = _context.Documents
-                   .Where(d => d.DocumentType == "Image" && d.ListingApplicationNavigation.PropertyId == p.PropertyId)
-                   .Select(d => d.DocumentPath)
-                   .FirstOrDefault() ?? p.ImagePath ?? "",
-                  LandlordPhoneNo = p.Landlord.User.PhoneNo
-              })
-              .ToListAsync();
+           .Include(p => p.Landlord)
+           .ThenInclude(l => l.User)
+           .Where(p => p.Status == "Available" || p.Status == "Approved")
+           .OrderByDescending(p => p.DateListed)
+           .Take(3)
+           .ToListAsync();
+            var model = properties
+                .Select(p =>
+                {
+                    var tag = System.Text.RegularExpressions.Regex.Match(
+                        p.Description ?? "",
+                        @"\[PricePeriod:(.+?)\]"
+                    );
 
-            return View(properties);
+                    return new PropertyCardViewModel
+                    {
+                        PropertyID = p.PropertyId,
+                        Title = p.Title,
+                        Location = p.Location,
+                        Price = p.Price,
+
+                        PricePeriod = tag.Success
+                            ? tag.Groups[1].Value
+                            : "per month",
+
+                        Bedrooms = p.Bedrooms ?? 0,
+                        Bathrooms = p.Bathrooms ?? 0,
+
+                        AverageRating = p.Reviews.Any()
+                            ? p.Reviews.Average(r => (double)r.Rating)
+                            : null,
+
+                        ReviewCount = p.Reviews.Count(),
+
+                        ImagePath = _context.Documents
+                            .Where(d =>
+                                d.DocumentType == "Image" &&
+                                d.ListingApplicationNavigation.PropertyId == p.PropertyId)
+                            .Select(d => d.DocumentPath)
+                            .FirstOrDefault()
+                            ?? p.ImagePath
+                            ?? "",
+
+                        LandlordPhoneNo = p.Landlord.User.PhoneNo
+                    };
+                })
+                .ToList();
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

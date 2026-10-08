@@ -214,12 +214,11 @@ namespace Smart_Stay.Controllers
         // ============================================================
         // BROWSE ALL AVAILABLE PROPERTIES
         // ============================================================
-
         [HttpGet]
         public async Task<IActionResult> BrowseProperties(
-            string? search,
-            string? location,
-            string? price)
+         string? search,
+         string? location,
+         string? price)
         {
             var query = _context.Properties
                 .Where(p => p.Status == "Available")
@@ -277,48 +276,64 @@ namespace Smart_Stay.Controllers
 
             var properties = await query
                 .OrderByDescending(p => p.DateListed)
-                .Select(p => new PropertyCardViewModel
-                {
-                    PropertyID = p.PropertyId,
-
-                    Title = p.Title,
-
-                    Location = p.Location,
-
-                    Price = p.Price,
-
-                    Bedrooms = p.Bedrooms ?? 0,
-
-                    Bathrooms = p.Bathrooms ?? 0,
-
-                    ImagePath =
-                        _context.ListingApplications
-                            .Where(la =>
-                                la.PropertyId == p.PropertyId)
-                            .Join(
-                                _context.Documents.Where(d =>
-                                    d.DocumentType == "Image"),
-                                la => la.ListingApplicationId,
-                                d => d.ListingApplication,
-                                (la, d) => d.DocumentPath
-                            )
-                            .FirstOrDefault() ?? "",
-
-                    Status = p.Status,
-
-                    ApplicationCount =
-                        p.RentalApplications.Count(),
-
-                    AverageRating =
-                        p.Reviews.Any()
-                            ? p.Reviews.Average(r =>
-                                (double)r.Rating)
-                            : null,
-
-                    ReviewCount =
-                        p.Reviews.Count()
-                })
                 .ToListAsync();
+
+
+            var model = properties
+                .Select(p =>
+                {
+                    var tag = System.Text.RegularExpressions.Regex.Match(
+                        p.Description ?? "",
+                        @"\[PricePeriod:(.+?)\]"
+                    );
+
+                    return new PropertyCardViewModel
+                    {
+                        PropertyID = p.PropertyId,
+
+                        Title = p.Title,
+
+                        Location = p.Location,
+
+                        Price = p.Price,
+
+                        PricePeriod = tag.Success
+                            ? tag.Groups[1].Value
+                            : "per month",
+
+                        Bedrooms = p.Bedrooms ?? 0,
+
+                        Bathrooms = p.Bathrooms ?? 0,
+
+                        ImagePath =
+                            _context.ListingApplications
+                                .Where(la =>
+                                    la.PropertyId == p.PropertyId)
+                                .Join(
+                                    _context.Documents.Where(d =>
+                                        d.DocumentType == "Image"),
+                                    la => la.ListingApplicationId,
+                                    d => d.ListingApplication,
+                                    (la, d) => d.DocumentPath
+                                )
+                                .FirstOrDefault() ?? "",
+
+                        Status = p.Status,
+
+                        ApplicationCount =
+                            p.RentalApplications.Count(),
+
+                        AverageRating =
+                            p.Reviews.Any()
+                                ? p.Reviews.Average(r =>
+                                    (double)r.Rating)
+                                : null,
+
+                        ReviewCount =
+                            p.Reviews.Count()
+                    };
+                })
+                .ToList();
 
 
             ViewBag.Search = search;
@@ -328,8 +343,9 @@ namespace Smart_Stay.Controllers
             ViewBag.Price = price;
 
 
-            return View(properties);
+            return View(model);
         }
+
         // ============================================================
         // SUBMIT PROPERTY REVIEW
         // ============================================================

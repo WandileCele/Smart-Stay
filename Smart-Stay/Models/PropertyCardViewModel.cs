@@ -23,6 +23,7 @@
         public int ApplicationCount { get; set; }
 
         public double? AverageRating { get; set; }
+        public string PricePeriod { get; set; } = "per month";
 
         public int ReviewCount { get; set; }
 

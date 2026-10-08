@@ -104,11 +104,9 @@
                     <option value="Central">Central</option>
                 </select>
                 <span asp-validation-for="Location" class="text-danger"></span>
-                <small id="area-warning" class="text-danger" style="display:none;">
-                    <strong>Warning:</strong> This pin is outside our current service areas
-                    (Walmer, North End, Humewood, Summerstrand, Newton Park and Central).
-                    If you list a property outside these areas, your application will be rejected.
-                    Please move the pin into one of these areas.
+                <small id="area-warning" class="text-primary d-block">
+                    <strong>Notice:</strong> Your map location will be reviewed.
+                    If the location is found to be incorrect, your application may be rejected.
                 </small>
             </div>
 
@@ -152,7 +150,15 @@
                            onkeydown="blockInvalidNumberKeys(event, true)"
                            oninput="clampNonNegative(this)" />
 
+                    <select name="pricePeriod" class="form-select" style="max-width: 150px;">
+                        <option value="per night">per night</option>
+                        <option value="per week">per week</option>
+                        <option value="per month" selected>per month</option>
+                    </select>
+
                 </div>
+
+                <small class="text-muted d-block mt-1">Enter the amount and choose how often it is charged.</small>
 
                 <span asp-validation-for="Price"
                       class="text-danger"></span>
@@ -426,20 +432,7 @@
 
         var DEFAULT_CENTER = [-33.9608, 25.6022];
 
-        // Circles only appear when the map is zoomed in to this level or closer
-        var CIRCLE_MIN_ZOOM = 14;
-
-        // Approximate circles (radius in metres) - adjust to match the real suburbs
-        var SERVICE_AREAS = [
-            { name: "Walmer",       lat: -33.9800, lng: 25.5800, radius: 2000 },
-            { name: "Humewood",     lat: -33.9740, lng: 25.6450, radius: 1200 },
-            { name: "Summerstrand", lat: -33.9840, lng: 25.6650, radius: 1500 },
-            { name: "North End",    lat: -33.9430, lng: 25.6000, radius: 1800 },
-            { name: "Newton Park",  lat: -33.9440, lng: 25.5560, radius: 1800 },
-            { name: "Central",      lat: -33.9600, lng: 25.6150, radius: 1300 }
-        ];
-
-        var map, marker, searchDebounceTimer, areaLayer;
+        var map, marker, searchDebounceTimer;
 
         function initPropertyMap() {
 
@@ -449,37 +442,6 @@
                 maxZoom: 19,
                 attribution: "&copy; OpenStreetMap contributors"
             }).addTo(map);
-
-            areaLayer = L.layerGroup();
-
-            SERVICE_AREAS.forEach(function (a) {
-                L.circle([a.lat, a.lng], {
-                    radius: a.radius,
-                    color: "#0d6efd",
-                    weight: 2,
-                    fillColor: "#0d6efd",
-                    fillOpacity: 0.15,
-                    interactive: false
-                })
-                .bindTooltip(a.name, { permanent: true, direction: "center" })
-                .addTo(areaLayer);
-            });
-
-            function updateAreaCircles() {
-                if (map.getZoom() >= CIRCLE_MIN_ZOOM) {
-                    if (!map.hasLayer(areaLayer)) {
-                        areaLayer.addTo(map);
-                    }
-                }
-                else {
-                    if (map.hasLayer(areaLayer)) {
-                        map.removeLayer(areaLayer);
-                    }
-                }
-            }
-
-            map.on("zoomend", updateAreaCircles);
-            updateAreaCircles();
 
             marker = L.marker(DEFAULT_CENTER, { draggable: true }).addTo(map);
 
@@ -494,24 +456,6 @@
             });
 
             setupAddressSearch();
-        }
-
-        // Returns the name of the service area the point is inside, or null.
-        // If circles overlap, the area whose centre is closest wins.
-        function findServiceArea(lat, lng) {
-
-            var best = null;
-            var bestDistance = Infinity;
-
-            SERVICE_AREAS.forEach(function (a) {
-                var d = map.distance([lat, lng], [a.lat, a.lng]);
-                if (d <= a.radius && d < bestDistance) {
-                    best = a.name;
-                    bestDistance = d;
-                }
-            });
-
-            return best;
         }
 
         function setupAddressSearch() {
@@ -645,17 +589,14 @@
         function applyAreaMatch(matchedArea, lat, lng) {
 
             var dropdown = document.getElementById("Location");
-            var warning = document.getElementById("area-warning");
 
-            // The circle the pin sits in wins; otherwise fall back to the address match
-            var finalArea = findServiceArea(lat, lng) || matchedArea;
+            // The area is decided by the address match only
+            var finalArea = matchedArea;
 
             if (finalArea) {
                 dropdown.value = finalArea;
-                warning.style.display = "none";
             }
             else {
-                warning.style.display = "block";
                 if (!ALLOW_MANUAL_FALLBACK) {
                     dropdown.value = "";
                 }

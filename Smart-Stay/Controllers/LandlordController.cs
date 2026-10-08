@@ -59,12 +59,19 @@ namespace Smart_Stay.Controllers
                     r.LandlordId == landlordId);
 
 
-            model.Properties =
-                await _context.Properties
-                .Where(p =>
-                    p.LandlordId == landlordId)
+            var properties = await _context.Properties
+     .Where(p => p.LandlordId == landlordId)
+     .ToListAsync();
+
+            model.Properties = properties
                 .Select(p =>
-                    new PropertyCardViewModel
+                {
+                    var tag = System.Text.RegularExpressions.Regex.Match(
+                        p.Description ?? "",
+                        @"\[PricePeriod:(.+?)\]"
+                    );
+
+                    return new PropertyCardViewModel
                     {
                         PropertyID = p.PropertyId,
 
@@ -76,23 +83,22 @@ namespace Smart_Stay.Controllers
 
                         Price = p.Price,
 
-                        Bedrooms =
-                            p.Bedrooms ?? 0,
+                        PricePeriod = tag.Success
+                            ? tag.Groups[1].Value
+                            : "per month",
 
-                        Bathrooms =
-                            p.Bathrooms ?? 0,
+                        Bedrooms = p.Bedrooms ?? 0,
 
-                        ImagePath =
-                            p.ImagePath,
+                        Bathrooms = p.Bathrooms ?? 0,
 
-                        Status =
-                            p.Status,
+                        ImagePath = p.ImagePath,
 
-                        ApplicationCount =
-                            p.RentalApplications.Count()
-                    })
-                .ToListAsync();
+                        Status = p.Status,
 
+                        ApplicationCount = p.RentalApplications.Count()
+                    };
+                })
+                .ToList();
 
             return View(model);
         }

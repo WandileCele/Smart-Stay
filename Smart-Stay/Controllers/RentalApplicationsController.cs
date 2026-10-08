@@ -293,18 +293,23 @@ namespace Smart_Stay.Controllers
 
             byte[] pdf = GenerateApplicationPdf(rentalApplication, model);
 
-            var pdfFolder = Path.Combine(
+            
+        
+
+           var pdfFolder = Path.Combine(
             _environment.ContentRootPath, "App_Data", "GeneratedPdfs");
 
             if (!Directory.Exists(pdfFolder))
             {
                 Directory.CreateDirectory(pdfFolder);
-            }
+           }
 
             var pdfPath = Path.Combine(
-            pdfFolder, $"application_{rentalApplication.RentalApplicationId}.pdf");
+           pdfFolder, $"application_{rentalApplication.RentalApplicationId}.pdf");
 
             await System.IO.File.WriteAllBytesAsync(pdfPath, pdf);
+
+       
 
             return RedirectToAction(
             nameof(Success), new { id = rentalApplication.RentalApplicationId });
@@ -323,8 +328,8 @@ namespace Smart_Stay.Controllers
             $"application_{id}.pdf");
 
             if (!System.IO.File.Exists(pdfPath))
-            {
-                // Nothing to show (e.g. link opened directly, or the
+           {
+               // Nothing to show (e.g. link opened directly, or the
                 // file was already cleaned up) — send them back to the form.
                 return RedirectToAction(nameof(Apply));
             }
@@ -342,14 +347,14 @@ namespace Smart_Stay.Controllers
         [HttpGet]
         public IActionResult DownloadPdf(int id)
         {
-            var pdfPath = Path.Combine(
-            _environment.ContentRootPath, "App_Data", "GeneratedPdfs",
+           var pdfPath = Path.Combine(
+           _environment.ContentRootPath, "App_Data", "GeneratedPdfs",
             $"application_{id}.pdf");
 
             if (!System.IO.File.Exists(pdfPath))
             {
                 return NotFound();
-            }
+           }
 
             var pdfBytes = System.IO.File.ReadAllBytes(pdfPath);
 
@@ -362,54 +367,54 @@ namespace Smart_Stay.Controllers
         // ============================================================
 
         private byte[] GenerateApplicationPdf(
-            RentalApplication application,
-            RentalApplicationFormViewModel model)
+           RentalApplication application,
+           RentalApplicationFormViewModel model)
         {
-            var document = QuestPDF.Fluent.Document.Create(container =>
-            {
+          var document = QuestPDF.Fluent.Document.Create(container =>
+           {
                 container.Page(page =>
                 {
                     page.Size(PageSizes.A4);
                     page.Margin(40);
 
                     page.Header().Column(column =>
-                    {
+                   {
                         column.Item().Text("SMART STAY").Bold().FontSize(24);
                         column.Item().Text("RENTAL APPLICATION").Bold().FontSize(18);
                         column.Item().LineHorizontal(1);
                     });
 
-                    page.Content().PaddingTop(20).Column(column =>
+                 page.Content().PaddingTop(20).Column(column =>
                     {
-                        column.Spacing(10);
+                       column.Spacing(10);
 
                         column.Item().Text($"Property: {model.PropertyTitle}").Bold();
                         column.Item().Text($"Application ID: {application.RentalApplicationId}");
-                        column.Item().Text($"Application Date: {application.ApplicationDate}");
+                       column.Item().Text($"Application Date: {application.ApplicationDate}");
 
-                        column.Item().PaddingTop(15).Text("APPLICANT DETAILS").Bold().FontSize(15);
+                       column.Item().PaddingTop(15).Text("APPLICANT DETAILS").Bold().FontSize(15);
                         column.Item().Text($"First Name: {model.FirstName}");
-                        column.Item().Text($"Last Name: {model.LastName}");
-                        column.Item().Text($"ID Number: {model.IdNumber}");
-                        column.Item().Text($"Phone Number: {model.PhoneNumber}");
+                      column.Item().Text($"Last Name: {model.LastName}");
+                     column.Item().Text($"ID Number: {model.IdNumber}");
+                      column.Item().Text($"Phone Number: {model.PhoneNumber}");
                         column.Item().Text($"Email: {model.Email}");
-                        column.Item().Text($"Employment: {model.Employment}");
+                      column.Item().Text($"Employment: {model.Employment}");
 
-                        column.Item().PaddingTop(15).Text("APPLICATION STATUS").Bold().FontSize(15);
-                        column.Item().Text($"Status: {application.RentalApplicationStatus}");
-                        column.Item().Text($"Lease: {model.LeaseStartDate} to {model.LeaseEndDate}");
-                        column.Item().Text("Payslip: Uploaded successfully");
-                        column.Item().Text("Terms and Conditions: Accepted");
+                      column.Item().PaddingTop(15).Text("APPLICATION STATUS").Bold().FontSize(15);
+                      column.Item().Text($"Status: {application.RentalApplicationStatus}");
+                     column.Item().Text($"Lease: {model.LeaseStartDate} to {model.LeaseEndDate}");
+                       column.Item().Text("Payslip: Uploaded successfully");
+                       column.Item().Text("Terms and Conditions: Accepted");
 
-                        column.Item().PaddingTop(30)
-                            .Text("Thank you for submitting your rental application to Smart Stay.");
-                    });
+                       column.Item().PaddingTop(30)
+                           .Text("Thank you for submitting your rental application to Smart Stay.");
+                   });
 
-                    page.Footer().AlignCenter().Text("Smart Stay - Rental Application");
+                   page.Footer().AlignCenter().Text("Smart Stay - Rental Application");
                 });
-            });
+           });
 
-            return document.GeneratePdf();
+            return  document.GeneratePdf();
         }
     }
 }

@@ -1,5 +1,10 @@
 ﻿@model Smart_Stay.Models.PropertyDetailsViewModel
 @{
+    var tag = System.Text.RegularExpressions.Regex.Match(Model.Property.Description ?? "", @"\[PricePeriod:(.+?)\]");
+    var period = tag.Success ? tag.Groups[1].Value : "per month";
+    var cleanDescription = System.Text.RegularExpressions.Regex.Replace(Model.Property.Description ?? "", @"\s*\[PricePeriod:.+?\]", "");
+}
+@{
     ViewData["Title"] = "Property Details";
 }
 @section Styles {
@@ -118,7 +123,7 @@
     <div class="pd-info">
         <div class="pd-info-row">
             <span class="pd-info-label">Description:</span>
-            <span class="pd-info-value">@Model.Property.Description</span>
+            <span class="pd-info-value">@cleanDescription</span>
         </div>
         @if (!string.IsNullOrWhiteSpace(Model.Property.Address))
         {
@@ -129,7 +134,11 @@
         }
         <div class="pd-info-row">
             <span class="pd-info-label">Price:</span>
-            <span class="pd-info-value pd-price">R @Model.Property.Price.ToString("N2") / Month</span>
+            <span class="pd-info-value pd-price">
+                <span class="pd-info-value pd-price">
+                    R @Model.Property.Price.ToString("0.##") @period
+                </span>
+            </span>
         </div>
         <div class="pd-info-row">
             <span class="pd-info-label">Bedrooms:</span>

@@ -366,6 +366,7 @@
         @foreach (var property in Model.Properties)
         {
 
+
             <div class="property-card"
                  id="property-@property.PropertyID">
 
@@ -422,15 +423,11 @@
                 </p>
 
                 <p class="property-detail">
-
                     <i class="bi bi-cash-stack"></i>
-
                     <strong>Price:</strong>
-
                     <span>
-                        R @property.Price.ToString("N2") / Month
+                        R @property.Price.ToString("0.##") @property.PricePeriod
                     </span>
-
                 </p>
 
                 <p class="property-detail">

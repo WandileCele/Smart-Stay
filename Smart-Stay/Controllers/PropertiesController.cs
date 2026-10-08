@@ -13,12 +13,46 @@ namespace Smart_Stay.Controllers
         private readonly IWebHostEnvironment _environment;
 
 
-    public PropertiesController(
-        SmartDbContext context,
-        IWebHostEnvironment environment)
+        public PropertiesController(
+            SmartDbContext context,
+            IWebHostEnvironment environment)
         {
             _context = context;
             _environment = environment;
+        }
+
+        // ============================================================
+        // PRICE PERIOD HELPERS (period is stored as a tag in Description)
+        // ============================================================
+
+        private static readonly string[] AllowedPricePeriods =
+            { "per night", "per month" };
+
+        private static string GetPricePeriod(string? description)
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(
+                description ?? "", @"\[PricePeriod:(.+?)\]");
+
+            return match.Success &&
+                   AllowedPricePeriods.Contains(match.Groups[1].Value)
+                ? match.Groups[1].Value
+                : "per month";
+        }
+
+        private static string StripPricePeriod(string? description)
+        {
+            return System.Text.RegularExpressions.Regex.Replace(
+                description ?? "", @"\s*\[PricePeriod:.+?\]", "");
+        }
+
+        private static string AddPricePeriod(string? description, string pricePeriod)
+        {
+            if (!AllowedPricePeriods.Contains(pricePeriod))
+            {
+                pricePeriod = "per month";
+            }
+
+            return StripPricePeriod(description) + $" [PricePeriod:{pricePeriod}]";
         }
 
         [HttpGet]
@@ -85,6 +119,11 @@ namespace Smart_Stay.Controllers
                     Location = p.Location,
 
                     Price = p.Price,
+
+                    PricePeriod =
+                        p.Description != null && p.Description.Contains("PricePeriod:per night")
+                            ? "per night"
+                            : "per month",
 
                     Bedrooms = p.Bedrooms ?? 0,
 
@@ -256,7 +295,7 @@ namespace Smart_Stay.Controllers
             {
                 PropertyId = property.PropertyId,
                 Title = property.Title,
-                Description = property.Description,
+                Description = StripPricePeriod(property.Description),
                 Location = property.Location,
                 Price = property.Price,
                 PropertyType = property.PropertyType,
@@ -284,7 +323,8 @@ namespace Smart_Stay.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
-            PropertyEditViewModel model)
+            PropertyEditViewModel model,
+            string? pricePeriod)
         {
             if (!ModelState.IsValid)
             {
@@ -325,7 +365,13 @@ namespace Smart_Stay.Controllers
             // ============================================================
 
             property.Title = model.Title;
-            property.Description = model.Description;
+
+            var period = (pricePeriod != null &&
+                          AllowedPricePeriods.Contains(pricePeriod))
+                ? pricePeriod
+                : GetPricePeriod(property.Description);
+
+            property.Description = AddPricePeriod(model.Description, period);
             property.Location = model.Location;
             property.Price = model.Price;
             property.PropertyType = model.PropertyType;
@@ -461,7 +507,8 @@ namespace Smart_Stay.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Resubmit(
-            PropertyEditViewModel model)
+            PropertyEditViewModel model,
+            string? pricePeriod)
         {
             // ============================================================
             // VALIDATION
@@ -535,7 +582,13 @@ namespace Smart_Stay.Controllers
             // ============================================================
 
             property.Title = model.Title;
-            property.Description = model.Description;
+
+            var period = (pricePeriod != null &&
+                          AllowedPricePeriods.Contains(pricePeriod))
+                ? pricePeriod
+                : GetPricePeriod(property.Description);
+
+            property.Description = AddPricePeriod(model.Description, period);
             property.Location = model.Location;
             property.Price = model.Price;
             property.PropertyType = model.PropertyType;
@@ -878,7 +931,7 @@ namespace Smart_Stay.Controllers
                 "Properties");
         }
 
-        
+
 
         // ============================================================
         // CREATE POST
@@ -888,9 +941,10 @@ namespace Smart_Stay.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            PropertyCreateViewModel model)
+            PropertyCreateViewModel model,
+            string? pricePeriod)
         {
-     
+
             if (!(model.Price > 0))
                 ModelState.AddModelError("Price", "Price cannot be zero.");
 
@@ -932,12 +986,12 @@ namespace Smart_Stay.Controllers
                 return View(model);
             }
 
-            
+
             var property = new Property
             {
                 LandlordId = landlordId,
                 Title = model.Title,
-                Description = model.Description,
+                Description = AddPricePeriod(model.Description, pricePeriod ?? "per month"),
                 Location = model.Location,
                 Address = model.Address,
                 Latitude = model.Latitude,
@@ -955,7 +1009,7 @@ namespace Smart_Stay.Controllers
 
             await _context.SaveChangesAsync();
 
-           
+
 
             var listingApplication = new ListingApplication
             {
@@ -1015,7 +1069,7 @@ namespace Smart_Stay.Controllers
                 });
             }
 
-   
+
 
             foreach (var image in model.PropertyImages)
             {
@@ -1048,7 +1102,7 @@ namespace Smart_Stay.Controllers
                 });
             }
 
-            
+
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] =
