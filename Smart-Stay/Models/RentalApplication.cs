@@ -14,6 +14,7 @@ public partial class RentalApplication
     public DateOnly? LeaseEndDate { get; set; }
     public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
     public virtual Landlord? Landlord { get; set; }
+    public string? RejectionReason { get; set; }
     public virtual Property Property { get; set; } = null!;
     public virtual Tenant Tenant { get; set; } = null!;
 }

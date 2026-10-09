@@ -185,7 +185,20 @@
         }
     </div>
     <div class="pd-buttons">
-        @if (Model.CanApply)
+
+        @{
+            var currentRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            var loggedIn = User.Identity != null && User.Identity.IsAuthenticated;
+            var notTenant = loggedIn && currentRole != "Tenant";
+        }
+
+        @if (notTenant)
+        {
+            <a asp-controller="Account" asp-action="Login" class="pd-cta">
+                Apply
+            </a>
+        }
+        else if (Model.CanApply)
         {
             <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">
                 Apply
@@ -197,9 +210,11 @@
                 @Model.ApplyBlockedReason
             </span>
         }
+
         <a href="@Model.ReturnUrl" class="pd-cta-outline">
             Back
         </a>
+
     </div>
 </div>
 

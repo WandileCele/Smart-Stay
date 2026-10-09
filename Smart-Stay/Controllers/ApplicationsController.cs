@@ -101,21 +101,117 @@ namespace Smart_Stay.Controllers
         // ============================================================
         // REJECT
         // ============================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reject(int id)
+        public async Task<IActionResult> Reject(int id, string rejectionReason)
         {
             var landlordId = CurrentLandlordId();
+
             var application = await _context.RentalApplications
-                .FirstOrDefaultAsync(a => a.RentalApplicationId == id && a.LandlordId == landlordId);
+                .Include(a => a.Tenant)
+                    .ThenInclude(t => t.User)
+                .Include(a => a.Property)
+                .FirstOrDefaultAsync(a =>
+                    a.RentalApplicationId == id &&
+                    a.LandlordId == landlordId);
 
-            if (application == null) return NotFound();
+            if (application == null)
+                return NotFound();
 
+            if (application.RentalApplicationStatus != "Pending")
+            {
+                TempData["ErrorMessage"] =
+                    "Only pending applications can be rejected.";
+
+                return RedirectToAction(
+                    nameof(ManageApplications),
+                    new { status = "Pending" });
+            }
+
+            if (string.IsNullOrWhiteSpace(rejectionReason))
+            {
+                TempData["ErrorMessage"] =
+                    "Please provide a reason for rejecting the application.";
+
+                return RedirectToAction(
+                    nameof(ManageApplications),
+                    new { status = "Pending" });
+            }
+
+            // Save the rejection to the database
+            application.RejectionReason = rejectionReason.Trim();
             application.RentalApplicationStatus = "Rejected";
+
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Application rejected.";
-            return RedirectToAction(nameof(ManageApplications));
+            // Get the tenant and property details
+            string tenantEmail = application.Tenant.User.Email;
+            string tenantName = application.Tenant.User.FirstName;
+            string propertyTitle = application.Property.Title;
+            string reason = application.RejectionReason;
+
+            // Safely format values for HTML
+            string safeTenantName = System.Net.WebUtility.HtmlEncode(tenantName);
+            string safePropertyTitle = System.Net.WebUtility.HtmlEncode(propertyTitle);
+            string safeReason = System.Net.WebUtility.HtmlEncode(reason)
+                .Replace("\r\n", "<br>")
+                .Replace("\n", "<br>");
+
+            string subject = "Update on Your Smart Stay Rental Application";
+
+            string htmlBody = $@"
+        <div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+            <h2>Smart Stay - Application Update</h2>
+
+            <p>Dear {safeTenantName},</p>
+
+            <p>
+                Thank you for applying to rent
+                <strong>{safePropertyTitle}</strong>
+                through Smart Stay.
+            </p>
+
+            <p>
+                Unfortunately, your rental application was not successful.
+            </p>
+
+            <h3>Reason for rejection</h3>
+
+            <p>{safeReason}</p>
+
+            <p>
+                Thank you for your interest in Smart Stay.
+                You may continue browsing other available properties on our platform.
+            </p>
+
+            <p>Kind regards,<br>Smart Stay Team</p>
+        </div>";
+
+            // Send the email to the tenant
+            try
+            {
+                await _emailService.SendEmailAsync(
+                    tenantEmail,
+                    subject,
+                    htmlBody);
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] =
+                    "The application was rejected and saved, but the notification email could not be sent.";
+
+                return RedirectToAction(
+                    nameof(ManageApplications),
+                    new { status = "Pending" });
+            }
+
+            TempData["SuccessMessage"] =
+                "Application rejected successfully. The tenant has been notified by email.";
+
+            return RedirectToAction(
+                nameof(ManageApplications),
+                new { status = "Pending" });
         }
 
         // ============================================================

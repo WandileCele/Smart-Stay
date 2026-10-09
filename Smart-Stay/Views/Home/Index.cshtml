@@ -13,7 +13,23 @@
             <img src="~/images/download (3).jpg" />
             <h1>SMART STAY</h1>
         </div>
+        <div class="nav-center">
 
+            <button type="button"
+                    class="nav-toggle"
+                    id="navToggle"
+                    aria-label="Show menu links"
+                    aria-expanded="false"
+                    aria-controls="navLinks">
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="nav-links" id="navLinks">
+                <a asp-controller="Home" asp-action="Index">HOME</a>
+                <a asp-controller="Properties" asp-action="ViewAll">VIEW PROPERTIES</a>
+                <a asp-controller="Home" asp-action="About">ABOUT US</a>
+                <a asp-controller="Home" asp-action="Contact">CONTACT US</a>
+            </div>
+        </div>
         <div class="buttons">
 
             @if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -412,5 +428,26 @@
     }
 
     type();
+       const navToggle = document.getElementById("navToggle");
+    const navLinks = document.getElementById("navLinks");
+    const navCenter = document.querySelector(".nav-center");
 
+    function setNav(open) {
+        navLinks.classList.toggle("open", open);
+        navToggle.classList.toggle("open", open);
+        navToggle.setAttribute("aria-expanded", open);
+    }
+
+    navToggle.addEventListener("click", function () {
+        setNav(!navLinks.classList.contains("open"));
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!navCenter.contains(e.target)) setNav(false);
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") setNav(false);
+    });
+    
 </script>
