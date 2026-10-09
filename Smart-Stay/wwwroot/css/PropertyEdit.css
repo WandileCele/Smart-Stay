@@ -1,11 +1,14 @@
 ﻿
 .edit-property-page {
-    width: 85%;
-    max-width: 1100px;
-    margin: 40px auto 60px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 20px 48px 60px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: #222;
+    box-sizing: border-box;
 }
+
 body {
     background: #f3f6fa;
 }
@@ -15,8 +18,9 @@ body {
 }
 
     .edit-property-header h1 {
-        font-size: 2.4rem;
+        font-size: 2.2rem;
         margin-bottom: 8px;
+        font-weight: 800;
     }
 
     .edit-property-header p {
@@ -26,27 +30,21 @@ body {
     }
 
 
-/* =========================================================
-   CARDS
-========================================================= */
-
 .edit-card {
     background: #fff;
-    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
     padding: 28px 32px;
-    margin-bottom: 25px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+    box-shadow: none;
 }
 
     .edit-card h2 {
-        font-size: 1.35rem;
+        font-size: 1.25rem;
         margin: 0 0 20px;
+        font-weight: 700;
     }
 
-
-/* =========================================================
-   FORM
-========================================================= */
 
 .edit-form-grid {
     display: grid;
@@ -66,22 +64,26 @@ body {
 .edit-field label {
     font-weight: 600;
     margin-bottom: 7px;
+    font-size: 14px;
 }
 
 .edit-field input,
-.edit-field textarea {
+.edit-field textarea,
+.edit-field select {
     width: 100%;
     padding: 12px 14px;
     border: 1px solid #d8dce2;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 1rem;
     box-sizing: border-box;
     outline: none;
 }
 
     .edit-field input:focus,
-    .edit-field textarea:focus {
+    .edit-field textarea:focus,
+    .edit-field select:focus {
         border-color: #1857D6;
+        box-shadow: 0 0 0 3px rgba(24,87,214,0.12);
     }
 
 .edit-field textarea {
@@ -94,10 +96,6 @@ body {
     margin-top: 5px;
 }
 
-
-/* =========================================================
-   PHOTO HEADER
-========================================================= */
 
 .photo-section-header {
     display: flex;
@@ -113,6 +111,7 @@ body {
     .photo-section-header p {
         color: #777;
         margin: 0;
+        font-size: 14px;
     }
 
 .photo-count {
@@ -125,10 +124,6 @@ body {
 }
 
 
-/* =========================================================
-   EXISTING PHOTOS
-========================================================= */
-
 .existing-photo-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -137,7 +132,7 @@ body {
 
 .existing-photo-card {
     border: 1px solid #e1e4e8;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
     background: #fafafa;
 }
@@ -178,10 +173,6 @@ body {
 }
 
 
-/* =========================================================
-   ADD PHOTOS
-========================================================= */
-
 .section-description {
     color: #666;
     margin-top: -10px;
@@ -190,10 +181,11 @@ body {
 
 .upload-area {
     border: 2px dashed #cfd5dd;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 30px;
     text-align: center;
     background: #fafbfc;
+    position: relative;
 }
 
 .upload-label {
@@ -223,14 +215,12 @@ body {
 }
 
 .upload-area input[type="file"] {
-    margin-top: 15px;
-    max-width: 100%;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
 }
 
-
-/* =========================================================
-   SELECTED FILES
-========================================================= */
 
 .selected-files {
     margin-top: 15px;
@@ -250,9 +240,20 @@ body {
 }
 
 
-/* =========================================================
-   BUTTONS
-========================================================= */
+.rejection-message {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.rejection-reason {
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 12px;
+}
+
 
 .edit-actions {
     display: flex;
@@ -264,7 +265,7 @@ body {
 .save-button,
 .cancel-button {
     padding: 12px 25px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 1rem;
     font-weight: 600;
     text-decoration: none;
@@ -292,22 +293,15 @@ body {
     }
 
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+@media (max-width: 1024px) {
+    .edit-property-page {
+        padding: 20px 24px 50px;
+    }
+}
 
 @media (max-width: 850px) {
-
-    .edit-property-page {
-        width: 92%;
-    }
-
     .edit-form-grid {
         grid-template-columns: 1fr;
-    }
-
-    .edit-field-full {
-        grid-column: auto;
     }
 
     .existing-photo-grid {
@@ -316,7 +310,6 @@ body {
 }
 
 @media (max-width: 550px) {
-
     .edit-card {
         padding: 20px;
     }
@@ -337,8 +330,7 @@ body {
 
     .save-button,
     .cancel-button {
-        text-align: center;
         width: 100%;
-        box-sizing: border-box;
+        text-align: center;
     }
 }

@@ -2,15 +2,10 @@
     ViewData["Title"] = "Application Submitted";
 }
 @section Styles {
-    <link rel="stylesheet"
-          href="~/css/Success.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Success.css" asp-append-version="true" />
 }
 
-
-
-<div class="rental-page">
-
+<div class="success-page">
     <div class="success-card">
 
         <div class="success-icon">
@@ -20,19 +15,16 @@
         <h1 class="success-title">Application Submitted!</h1>
 
         <p class="success-message">
-            Your rental application (ID: <strong>@ViewBag.ApplicationId</strong>)
+            Your rental application (ID: <strong>@ViewBag.ApplicationId</strong>)<br />
             has been received and saved successfully.
         </p>
 
         <div class="success-actions">
-
-            <a class="submit-button"
-               target="_blank"
+            <a class="download-btn" target="_blank"
                href="@Url.Action("DownloadPdf", "RentalApplications", new { id = ViewBag.ApplicationId })">
                 <i class="bi bi-download"></i>
                 Download Confirmation PDF
             </a>
-
         </div>
 
         <a class="success-return-link" href="@Url.Action("Index", "Home")">
@@ -41,5 +33,4 @@
         </a>
 
     </div>
-
 </div>

@@ -1,253 +1,171 @@
 ﻿@model Smart_Stay.Models.RentalApplicationFormViewModel
-
 @{
     ViewData["Title"] = "Apply for Rental";
 }
-
 @section Styles {
-    <link rel="stylesheet"
-          href="~/css/RentalApplication.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/RentalApplication.css" asp-append-version="true" />
 }
 
-<div class="rental-page">
+<div class="container-fluid px-lg-5 mt-4">
 
-    <div class="form-card">
+    <a href="javascript:history.back()" class="back-link mb-3 d-inline-block">← Back</a>
 
-        <h1>APPLY FOR RENTAL</h1>
+    <div class="mb-4">
+        <h1 class="page-title">APPLY FOR RENTAL</h1>
+        <p class="property-name">Property: <strong>@Model.PropertyTitle</strong></p>
+    </div>
 
-        <p class="property-name">
-            Property:
-            <strong>@Model.PropertyTitle</strong>
-        </p>
+    <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
 
-        <div asp-validation-summary="ModelOnly" class="validation"></div>
+    <form asp-action="Apply" asp-controller="RentalApplications" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="PropertyId" />
 
-        <form asp-action="Apply"
-              asp-controller="RentalApplications"
-              method="post"
-              enctype="multipart/form-data">
+        <div class="row g-5">
+            <!-- LEFT: Personal -->
+            <div class="col-lg-6">
+                <div class="form-section">
+                    <h5>Personal Information</h5>
 
-            @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label asp-for="FirstName">First Name</label>
+                            <span class="required">*Required</span>
+                        </div>
+                        <input asp-for="FirstName" class="form-input" placeholder="Enter your first name" autocomplete="given-name" id="firstName" />
+                        <span asp-validation-for="FirstName" class="validation"></span>
+                    </div>
 
-            <input type="hidden" asp-for="PropertyId" />
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label asp-for="LastName">Last Name</label>
+                            <span class="required">*Required</span>
+                        </div>
+                        <input asp-for="LastName" class="form-input" placeholder="Enter your last name" autocomplete="family-name" id="lastName" />
+                        <span asp-validation-for="LastName" class="validation"></span>
+                    </div>
 
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label asp-for="IdNumber">ID Number</label>
+                            <span class="required">*Required</span>
+                        </div>
+                        <input asp-for="IdNumber" class="form-input" placeholder="Enter your 13-digit ID number" maxlength="13" inputmode="numeric" id="idNumber" />
+                        <span asp-validation-for="IdNumber" class="validation"></span>
+                    </div>
 
-            <!-- FIRST NAME -->
-            <div class="form-group">
-                <div class="label-row">
-                    <label asp-for="FirstName">First Name</label>
-                    <span class="required">*Required</span>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="label-row">
+                                    <label asp-for="PhoneNumber">Phone number</label>
+                                    <span class="required">*Required</span>
+                                </div>
+                                <input asp-for="PhoneNumber" class="form-input" placeholder="e.g. 0786739991" maxlength="10" inputmode="numeric" id="phoneNumber" />
+                                <span asp-validation-for="PhoneNumber" class="validation"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="label-row">
+                                    <label asp-for="Email">Email address</label>
+                                    <span class="required">*Required</span>
+                                </div>
+                                <input asp-for="Email" type="email" class="form-input" placeholder="e.g. example@gmail.com" autocomplete="email" />
+                                <span asp-validation-for="Email" class="validation"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label asp-for="Employment">Employment</label>
+                            <span class="required">*Required</span>
+                        </div>
+                        <input asp-for="Employment" class="form-input" placeholder="e.g. Data analyst" />
+                        <span asp-validation-for="Employment" class="validation"></span>
+                    </div>
                 </div>
-
-                <input asp-for="FirstName"
-                       class="form-input"
-                       placeholder="Enter your first name"
-                       autocomplete="given-name"
-                       id="firstName" />
-
-                <span asp-validation-for="FirstName" class="validation"></span>
             </div>
 
-
-            <!-- LAST NAME -->
-            <div class="form-group">
-                <div class="label-row">
-                    <label asp-for="LastName">Last Name</label>
-                    <span class="required">*Required</span>
-                </div>
-
-                <input asp-for="LastName"
-                       class="form-input"
-                       placeholder="Enter your last name"
-                       autocomplete="family-name"
-                       id="lastName" />
-
-                <span asp-validation-for="LastName" class="validation"></span>
-            </div>
-
-
-            <!-- ID NUMBER -->
-            <div class="form-group">
-                <div class="label-row">
-                    <label asp-for="IdNumber">ID Number</label>
-                    <span class="required">*Required</span>
-                </div>
-
-                <input asp-for="IdNumber"
-                       class="form-input"
-                       placeholder="Enter your 13-digit ID number"
-                       maxlength="13"
-                       inputmode="numeric"
-                       autocomplete="off"
-                       id="idNumber" />
-
-                <span class="validation" asp-validation-for="IdNumber"></span>
-            </div>
-
-
-            <!-- PHONE NUMBER -->
-            <div class="form-group">
-                <div class="label-row">
-                    <label asp-for="PhoneNumber">Phone number</label>
-                    <span class="required">*Required</span>
-                </div>
-
-                <input asp-for="PhoneNumber"
-                       class="form-input"
-                       placeholder="e.g. 0786739991"
-                       maxlength="10"
-                       inputmode="numeric"
-                       autocomplete="tel"
-                       id="phoneNumber" />
-
-                <span asp-validation-for="PhoneNumber" class="validation"></span>
-            </div>
-
-
-            <!-- EMAIL -->
-            <div class="form-group">
-                <div class="label-row">
-                    <label asp-for="Email">Email address</label>
-                    <span class="required">*Required</span>
-                </div>
-
-                <input asp-for="Email"
-                       type="email"
-                       class="form-input"
-                       placeholder="e.g. example@gmail.com"
-                       autocomplete="email" />
-
-                <span asp-validation-for="Email" class="validation"></span>
-            </div>
-
-
-            <!-- EMPLOYMENT -->
-            <div class="form-group">
-                <div class="label-row">
-                    <label asp-for="Employment">Employment</label>
-                    <span class="required">*Required</span>
-                </div>
-
-                <input asp-for="Employment"
-                       class="form-input"
-                       placeholder="e.g. Data analyst" />
-
-                <span asp-validation-for="Employment" class="validation"></span>
-            </div>
-            <!-- LEASE START DATE -->
-            <div class="form-group">
-                <div class="label-row">
-                    <label asp-for="LeaseStartDate">Lease start date</label>
-                    <span class="required">*Required</span>
-                </div>
-
-                <input asp-for="LeaseStartDate"
-                       type="date"
-                       class="form-input"
-                       min="@DateTime.Now.ToString("yyyy-MM-dd")"
-                       id="leaseStartDate" />
-
-                <span asp-validation-for="LeaseStartDate" class="validation"></span>
-            </div>
-
-
-            <!-- LEASE END DATE -->
-            <div class="form-group">
-                <div class="label-row">
-                    <label asp-for="LeaseEndDate">Lease end date</label>
-                    <span class="required">*Required</span>
-                </div>
-
-                <input asp-for="LeaseEndDate"
-                       type="date"
-                       class="form-input"
-                       min="@DateTime.Now.ToString("yyyy-MM-dd")"
-                       id="leaseEndDate" />
-
-                <span asp-validation-for="LeaseEndDate" class="validation"></span>
-            </div>
-
-
-            <!-- PAYSLIP -->
-            <div class="form-group payslip-group">
-                <div class="label-row">
-                    <label asp-for="Payslip">Upload payslip</label>
-                    <span class="required">*Required</span>
-                </div>
-
-                <div class="upload-box">
-                    <input asp-for="Payslip"
-                           type="file"
-                           accept=".pdf,application/pdf"
-                           id="payslipInput" />
-
-                    <div class="upload-content">
-                        <div class="upload-icon">&uarr;</div>
-                        <div id="uploadText">Click to upload or drag and drop</div>
-                        <small>PDF document up to 3MB</small>
+            <!-- RIGHT: Lease + Documents -->
+            <div class="col-lg-6">
+                <div class="form-section">
+                    <h5>Lease Details</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="label-row">
+                                    <label asp-for="LeaseStartDate">Lease start date</label>
+                                    <span class="required">*Required</span>
+                                </div>
+                                <input asp-for="LeaseStartDate" type="date" class="form-input" min="@DateTime.Now.ToString("yyyy-MM-dd")" id="leaseStartDate" />
+                                <span asp-validation-for="LeaseStartDate" class="validation"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="label-row">
+                                    <label asp-for="LeaseEndDate">Lease end date</label>
+                                    <span class="required">*Required</span>
+                                </div>
+                                <input asp-for="LeaseEndDate" type="date" class="form-input" min="@DateTime.Now.ToString("yyyy-MM-dd")" id="leaseEndDate" />
+                                <span asp-validation-for="LeaseEndDate" class="validation"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <span asp-validation-for="Payslip" class="validation"></span>
+                <div class="form-section">
+                    <h5>Supporting Documents</h5>
+                    <div class="form-group payslip-group">
+                        <div class="label-row">
+                            <label asp-for="Payslip">Upload payslip</label>
+                            <span class="required">*Required</span>
+                        </div>
+                        <div class="upload-box" id="payslipBox">
+                            <input asp-for="Payslip" type="file" accept=".pdf,application/pdf" id="payslipInput" />
+                            <div class="upload-content">
+                                <div class="upload-icon">↑</div>
+                                <div id="uploadText">Click to upload or drag and drop</div>
+                                <small>PDF document up to 3MB</small>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Payslip" class="validation"></span>
+                    </div>
+
+                    <div class="terms mt-4">
+                        <input asp-for="AcceptTerms" type="checkbox" id="acceptTerms" />
+                        <label asp-for="AcceptTerms">I Accept T's & C's</label>
+                    </div>
+                    <span asp-validation-for="AcceptTerms" class="validation"></span>
+
+                    <div class="buttons">
+                        <button type="submit" class="submit-button">Submit Application</button>
+                        <a href="javascript:history.back()" class="cancel-button">Cancel</a>
+                    </div>
+                </div>
             </div>
-
-
-            <!-- TERMS -->
-            <div class="terms">
-                <input asp-for="AcceptTerms" type="checkbox" id="acceptTerms" />
-                <label asp-for="AcceptTerms">Accept T's &amp; C's</label>
-            </div>
-            <span asp-validation-for="AcceptTerms" class="validation"></span>
-
-
-            <!-- BUTTONS -->
-            <div class="buttons">
-                <button type="submit" class="submit-button">
-                    Submit Application
-                </button>
-
-                <button type="reset" class="cancel-button">
-                    Cancel
-                </button>
-            </div>
-
-        </form>
-
-    </div>
-
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-
-  
     <partial name="_ValidationScriptsPartial" />
-
     <script>
-
-        // ==========================================
-        // ID NUMBER - NUMBERS ONLY
-        // ==========================================
+        // Only numbers for ID
         const idNumber = document.getElementById("idNumber");
-
         idNumber.addEventListener("input", function () {
             this.value = this.value.replace(/\D/g, '').slice(0, 13);
         });
 
-
-        // ==========================================
-        // PHONE NUMBER - NUMBERS ONLY
-        // ==========================================
+        // Only numbers for Phone
         const phoneNumber = document.getElementById("phoneNumber");
-
         phoneNumber.addEventListener("input", function () {
             this.value = this.value.replace(/\D/g, '').slice(0, 10);
         });
 
-
-        // ==========================================
-        // NAMES - LETTERS ONLY
-        // ==========================================
+        // Only letters for names
         const firstName = document.getElementById("firstName");
         const lastName = document.getElementById("lastName");
 
@@ -259,66 +177,69 @@
             this.value = this.value.replace(/[^A-Za-z\s'-]/g, '');
         });
 
-
-        // ==========================================
-        // PAYSLIP VALIDATION / PREVIEW
-        // ==========================================
+        // Payslip validation
         const payslipInput = document.getElementById("payslipInput");
         const uploadText = document.getElementById("uploadText");
+        const payslipBox = document.getElementById("payslipBox");
 
         payslipInput.addEventListener("change", function () {
+            if (this.files.length === 0) return;
 
-            if (this.files.length > 0) {
+            const file = this.files[0];
 
-                const file = this.files[0];
+            // Must be PDF
+            const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+            if (!isPdf) {
+                alert("Please upload a PDF payslip.");
+                this.value = "";
+                uploadText.textContent = "Click to upload or drag and drop";
+                payslipBox.classList.remove("has-file");
+                return;
+            }
 
-                // Check PDF
-                if (file.type !== "application/pdf" &&
-                    !file.name.toLowerCase().endsWith(".pdf")) {
+            // Max 3MB
+            if (file.size > 3 * 1024 * 1024) {
+                alert("Payslip must be 3MB or smaller.");
+                this.value = "";
+                uploadText.textContent = "Click to upload or drag and drop";
+                payslipBox.classList.remove("has-file");
+                return;
+            }
 
-                    alert("Please upload a PDF payslip.");
+            // Success
+            uploadText.textContent = file.name;
+            payslipBox.classList.add("has-file");
+        });
 
-                    this.value = "";
-                    uploadText.textContent =
-                        "Click to upload or drag and drop";
+        // Drag & Drop for payslip
+        payslipBox.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            payslipBox.classList.add("dragover");
+        });
 
-                    return;
-                }
+        payslipBox.addEventListener("dragleave", () => {
+            payslipBox.classList.remove("dragover");
+        });
 
-                // Check 3MB limit
-                if (file.size > 3 * 1024 * 1024) {
-
-                    alert("Payslip must be 3MB or smaller.");
-
-                    this.value = "";
-                    uploadText.textContent =
-                        "Click to upload or drag and drop";
-
-                    return;
-                }
-
-                // Show selected filename
-                uploadText.textContent = file.name;
+        payslipBox.addEventListener("drop", (e) => {
+            e.preventDefault();
+            payslipBox.classList.remove("dragover");
+            if (e.dataTransfer.files.length > 0) {
+                payslipInput.files = e.dataTransfer.files;
+                payslipInput.dispatchEvent(new Event('change'));
             }
         });
 
-
-        // ==========================================
-        // LEASE END DATE - CANNOT BE BEFORE START DATE
-        // ==========================================
-        const leaseStartDate =
-            document.getElementById("leaseStartDate");
-
-        const leaseEndDate =
-            document.getElementById("leaseEndDate");
+        // Lease end date cannot be before start date
+        const leaseStartDate = document.getElementById("leaseStartDate");
+        const leaseEndDate = document.getElementById("leaseEndDate");
 
         leaseStartDate.addEventListener("change", function () {
             leaseEndDate.min = this.value;
+            // If end date is before new start date, clear it
+            if (leaseEndDate.value && leaseEndDate.value < this.value) {
+                leaseEndDate.value = "";
+            }
         });
-
     </script>
-  
-
-}
-
 }

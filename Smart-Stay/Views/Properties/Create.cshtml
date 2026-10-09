@@ -1,394 +1,217 @@
 ﻿@model Smart_Stay.Models.PropertyCreateViewModel
-
 @{
     ViewData["Title"] = "Add Property";
 }
-
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="~/css/Property.css" asp-append-version="true" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin="" />
 
-<div class="container mt-5">
+<div class="container-fluid px-lg-5 mt-4">
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-
+        <div class="alert alert-success alert-dismissible fade show">
             <strong>Success!</strong> @TempData["SuccessMessage"]
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-            </button>
-
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
-    <div class="property-card">
-
-        <div class="property-header">
-            <a href="@Url.Action("Dashboard", "Landlord")" class="back-link">
-                ← Back
-            </a>
-
-            <h2>Add New Property</h2>
-
-            <p>Complete the information below to list your property.</p>
-
-        </div>
-
-        <form asp-action="Create"
-              method="post"
-              enctype="multipart/form-data">
-
-            <div class="mb-3">
-
-                <label asp-for="Title"></label>
-
-                <input asp-for="Title"
-                       class="form-control"
-                       placeholder="Enter property title" />
-
-                <span asp-validation-for="Title"
-                      class="text-danger"></span>
-
-            </div>
-
-            <div class="mb-3">
-
-                <label asp-for="Description"></label>
-
-                <textarea asp-for="Description"
-                          rows="5"
-                          class="form-control"
-                          placeholder="Describe your property"></textarea>
-
-                <span asp-validation-for="Description"
-                      class="text-danger"></span>
-
-            </div>
-
-            <div class="mb-3">
-
-                <label>Pin Your Property's Location</label>
-
-                <div style="position: relative;">
-                    <input type="text"
-                           id="address-search"
-                           class="form-control mb-2"
-                           autocomplete="off"
-                           placeholder="Search an address, or drag the pin on the map below" />
-
-                    <div id="address-suggestions"
-                         class="list-group"
-                         style="position:absolute; z-index:1000; width:100%; display:none; max-height:220px; overflow-y:auto;">
-                    </div>
-                </div>
-
-                <div id="property-map" style="height: 320px; border-radius: 8px;"></div>
-
-                <small class="text-muted d-block mt-1">Map data © OpenStreetMap contributors</small>
-
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Location"></label>
-                <select asp-for="Location" class="form-select">
-                    <option value="">Select Area</option>
-                    <option value="Walmer">Walmer</option>
-                    <option value="North End">North End</option>
-                    <option value="Humewood">Humewood</option>
-                    <option value="Summerstrand">Summerstrand</option>
-                    <option value="Newton Park">Newton Park</option>
-                    <option value="Central">Central</option>
-                </select>
-                <span asp-validation-for="Location" class="text-danger"></span>
-                <small id="area-warning" class="text-primary d-block">
-                    <strong>Notice:</strong> Your map location will be reviewed.
-                    If the location is found to be incorrect, your application may be rejected.
-                </small>
-            </div>
-
-            <div class="mb-3">
-
-                <label asp-for="Address"></label>
-
-                <input asp-for="Address"
-                       class="form-control"
-                       readonly
-                       placeholder="Drop or drag the pin above to auto-fill your address" />
-
-                <span asp-validation-for="Address"
-                      class="text-danger"></span>
-
-                <small id="address-manual-note" class="text-muted" style="display:none;">
-                    We couldn't recognize this exact location — please type the address manually.
-                    Your pin position will still be saved.
-                </small>
-
-            </div>
-
-            <input asp-for="Latitude" type="hidden" />
-            <input asp-for="Longitude" type="hidden" />
-
-            <div class="mb-3">
-
-                <label asp-for="Price"></label>
-
-                <div class="input-group">
-
-                    <span class="input-group-text">R</span>
-
-                    <input asp-for="Price"
-                           type="number"
-                           class="form-control numeric-input"
-                           placeholder="0.00"
-                           min="0"
-                           step="0.01"
-                           inputmode="decimal"
-                           onkeydown="blockInvalidNumberKeys(event, true)"
-                           oninput="clampNonNegative(this)" />
-
-                    <select name="pricePeriod" class="form-select" style="max-width: 150px;">
-                        <option value="per night">per night</option>
-                        <option value="per week">per week</option>
-                        <option value="per month" selected>per month</option>
-                    </select>
-
-                </div>
-
-                <small class="text-muted d-block mt-1">Enter the amount and choose how often it is charged.</small>
-
-                <span asp-validation-for="Price"
-                      class="text-danger"></span>
-
-            </div>
-
-            <div class="mb-3">
-
-                <label asp-for="PropertyType"></label>
-
-                <select asp-for="PropertyType"
-                        class="form-select">
-
-                    <option value="">Select Property Type</option>
-
-                    <option>Apartment</option>
-
-                    <option>House</option>
-
-                    <option>Flat</option>
-
-                    <option>Room</option>
-
-                    <option>Student Accommodation</option>
-
-                </select>
-
-                <span asp-validation-for="PropertyType"
-                      class="text-danger"></span>
-
-            </div>
-
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    <div class="mb-3">
-
-                        <label asp-for="Bedrooms"></label>
-
-                        <input asp-for="Bedrooms"
-                               type="number"
-                               class="form-control numeric-input"
-                               min="0"
-                               step="1"
-                               inputmode="numeric"
-                               onkeydown="blockInvalidNumberKeys(event, false)"
-                               oninput="clampNonNegative(this)" />
-                        <span asp-validation-for="Bedrooms" class="text-danger"></span>
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <div class="mb-3">
-
-                        <label asp-for="Bathrooms"></label>
-
-                        <input asp-for="Bathrooms"
-                               type="number"
-                               class="form-control numeric-input"
-                               min="0"
-                               step="1"
-                               inputmode="numeric"
-                               onkeydown="blockInvalidNumberKeys(event, false)"
-                               oninput="clampNonNegative(this)" />
-                        <span asp-validation-for="Bathrooms" class="text-danger"></span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="form-group">
-
-                <div class="label-row">
-                    <label asp-for="PropertyImages">📷 Property Images</label>
-                    <span class="required">*Required (min 3)</span>
-                </div>
-
-                <div class="upload-box" id="imagesBox">
-
-                    <input asp-for="PropertyImages"
-                           type="file"
-                           multiple
-                           accept=".jpg,.jpeg,.png"
-                           id="imagesInput" />
-
-                    <div class="upload-content">
-                        <div class="upload-icon">&uarr;</div>
-                        <div id="imagesUploadText">Click to upload or drag and drop</div>
-                        <small>JPG or PNG — upload at least 3 images</small>
-                    </div>
-
-                </div>
-
-                <span asp-validation-for="PropertyImages"
-                      class="text-danger"></span>
-
-            </div>
-
-            <div class="form-group">
-
-                <div class="label-row">
-                    <label asp-for="Affidavit">📄 Affidavit</label>
-                    <span class="required">*Required</span>
-                </div>
-
-                <div class="upload-box" id="affidavitBox">
-
-                    <input asp-for="Affidavit"
-                           type="file"
-                           accept=".pdf,application/pdf"
-                           id="affidavitInput" />
-
-                    <div class="upload-content">
-                        <div class="upload-icon">&uarr;</div>
-                        <div id="affidavitUploadText">Click to upload or drag and drop</div>
-                        <small>PDF document up to 3MB</small>
-                    </div>
-
-                </div>
-
-                <span asp-validation-for="Affidavit"
-                      class="text-danger"></span>
-
-            </div>
-
-            <button type="submit"
-                    class="btn btn-primary btn-lg w-100 mt-4">
-
-                Add Property
-
-            </button>
-
-        </form>
-
+    <a href="@Url.Action("Dashboard", "Landlord")" class="back-link mb-3 d-inline-block">
+        ← Back to Dashboard
+    </a>
+
+    <div class="mb-4">
+        <h2 class="fw-bold text-primary">Add New Property</h2>
+        <p class="text-muted">Complete the information below to list your property.</p>
     </div>
 
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="row g-5">
+
+           
+            <div class="col-lg-7">
+
+                <div class="form-section">
+                    <h5>Basic Info</h5>
+                    <div class="mb-3">
+                        <label asp-for="Title"></label>
+                        <input asp-for="Title" class="form-control form-control-lg" placeholder="Enter property title" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description"></label>
+                        <textarea asp-for="Description" rows="5" class="form-control" placeholder="Describe your property"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PropertyType"></label>
+                            <select asp-for="PropertyType" class="form-select">
+                                <option value="">Select Property Type</option>
+                                <option>Apartment</option>
+                                <option>House</option>
+                                <option>Flat</option>
+                                <option>Room</option>
+                                <option>Student Accommodation</option>
+                            </select>
+                            <span asp-validation-for="PropertyType" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Location"></label>
+                            <select asp-for="Location" id="Location" class="form-select">
+                                <option value="">Select Area</option>
+                                <option value="Walmer">Walmer</option>
+                                <option value="North End">North End</option>
+                                <option value="Humewood">Humewood</option>
+                                <option value="Summerstrand">Summerstrand</option>
+                                <option value="Newton Park">Newton Park</option>
+                                <option value="Central">Central</option>
+                            </select>
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h5>Pricing & Size</h5>
+                    <div class="mb-3">
+                        <label asp-for="Price"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">R</span>
+                            <input asp-for="Price" type="number" class="form-control" placeholder="0.00" min="0" step="0.01" />
+                            <select name="pricePeriod" class="form-select" style="max-width:150px;">
+                                <option>per night</option>
+                                <option>per week</option>
+                                <option selected>per month</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Bedrooms"></label>
+                            <input asp-for="Bedrooms" type="number" class="form-control" min="0" />
+                            <span asp-validation-for="Bedrooms" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Bathrooms"></label>
+                            <input asp-for="Bathrooms" type="number" class="form-control" min="0" />
+                            <span asp-validation-for="Bathrooms" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="mb-4">
+                        <div class="label-row">
+                            <label asp-for="PropertyImages">📷 Property Images</label>
+                            <span class="required">*Required (min 3)</span>
+                        </div>
+                        <div class="upload-box" id="imagesBox">
+                            <input asp-for="PropertyImages" type="file" multiple accept=".jpg,.jpeg,.png" id="imagesInput" />
+                            <div class="upload-content">
+                                <div class="upload-icon">↑</div>
+                                <div id="imagesUploadText">Click to upload or drag and drop</div>
+                                <small>JPG or PNG — at least 3 images</small>
+                            </div>
+                        </div>
+                        <span asp-validation-for="PropertyImages" class="text-danger"></span>
+                    </div>
+
+                    <div>
+                        <div class="label-row">
+                            <label asp-for="Affidavit">📄 Affidavit</label>
+                            <span class="required">*Required</span>
+                        </div>
+                        <div class="upload-box" id="affidavitBox">
+                            <input asp-for="Affidavit" type="file" accept=".pdf" id="affidavitInput" />
+                            <div class="upload-content">
+                                <div class="upload-icon">↑</div>
+                                <div id="affidavitUploadText">Click to upload or drag and drop</div>
+                                <small>PDF up to 3MB</small>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Affidavit" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 py-3">
+                    Add Property
+                </button>
+            </div>
+
+            <!-- RIGHT: Map -->
+            <div class="col-lg-5">
+                <div class="map-wrapper">
+                    <div class="form-section p-0">
+                        <div class="p-3">
+                            <label class="fw-bold">Pin Your Property's Location</label>
+                            <div style="position:relative;">
+                                <input type="text" id="address-search" class="form-control mb-2" autocomplete="off" placeholder="Search an address, or drag the pin on the map below" />
+                                <div id="address-suggestions" class="list-group" style="position:absolute; z-index:1000; width:100%; display:none; max-height:220px; overflow-y:auto;"></div>
+                            </div>
+                        </div>
+
+                        <div id="property-map" style="height:550px;"></div>
+
+                        <div class="p-3">
+                            <label asp-for="Address"></label>
+                            <input asp-for="Address" id="Address" class="form-control" readonly placeholder="Drag the pin to auto-fill address" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+
+                            <small id="address-manual-note" class="text-muted" style="display:none;">
+                                We couldn't recognize this location — please type it manually.
+                            </small>
+
+                            <small id="area-warning" class="text-primary d-block mt-2">
+                                <strong>Notice:</strong> Your map location will be reviewed. If incorrect, your application may be rejected.
+                            </small>
+
+                            <input asp-for="Latitude" type="hidden" id="Latitude" />
+                            <input asp-for="Longitude" type="hidden" id="Longitude" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 @section Scripts {
-
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
     <script>
-
-        window.setTimeout(function () {
-
-            var alert = document.querySelector(".alert");
-
+        
+        setTimeout(() => {
+            const alert = document.querySelector(".alert");
             if (alert) {
-                var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
                 bsAlert.close();
             }
-
         }, 4000);
 
-        function blockInvalidNumberKeys(event, allowDecimal) {
-
-            var blockedKeys = ["-", "+", "e", "E"];
-
-            if (!allowDecimal) {
-                blockedKeys.push(".");
-            }
-
-            var allowedControlKeys = [
-                "Backspace", "Delete", "Tab", "Escape", "Enter",
-                "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"
-            ];
-
-            if (allowedControlKeys.indexOf(event.key) !== -1) {
-                return;
-            }
-
-            if (blockedKeys.indexOf(event.key) !== -1 || /^[a-zA-Z]$/.test(event.key)) {
-                event.preventDefault();
-            }
-        }
-
-        function clampNonNegative(input) {
-
-            var isDecimal = input.step === "0.01";
-
-            var cleaned = isDecimal
-                ? input.value.replace(/[^0-9.]/g, "")
-                : input.value.replace(/[^0-9]/g, "");
-
-            input.value = cleaned;
-
-            if (input.value !== "" && parseFloat(input.value) < 0) {
-                input.value = 0;
-            }
-        }
-
+        
         function setupUploadBox(boxId, inputId, textId) {
+            const box = document.getElementById(boxId);
+            const input = document.getElementById(inputId);
+            const text = document.getElementById(textId);
+            if (!box ||!input ||!text) return;
 
-            var box = document.getElementById(boxId);
-            var input = document.getElementById(inputId);
-            var text = document.getElementById(textId);
-
-            if (!box || !input || !text) {
-                return;
-            }
-
-            var defaultText = text.textContent;
+            const defaultText = text.textContent;
 
             function updateText() {
-
                 if (input.files && input.files.length > 0) {
-
                     box.classList.add("has-files");
-
                     if (input.files.length === 1) {
                         text.textContent = input.files[0].name;
+                    } else {
+                        text.textContent = `${input.files.length} files selected`;
                     }
-                    else {
-                        text.textContent = input.files.length + " files selected";
-                    }
-                }
-                else {
+                } else {
                     box.classList.remove("has-files");
                     text.textContent = defaultText;
                 }
@@ -396,20 +219,19 @@
 
             input.addEventListener("change", updateText);
 
-            box.addEventListener("dragover", function (e) {
+            box.addEventListener("dragover", (e) => {
                 e.preventDefault();
                 box.classList.add("dragover");
             });
 
-            box.addEventListener("dragleave", function () {
+            box.addEventListener("dragleave", () => {
                 box.classList.remove("dragover");
             });
 
-            box.addEventListener("drop", function (e) {
+            box.addEventListener("drop", (e) => {
                 e.preventDefault();
                 box.classList.remove("dragover");
-
-                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                if (e.dataTransfer.files.length > 0) {
                     input.files = e.dataTransfer.files;
                     updateText();
                 }
@@ -419,7 +241,8 @@
         setupUploadBox("imagesBox", "imagesInput", "imagesUploadText");
         setupUploadBox("affidavitBox", "affidavitInput", "affidavitUploadText");
 
-        var ALLOWED_AREAS = {
+       
+        const ALLOWED_AREAS = {
             "walmer": "Walmer",
             "north end": "North End",
             "humewood": "Humewood",
@@ -428,14 +251,10 @@
             "central": "Central"
         };
 
-        var ALLOW_MANUAL_FALLBACK = false;
-
-        var DEFAULT_CENTER = [-33.9608, 25.6022];
-
-        var map, marker, searchDebounceTimer;
+        const DEFAULT_CENTER = [-33.9608, 25.6022];
+        let map, marker, searchTimer;
 
         function initPropertyMap() {
-
             map = L.map("property-map").setView(DEFAULT_CENTER, 12);
 
             L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -445,12 +264,12 @@
 
             marker = L.marker(DEFAULT_CENTER, { draggable: true }).addTo(map);
 
-            marker.on("dragend", function () {
-                var pos = marker.getLatLng();
+            marker.on("dragend", () => {
+                const pos = marker.getLatLng();
                 reverseGeocode(pos.lat, pos.lng);
             });
 
-            map.on("click", function (e) {
+            map.on("click", (e) => {
                 marker.setLatLng(e.latlng);
                 reverseGeocode(e.latlng.lat, e.latlng.lng);
             });
@@ -459,42 +278,36 @@
         }
 
         function setupAddressSearch() {
+            const input = document.getElementById("address-search");
+            const suggestionsBox = document.getElementById("address-suggestions");
 
-            var input = document.getElementById("address-search");
-            var suggestionsBox = document.getElementById("address-suggestions");
-
-            input.addEventListener("input", function () {
-
-                var query = input.value.trim();
-                clearTimeout(searchDebounceTimer);
+            input.addEventListener("input", () => {
+                const query = input.value.trim();
+                clearTimeout(searchTimer);
 
                 if (query.length < 3) {
                     suggestionsBox.style.display = "none";
                     return;
                 }
 
-                searchDebounceTimer = setTimeout(function () {
+                searchTimer = setTimeout(() => {
                     searchAddress(query, suggestionsBox);
                 }, 500);
             });
 
-            document.addEventListener("click", function (e) {
-                if (e.target !== input) {
+            document.addEventListener("click", (e) => {
+                if (e.target!== input) {
                     suggestionsBox.style.display = "none";
                 }
             });
         }
 
         function searchAddress(query, suggestionsBox) {
-
-            var url = "https://nominatim.openstreetmap.org/search"
-                + "?format=jsonv2&addressdetails=1&limit=5&countrycodes=za"
-                + "&q=" + encodeURIComponent(query);
+            const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&countrycodes=za&q=${encodeURIComponent(query)}`;
 
             fetch(url, { headers: { "Accept-Language": "en" } })
-                .then(function (res) { return res.json(); })
-                .then(function (results) {
-
+               .then(res => res.json())
+               .then(results => {
                     suggestionsBox.innerHTML = "";
 
                     if (!results || results.length === 0) {
@@ -502,15 +315,15 @@
                         return;
                     }
 
-                    results.forEach(function (place) {
-                        var item = document.createElement("button");
+                    results.forEach(place => {
+                        const item = document.createElement("button");
                         item.type = "button";
                         item.className = "list-group-item list-group-item-action";
                         item.textContent = place.display_name;
 
-                        item.addEventListener("click", function () {
-                            var lat = parseFloat(place.lat);
-                            var lon = parseFloat(place.lon);
+                        item.addEventListener("click", () => {
+                            const lat = parseFloat(place.lat);
+                            const lon = parseFloat(place.lon);
 
                             document.getElementById("address-search").value = place.display_name;
                             suggestionsBox.style.display = "none";
@@ -525,115 +338,80 @@
                     });
 
                     suggestionsBox.style.display = "block";
-                })
-                .catch(function (err) {
-                    console.error("Address search failed:", err);
                 });
         }
 
         function reverseGeocode(lat, lng) {
-
             document.getElementById("Latitude").value = lat;
             document.getElementById("Longitude").value = lng;
 
-            var url = "https://nominatim.openstreetmap.org/reverse"
-                + "?format=jsonv2&addressdetails=1&lat=" + lat + "&lon=" + lng;
+            const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=${lat}&lon=${lng}`;
 
             fetch(url, { headers: { "Accept-Language": "en" } })
-                .then(function (res) { return res.json(); })
-                .then(function (result) {
-
-                    if (result && result.address && !result.error) {
+               .then(res => res.json())
+               .then(result => {
+                    if (result && result.address &&!result.error) {
                         applyRecognizedResult(lat, lng, result);
-                    }
-                    else {
+                    } else {
                         applyUnrecognizedResult(lat, lng);
                     }
                 })
-                .catch(function (err) {
-                    console.error("Reverse geocode failed:", err);
+               .catch(() => {
                     applyUnrecognizedResult(lat, lng);
                 });
         }
 
         function applyRecognizedResult(lat, lng, place) {
-
             document.getElementById("Latitude").value = lat;
             document.getElementById("Longitude").value = lng;
 
-            var addressInput = document.getElementById("Address");
-            var manualNote = document.getElementById("address-manual-note");
+            const addressInput = document.getElementById("Address");
+            const manualNote = document.getElementById("address-manual-note");
 
             addressInput.value = place.display_name;
             addressInput.readOnly = true;
             manualNote.style.display = "none";
 
-            applyAreaMatch(matchAreaFromAddress(place.address || {}), lat, lng);
+            const matchedArea = matchAreaFromAddress(place.address || {});
+            const dropdown = document.getElementById("Location");
+
+            if (matchedArea) {
+                dropdown.value = matchedArea;
+            }
         }
 
         function applyUnrecognizedResult(lat, lng) {
+            const addressInput = document.getElementById("Address");
+            const manualNote = document.getElementById("address-manual-note");
 
-            var addressInput = document.getElementById("Address");
-            var manualNote = document.getElementById("address-manual-note");
-
-            console.warn("Nominatim did not recognize this pin.");
             addressInput.readOnly = false;
             addressInput.value = "";
             addressInput.placeholder = "Type the address for this location";
             manualNote.style.display = "block";
             addressInput.focus();
-
-            applyAreaMatch(null, lat, lng);
-        }
-
-        function applyAreaMatch(matchedArea, lat, lng) {
-
-            var dropdown = document.getElementById("Location");
-
-            // The area is decided by the address match only
-            var finalArea = matchedArea;
-
-            if (finalArea) {
-                dropdown.value = finalArea;
-            }
-            else {
-                if (!ALLOW_MANUAL_FALLBACK) {
-                    dropdown.value = "";
-                }
-            }
         }
 
         function matchAreaFromAddress(address) {
+            const keys = ["suburb", "neighbourhood", "city_district", "quarter", "town", "village"];
 
-            var candidateKeys = [
-                "suburb",
-                "neighbourhood",
-                "city_district",
-                "quarter",
-                "town",
-                "village"
-            ];
-
-            for (var i = 0; i < candidateKeys.length; i++) {
-                var value = address[candidateKeys[i]];
+            for (const key of keys) {
+                const value = address[key];
                 if (value && ALLOWED_AREAS[value.toLowerCase()]) {
                     return ALLOWED_AREAS[value.toLowerCase()];
                 }
             }
 
-            var allText = Object.keys(address)
-                .map(function (k) { return String(address[k]).toLowerCase(); })
-                .join(" ");
-
-            for (var key in ALLOWED_AREAS) {
-                if (allText.indexOf(key) !== -1) return ALLOWED_AREAS[key];
+            const allText = Object.values(address).join(" ").toLowerCase();
+            for (const areaKey in ALLOWED_AREAS) {
+                if (allText.includes(areaKey)) {
+                    return ALLOWED_AREAS[areaKey];
+                }
             }
 
             return null;
         }
 
+        
         initPropertyMap();
-
     </script>
-
 }

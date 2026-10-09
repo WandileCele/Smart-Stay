@@ -1,64 +1,78 @@
-﻿ 
-.pd-wrap {
-    --blue: #1857D6;
-    --text: #222;
-    --muted: #666;
-    --border: #E3E6EA;
-    width: 80%;
-    margin: 30px auto;
-    padding: 32px 40px 48px;
-    font-family: -apple-system, Segoe UI, Roboto, sans-serif;
-    font-size: 1.1rem;
-    color: var(--text);
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+﻿.pd-wrap, .pd-back-wrap {
+    display: none;
 }
+
 
 .pd-back {
     display: inline-block;
-    margin-bottom: 16px;
-    color: var(--blue);
+    color: #1857D6;
     text-decoration: none;
-    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 8px;
 }
 
     .pd-back:hover {
         text-decoration: underline;
     }
 
+.pd-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
 .pd-title {
-    font-size: 2.7rem;
+    font-size: 2.2rem;
+    font-weight: 800;
     margin: 0 0 4px;
-    color: var(--text);
 }
 
 .pd-sub {
-    color: var(--muted);
-    margin: 0 0 20px;
-    font-size: 1.15rem;
+    color: #666;
+    margin: 0;
+    font-size: 1.05rem;
 }
+
+.pd-view-map-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid #1857D6;
+    color: #1857D6;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+    .pd-view-map-btn:hover {
+        background: #1857D6;
+        color: #fff;
+    }
 
 .pd-image {
     width: 100%;
-    max-width: 700px;
-    height: 420px;
+    height: 520px;
     object-fit: cover;
-    border-radius: 6px;
-    border: 1px solid var(--border);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
     display: block;
 }
 
 .pd-noimg {
     width: 100%;
-    max-width: 700px;
-    height: 420px;
+    height: 520px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #F5F5F5;
-    color: var(--muted);
-    border-radius: 6px;
+    background: #f5f5f5;
+    color: #666;
+    border-radius: 12px;
 }
 
 .pd-slidebar {
@@ -66,130 +80,133 @@
     align-items: center;
     gap: 14px;
     margin-top: 12px;
-    max-width: 700px;
 }
 
 .pd-navbtn {
     background: #fff;
-    border: 1px solid var(--border);
-    color: var(--blue);
-    padding: 9px 18px;
-    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    color: #1857D6;
+    padding: 8px 16px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 1.05rem;
+    font-weight: 600;
 }
 
     .pd-navbtn:hover {
-        background: #F0F4FF;
+        background: #f0f4ff;
     }
 
 .pd-counter {
-    color: var(--muted);
-    font-size: 1.05rem;
+    color: #666;
+}
+
+
+.pd-info-sticky {
+    position: sticky;
+    top: 90px;
 }
 
 .pd-info {
-    margin-top: 28px;
-}
-.pd-info {
-    margin-top: 28px;
-    display: grid;
-    row-gap: 12px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
 }
 
 .pd-info-row {
     display: grid;
-    grid-template-columns: 180px 1fr;
-    column-gap: 20px;
-    align-items: start;
-    font-size: 15px;
+    grid-template-columns: 160px 1fr;
+    column-gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f5f9;
 }
+
+    .pd-info-row:last-child {
+        border-bottom: none;
+    }
 
 .pd-info-label {
     font-weight: 700;
     color: #222;
-    text-align: left;
+    font-size: 14px;
 }
 
 .pd-info-value {
-    color: #555;
-    text-align: left;
+    color: #475569;
+    font-size: 15px;
     line-height: 1.5;
 }
-    .pd-info p 
-    {
-        margin: 8px 0;
-        line-height: 1.5;
-        font-size: 1.05rem;
-    }
-
-    .pd-info strong {
-        color: var(--text);
-    }
 
 .pd-price {
-    color: var(--blue);
-    font-weight: 600;
+    color: #1857D6;
+    font-weight: 700;
+    font-size: 18px;
 }
 
 .pd-buttons {
     display: flex;
-    gap: 14px;
-    margin-top: 24px;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.pd-cta, .pd-cta-outline {
+    flex: 1;
+    text-align: center;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 15px;
 }
 
 .pd-cta {
-    display: inline-block;
-    background: var(--blue);
+    background: #1857D6;
     color: #fff;
-    padding: 14px 30px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 1.15rem;
-    font-weight: 600;
 }
 
     .pd-cta:hover {
         background: #123F9E;
         color: #fff;
     }
+
 .pd-cta-outline {
-    display: inline-block;
     background: #fff;
-    color: var(--blue);
-    border: 1px solid var(--blue);
-    padding: 13px 30px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 1.15rem;
-    font-weight: 600;
+    color: #1857D6;
+    border: 1px solid #1857D6;
 }
- .pd-cta-outline:hover {
-        background: #F0F4FF;
-        color: var(--blue);
+
+    .pd-cta-outline:hover {
+        background: #f0f4ff;
     }
+
+.pd-cta-disabled {
+    background: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 
 .pd-reviews {
     margin-top: 2rem;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid #e2e8f0;
     padding-top: 1.5rem;
 }
 
 .pd-reviews-title {
-    margin-bottom: 1rem;
     font-size: 1.2rem;
+    font-weight: 700;
 }
 
 .pd-review-item {
-    padding: 1rem 0;
-    border-bottom: 1px solid #eee;
+    padding: 16px 0;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .pd-review-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.4rem;
+    margin-bottom: 6px;
 }
 
 .pd-star-filled {
@@ -205,85 +222,67 @@
     color: #777;
 }
 
-.pd-review-comment {
-    margin: 0;
-    color: #333;
-}
-
 .pd-no-reviews {
     color: #777;
     font-style: italic;
 }
-.pd-cta-disabled {
-    display: inline-block;
-    background: #e5e7eb;
-    color: #6b7280;
-    cursor: not-allowed;
-    pointer-events: none;
-    text-align: center;
+
+
+.pd-map-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
 }
-/* =========================================================
-   PHONE LAYOUT
-========================================================= */
 
-@media (max-width: 768px) {
-
-    /* Use nearly the full screen width */
-    .pd-wrap {
-        width: 94%;
-        margin: 15px auto;
-        padding: 20px 16px 30px;
-        font-size: 1rem;
+    .pd-map-modal-overlay.active {
+        display: flex;
     }
 
-    .pd-title {
-        font-size: 1.8rem;
+.pd-map-modal {
+    background: #fff;
+    border-radius: 12px;
+    width: min(700px, 92vw);
+    overflow: hidden;
+}
+
+.pd-map-modal-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.pd-map-modal-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+#pdMap {
+    height: 420px;
+    width: 100%;
+}
+
+@media (max-width: 991px) {
+    .pd-image, .pd-noimg {
+        height: 360px;
     }
 
-    .pd-sub {
-        font-size: 1rem;
+    .pd-info-sticky {
+        position: static;
     }
 
-    /* Image scales to the screen */
-    .pd-image,
-    .pd-noimg {
-        max-width: 100%;
-        height: 240px;
-    }
-
-    .pd-slidebar {
-        max-width: 100%;
-        justify-content: space-between;
-    }
-
-    /* Stack label above value, full width */
     .pd-info-row {
         grid-template-columns: 1fr;
         row-gap: 4px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid #eee;
     }
 
-    .pd-info-label {
-        font-size: 14px;
-    }
-
-    .pd-info-value {
-        font-size: 15px;
-        line-height: 1.6;
-        overflow-wrap: anywhere;
-    }
-
-    /* Buttons fill the width neatly */
     .pd-buttons {
         flex-direction: column;
-    }
-
-    .pd-cta,
-    .pd-cta-outline,
-    .pd-cta-disabled {
-        text-align: center;
-        box-sizing: border-box;
-        width: 100%;
     }
 }
