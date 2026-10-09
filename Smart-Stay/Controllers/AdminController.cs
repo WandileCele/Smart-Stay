@@ -156,43 +156,42 @@ namespace Smart_Stay.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reject(
-            int id,
-            string reason)
+        public async Task<IActionResult> Reject(int id, string reason)
         {
-            var application =
-                await _context.ListingApplications
-                    .Include(a => a.Property)
-                    .Include(a => a.Landlord)
-                        .ThenInclude(l => l.User)
-                    .FirstOrDefaultAsync(a =>
-                        a.ListingApplicationId == id);
+            var application = await _context.ListingApplications
+                .Include(a => a.Property)
+                .Include(a => a.Landlord)
+                    .ThenInclude(l => l.User)
+                .FirstOrDefaultAsync(a =>
+                    a.ListingApplicationId == id);
 
             if (application == null)
-            {
                 return NotFound();
+
+            // Only pending listing applications can be rejected
+            if (application.ApplicationStatus != "Pending")
+            {
+                TempData["ErrorMessage"] =
+                    "Only pending listing applications can be rejected.";
+
+                return RedirectToAction(nameof(Dashboard));
             }
 
-            // Admin must provide a reason
+            // Validate the rejection reason
             if (string.IsNullOrWhiteSpace(reason))
             {
                 TempData["ErrorMessage"] =
                     "Please provide a reason for rejection.";
 
                 return RedirectToAction(
-                    "ApplicationDetails",
-                    new { id });
+                    nameof(ApplicationDetails), new { id });
             }
 
-            // ========================================================
-            // SAVE REJECTION
-            // ========================================================
+            reason = reason.Trim();
 
+            // Save rejection details
             application.ApplicationStatus = "Rejected";
-
-            // NEW:
-            // Save the rejection reason in the database
-            application.RejectionReason = reason.Trim();
+            application.RejectionReason = reason;
 
             if (application.Property != null)
             {
@@ -201,58 +200,86 @@ namespace Smart_Stay.Controllers
 
             await _context.SaveChangesAsync();
 
-            // ========================================================
-            // EMAIL LANDLORD
-            // ========================================================
+            // Get the landlord's email address
+            var landlordEmail = application.Landlord?.User?.Email;
 
-            var landlordEmail =
-                application.Landlord?.User?.Email;
-
-            if (!string.IsNullOrWhiteSpace(landlordEmail))
+            if (string.IsNullOrWhiteSpace(landlordEmail))
             {
-                var propertyTitle =
-                    application.Property?.Title
-                    ?? "your property";
+                TempData["ErrorMessage"] =
+                    "The listing was rejected and saved, but the landlord's email address could not be found.";
 
-                var landlordFirstName =
-                    application.Landlord?.User?.FirstName
-                    ?? "there";
+                return RedirectToAction(nameof(Dashboard));
+            }
 
-                var htmlBody = $@"
-                    <p>Hi {landlordFirstName},</p>
+            var propertyTitle =
+                application.Property?.Title ?? "your property";
 
-                    <p>
-                        Your property listing
-                        <strong>
-                            {System.Net.WebUtility.HtmlEncode(propertyTitle)}
-                        </strong>
-                        has been rejected by our admin team.
-                    </p>
+            var landlordFirstName =
+                application.Landlord?.User?.FirstName ?? "there";
 
-                    <p>
-                        <strong>Reason:</strong>
-                    </p>
+            // Encode user-provided values before placing them in HTML
+            var safeName =
+                System.Net.WebUtility.HtmlEncode(landlordFirstName);
 
-                    <blockquote>
-                        {System.Net.WebUtility.HtmlEncode(reason)}
-                    </blockquote>
+            var safeTitle =
+                System.Net.WebUtility.HtmlEncode(propertyTitle);
 
-                    <p>
-                        You're welcome to update your listing
-                        and resubmit it for review.
-                    </p>";
+            var safeReason =
+                System.Net.WebUtility.HtmlEncode(reason)
+                    .Replace("\r\n", "<br>")
+                    .Replace("\n", "<br>");
 
+            var subject = $"Listing Rejected - {propertyTitle}";
+
+            var htmlBody = $@"
+        <div style='font-family:Arial,sans-serif;line-height:1.6;color:#333;'>
+            <h2>Smart Stay - Listing Application Update</h2>
+
+            <p>Dear {safeName},</p>
+
+            <p>
+                Unfortunately, your property listing
+                <strong>{safeTitle}</strong>
+                has not been approved by the Smart Stay admin team.
+            </p>
+
+            <h3>Reason for rejection</h3>
+
+            <p>{safeReason}</p>
+
+            <p>
+                Please review the reason above and make any necessary
+                corrections before resubmitting your listing for review.
+            </p>
+
+            <p>
+                Kind regards,<br />
+                Smart Stay Team
+            </p>
+        </div>";
+
+            // Email failure must not undo the saved rejection
+            try
+            {
                 await _emailService.SendEmailAsync(
                     landlordEmail,
-                    $"Listing Rejected - {propertyTitle}",
+                    subject,
                     htmlBody);
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] =
+                    "The listing was rejected and saved, but the notification email could not be sent.";
+
+                return RedirectToAction(nameof(Dashboard));
             }
 
             TempData["SuccessMessage"] =
-                "Application rejected and landlord notified.";
+                "Listing rejected successfully. The landlord has been notified by email.";
 
             return RedirectToAction(nameof(Dashboard));
         }
+   
 
         // ============================================================
         // APPLICATION DETAILS

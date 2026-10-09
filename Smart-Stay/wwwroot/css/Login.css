@@ -221,3 +221,74 @@ label {
         color: #006ba1;
         text-decoration: underline;
     }
+
+/* MOBILE LOGIN LAYOUT */
+@@media screen and (max-width: 600px) {
+
+    .login-wrapper {
+        flex-direction: column;
+        width: 100%;
+        min-height: 100vh;
+        height: auto;
+    }
+
+    .login-left {
+        order: 1;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 28px 22px;
+    }
+
+    .login-right {
+        order: 2;
+        width: 100%;
+        min-width: 0;
+        min-height: 180px;
+        height: 180px;
+        box-sizing: border-box;
+        padding: 20px;
+    }
+
+    .login-left h2 {
+        font-size: 25px;
+    }
+
+    .login-left .subtext {
+        font-size: 14px;
+    }
+
+    .login-left form {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .login-left .input-group {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+        .login-left .input-group input {
+            min-width: 0;
+            font-size: 16px;
+        }
+
+    .login-left .btn-login {
+        width: 100%;
+        min-height: 48px;
+    }
+
+    .login-left .signup-text {
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .login-right .right-text h3 {
+        font-size: 22px;
+    }
+
+    .login-right .right-text p {
+        font-size: 12px;
+    }
+}

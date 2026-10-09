@@ -85,12 +85,11 @@
 /* =========================================================
    PROPERTY CONTAINER
 ========================================================= */
-
 .property-container {
     display: grid;
-    grid-template-columns: repeat(2, 550px);
-    gap: 25px;
-    justify-content: start;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 30px;
+    width: 100%;
 }
 /* =========================================================
    PROPERTY CARD
@@ -100,7 +99,7 @@
     position: relative;
     background: white;
     padding: 25px;
-    border-radius: 15px;
+    border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     transition: 0.3s;
 }
@@ -333,6 +332,24 @@
         transform: translateY(-2px);
     }
 
+.card-buttons {
+    display: flex;
+    flex-wrap: nowrap; /* keep all three on one line */
+    gap: 10px;
+}
+
+    .card-buttons .btn,
+    .card-buttons form {
+        flex: 1; /* each button takes an equal share */
+    }
+
+    .card-buttons .btn {
+        padding: 8px 6px; /* less side padding so the text fits */
+        font-size: 14px;
+        white-space: nowrap;
+        width: 100%;
+        text-align: center;
+    }
 
 /* =========================================================
    ALERT
@@ -369,5 +386,10 @@ html {
 
     .stat-card {
         width: 220px;
+    }
+}
+@media (max-width: 480px) {
+    .property-container {
+        grid-template-columns: 1fr;
     }
 }

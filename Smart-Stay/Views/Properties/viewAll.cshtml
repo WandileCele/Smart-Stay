@@ -7,7 +7,11 @@
 @section Styles {
 
     <style>
-
+        .browse-wrapper {
+            background: linear-gradient(180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100%);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
         /* =========================================================
                    PAGE
                 ========================================================= */
@@ -32,10 +36,11 @@
                 font-size: 32px;
                 font-weight: 700;
                 margin-bottom: 8px;
+                color:#ffffff;
             }
 
             .browse-header p {
-                color: #777;
+                color: rgba(255, 255, 255, 0.85);
                 font-size: 16px;
             }
 
@@ -281,11 +286,13 @@
             .no-results h2 {
                 font-size: 25px;
                 margin-bottom: 10px;
+                color: #ffffff;
             }
 
 
             .no-results p {
                 color: #777;
+                color: rgba(255, 255, 255, 0.8);
             }
 
         .active-filters-bar {
@@ -295,24 +302,33 @@
             gap: 15px;
             margin: -20px auto 30px;
             font-size: 14px;
-            color: #777;
+            color: rgba(255, 255, 255, 0.85);
         }
 
         .clear-filters-link {
-            color: #0087c9;
+            color: #ffffff;
             font-weight: 600;
             text-decoration: none;
             padding: 6px 14px;
-            border: 1px solid #0087c9;
+            border: 1px solid #ffffff;
             border-radius: 20px;
             transition: 0.2s;
         }
 
             .clear-filters-link:hover {
-                background: #0087c9;
-                color: white;
+                color: #ffffff; 
+                font-weight: 600;
+                text-decoration: none;
+                padding: 6px 14px;
+                border: 1px solid #ffffff; 
+                border-radius: 20px;
+                transition: 0.2s;
             }
 
+            .clear-filters-link:hover {
+                background: #ffffff;
+                color: #174a94;
+            }
 
         /* =========================================================
                    RESPONSIVE
@@ -366,7 +382,7 @@
     </style>
 }
 
-
+<div class="browse-wrapper">
 <div class="browse-page">
 
 
@@ -698,4 +714,5 @@
     }
 
 
+</div>
 </div>

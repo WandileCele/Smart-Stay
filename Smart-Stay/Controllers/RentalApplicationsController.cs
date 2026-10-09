@@ -5,12 +5,15 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using Smart_Stay.Data;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Smart_Stay.Models;
 using System.Security.Claims;
 
 namespace Smart_Stay.Controllers
 {
-    [Authorize(Roles = "Tenant")]
+    [Authorize]
     public class RentalApplicationsController : Controller
     {
         private readonly SmartDbContext _context;

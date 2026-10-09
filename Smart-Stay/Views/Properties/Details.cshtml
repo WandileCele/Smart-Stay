@@ -30,107 +30,117 @@
                 }
             </div>
 
-            @if (Model.ImagePaths.Any())
-            {
-                <img id="pdImage" class="pd-image" src="@Model.ImagePaths[0]" alt="@Model.Property.Title" />
-            }
-            else
-            {
-                <div class="pd-noimg">No images available</div>
-            }
-
-            @if (Model.ImagePaths.Count > 1)
-            {
-                <div class="pd-slidebar">
-                    <button type="button" id="pdPrev" class="pd-navbtn">« Prev</button>
-                    <span id="pdCounter" class="pd-counter">1 / @Model.ImagePaths.Count</span>
-                    <button type="button" id="pdNext" class="pd-navbtn">Next »</button>
-                </div>
-            }
-
-            <div class="pd-reviews mt-5">
-                <h2 class="pd-reviews-title">Reviews (@Model.Property.Reviews.Count)</h2>
-                @if (Model.Property.Reviews.Any())
-                {
-                    <div class="pd-reviews-list">
-                        @foreach (var review in Model.Property.Reviews.OrderByDescending(r => r.ReviewDate))
-                        {
-                            <div class="pd-review-item">
-                                <div class="pd-review-header">
-                                    <span class="pd-review-rating">
-                                        @for (int i = 1; i <= 5; i++)
-                                        {
-                                            <span class="@(i <= review.Rating ? "pd-star-filled" : "pd-star-empty")">&#9733;</span>
-                                        }
-                                    </span>
-                                    <span class="pd-review-date">@review.ReviewDate.ToString("dd MMM yyyy")</span>
-                                </div>
-                                <p class="pd-review-comment">@review.Comment</p>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <p class="pd-no-reviews">No reviews yet for this property.</p>
-                }
-            </div>
+    @if (Model.ImagePaths.Any())
+    {
+        <img id="pdImage" class="pd-image" src="@Model.ImagePaths[0]" alt="@Model.Property.Title" />
+    }
+    else
+    {
+        <div class="pd-noimg">No images available</div>
+    }
+    @if (Model.ImagePaths.Count > 1)
+    {
+        <div class="pd-slidebar">
+            <button type="button" id="pdPrev" class="pd-navbtn">&laquo; Prev</button>
+            <span id="pdCounter" class="pd-counter">1 / @Model.ImagePaths.Count</span>
+            <button type="button" id="pdNext" class="pd-navbtn">Next &raquo;</button>
         </div>
-
-        
-        <div class="col-lg-5">
-            <div class="pd-info-sticky">
-                <div class="pd-info">
-                    <div class="pd-info-row">
-                        <span class="pd-info-label">Description</span>
-                        <span class="pd-info-value">@cleanDescription</span>
-                    </div>
-                    @if (!string.IsNullOrWhiteSpace(Model.Property.Address))
-                    {
-                        <div class="pd-info-row">
-                            <span class="pd-info-label">Address</span>
-                            <span class="pd-info-value">@Model.Property.Address</span>
+    }
+    <div class="pd-info">
+        <div class="pd-info-row">
+            <span class="pd-info-label">Description:</span>
+            <span class="pd-info-value">@cleanDescription</span>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.Property.Address))
+        {
+            <div class="pd-info-row">
+                <span class="pd-info-label">Address:</span>
+                <span class="pd-info-value">@Model.Property.Address</span>
+            </div>
+        }
+        <div class="pd-info-row">
+            <span class="pd-info-label">Price:</span>
+            <span class="pd-info-value pd-price">
+                <span class="pd-info-value pd-price">
+                    R @Model.Property.Price.ToString("0.##") @period
+                </span>
+            </span>
+        </div>
+        <div class="pd-info-row">
+            <span class="pd-info-label">Bedrooms:</span>
+            <span class="pd-info-value">@Model.Property.Bedrooms</span>
+        </div>
+        <div class="pd-info-row">
+            <span class="pd-info-label">Bathrooms:</span>
+            <span class="pd-info-value">@Model.Property.Bathrooms</span>
+        </div>
+        <div class="pd-info-row">
+            <span class="pd-info-label">Status:</span>
+            <span class="pd-info-value">@Model.Property.Status</span>
+        </div>
+        <div class="pd-info-row">
+            <span class="pd-info-label">Total Applications:</span>
+            <span class="pd-info-value">@Model.Property.RentalApplications.Count()</span>
+        </div>
+    </div>
+    <div class="pd-reviews">
+        <h2 class="pd-reviews-title">Reviews (@Model.Property.Reviews.Count)</h2>
+        @if (Model.Property.Reviews.Any())
+        {
+            <div class="pd-reviews-list">
+                @foreach (var review in Model.Property.Reviews.OrderByDescending(r => r.ReviewDate))
+                {
+                    <div class="pd-review-item">
+                        <div class="pd-review-header">
+                            <span class="pd-review-rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <span class="@(i <= review.Rating ? "pd-star-filled" : "pd-star-empty")">&#9733;</span>
+                                }
+                            </span>
+                            <span class="pd-review-date">@review.ReviewDate.ToString("dd MMM yyyy")</span>
                         </div>
-                    }
-                    <div class="pd-info-row">
-                        <span class="pd-info-label">Price</span>
-                        <span class="pd-info-value pd-price">R @Model.Property.Price.ToString("0.##") @period</span>
+                        <p class="pd-review-comment">@review.Comment</p>
                     </div>
-                    <div class="pd-info-row">
-                        <span class="pd-info-label">Bedrooms</span>
-                        <span class="pd-info-value">@Model.Property.Bedrooms</span>
-                    </div>
-                    <div class="pd-info-row">
-                        <span class="pd-info-label">Bathrooms</span>
-                        <span class="pd-info-value">@Model.Property.Bathrooms</span>
-                    </div>
-                    <div class="pd-info-row">
-                        <span class="pd-info-label">Status</span>
-                        <span class="pd-info-value">@Model.Property.Status</span>
-                    </div>
-                    <div class="pd-info-row">
-                        <span class="pd-info-label">Total Applications</span>
-                        <span class="pd-info-value">@Model.Property.RentalApplications.Count()</span>
-                    </div>
-                </div>
-
-                <div class="pd-buttons">
-                    @if (Model.CanApply)
-                    {
-                        <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">
-                            Apply for this Property
-                        </a>
-                    }
-                    else
-                    {
-                        <span class="pd-cta pd-cta-disabled" title="@Model.ApplyBlockedReason">
-                            @Model.ApplyBlockedReason
-                        </span>
-                    }
-                    <a href="@Model.ReturnUrl" class="pd-cta-outline">Back</a>
-                </div>
+                }
             </div>
-        </div>
+        }
+        else
+        {
+            <p class="pd-no-reviews">No reviews yet for this property.</p>
+        }
+    </div>
+    <div class="pd-buttons">
+
+        @{
+            var currentRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            var loggedIn = User.Identity != null && User.Identity.IsAuthenticated;
+            var notTenant = loggedIn && currentRole != "Tenant";
+        }
+
+        @if (notTenant)
+        {
+            <a asp-controller="Account" asp-action="Login" class="pd-cta">
+                Apply
+            </a>
+        }
+        else if (Model.CanApply)
+        {
+            <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">
+                Apply
+            </a>
+        }
+        else
+        {
+            <span class="pd-cta pd-cta-disabled" title="@Model.ApplyBlockedReason">
+                @Model.ApplyBlockedReason
+            </span>
+        }
+
+        <a href="@Model.ReturnUrl" class="pd-cta-outline">
+            Back
+        </a>
+
     </div>
 </div>
 

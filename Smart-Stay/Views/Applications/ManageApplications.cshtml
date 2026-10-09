@@ -94,10 +94,13 @@
                         <button type="submit" class="btn-approve">Approve</button>
                     </form>
 
-                    <form asp-action="Reject" asp-route-id="@app.RentalApplicationId" method="post">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn-reject">Reject</button>
-                    </form>
+
+                    <button type="button"
+                            class="btn-reject"
+                            data-bs-toggle="modal"
+                            data-bs-target="#rejectModal-@app.RentalApplicationId">
+                        Reject
+                    </button>
 
                     <button type="button"
                             class="btn-info"
@@ -140,6 +143,62 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-warning">Send</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- REJECTION REASON MODAL -->
+        <div class="modal fade"
+             id="rejectModal-@app.RentalApplicationId"
+             tabindex="-1"
+             aria-hidden="true">
+
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <form asp-action="Reject"
+                          asp-route-id="@app.RentalApplicationId"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Reason for Rejection</h5>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <label class="form-label" for="reason-@app.RentalApplicationId">
+                                Please explain why you are rejecting this application.
+                            </label>
+
+                            <textarea id="reason-@app.RentalApplicationId"
+                                  name="rejectionReason"
+                                  class="form-control"
+                                  rows="4"
+                                  maxlength="1000"
+                                  placeholder="Enter rejection reason..."
+                                  required></textarea>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+
+                            <button type="submit" class="btn-reject">
+                                Confirm Rejection
+                            </button>
                         </div>
 
                     </form>
