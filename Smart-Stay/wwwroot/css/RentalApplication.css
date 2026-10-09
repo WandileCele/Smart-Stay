@@ -1,142 +1,130 @@
-﻿/* ==========================================
-   MAIN PAGE
-   ========================================== */
-
+﻿
 .rental-page {
-    min-height: 100vh;
-    padding: 35px 20px 50px;
-    background: #f7f9fc;
-    font-family: Arial, sans-serif;
-}
-
-.form-card {
     width: 100%;
-    max-width: 650px;
-    margin: 0 auto;
-    background: white;
-    padding: 35px 45px;
-    border-radius: 12px;
-    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-    box-sizing: border-box;
+    max-width: 100%;
+    min-height: auto;
+    padding: 0;
+    background: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-
-/* ==========================================
-   HEADING
-   ========================================== */
-
-.rental-page h1 {
+.back-link {
     color: #315a9b;
-    font-size: 25px;
-    font-weight: 700;
-    margin: 0 0 8px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.page-title {
+    color: #315a9b;
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0 0 6px;
 }
 
 .property-name {
     color: #555;
-    font-size: 14px;
-    margin: 0 0 28px;
+    font-size: 15px;
+    margin: 0;
 }
 
     .property-name strong {
         color: #222;
     }
 
+.form-section {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
 
-/* ==========================================
-   FORM GROUP
-   ========================================== */
+    .form-section h5 {
+        font-weight: 700;
+        margin-bottom: 18px;
+        color: #1e293b;
+    }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .label-row {
-    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 7px;
+    margin-bottom: 6px;
 }
 
     .label-row label {
         color: #315a9b;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 700;
     }
 
 .required {
     color: #d9534f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
 }
 
-
-/* ==========================================
-   INPUTS
-   ========================================== */
-
 .form-input {
     width: 100%;
-    height: 42px;
-    border: 1px solid #b8b8b8;
-    border-radius: 5px;
-    padding: 0 12px;
+    height: 44px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0 14px;
     font-size: 14px;
+    background: #fff;
     box-sizing: border-box;
-    background: white;
-    transition: border-color 0.2s, box-shadow 0.2s;
 }
-
-    .form-input::placeholder {
-        color: #aaa;
-    }
 
     .form-input:focus {
         outline: none;
         border-color: #4d8de3;
-        box-shadow: 0 0 0 2px rgba(77, 141, 227, 0.12);
+        box-shadow: 0 0 0 3px rgba(77,141,227,0.15);
     }
 
-
-/* ==========================================
-   VALIDATION
-   ========================================== */
-
 .validation {
-    display: block;
     color: #d9534f;
     font-size: 12px;
-    margin-top: 5px;
+    margin-top: 4px;
+    display: block;
 }
 
+.validation-summary {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 20px;
+}
 
-/* ==========================================
-   PAYSLIP
-   ========================================== */
-
+/* Upload box */
 .upload-box {
     width: 100%;
-    height: 135px;
-    border: 2px dashed #b8b8b8;
-    border-radius: 7px;
+    height: 140px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
     position: relative;
-    box-sizing: border-box;
     background: #fafafa;
-    transition: border-color 0.2s, background 0.2s;
+    transition: .2s;
 }
 
-    .upload-box:hover {
+    .upload-box:hover,
+    .upload-box.dragover {
         border-color: #4d8de3;
-        background: #f5f9ff;
+        background: #f0f7ff;
+    }
+
+    .upload-box.has-file {
+        border-color: #4d8de3;
+        background: #eff6ff;
     }
 
     .upload-box input[type="file"] {
         position: absolute;
-        width: 100%;
-        height: 100%;
-        left: 0;
-        top: 0;
+        inset: 0;
         opacity: 0;
         cursor: pointer;
         z-index: 2;
@@ -146,78 +134,69 @@
     position: absolute;
     width: 100%;
     text-align: center;
-    top: 20px;
-    color: #999;
+    top: 26px;
+    color: #64748b;
     pointer-events: none;
 }
 
 .upload-icon {
-    font-size: 34px;
-    color: #999;
-    margin-bottom: 5px;
+    font-size: 28px;
+    margin-bottom: 4px;
 }
 
 .upload-content div {
     font-size: 14px;
+    font-weight: 600;
 }
 
 .upload-content small {
-    display: block;
-    margin-top: 7px;
     font-size: 12px;
+    margin-top: 6px;
+    display: block;
 }
-
-
-/* ==========================================
-   TERMS
-   ========================================== */
 
 .terms {
     display: flex;
     align-items: center;
-    margin-top: 5px;
+    gap: 8px;
 }
 
     .terms input {
-        width: 17px;
-        height: 17px;
-        margin: 0 7px 0 0;
-        cursor: pointer;
+        width: 18px;
+        height: 18px;
     }
 
     .terms label {
+        font-weight: 700;
         color: #315a9b;
         font-size: 14px;
-        font-weight: 700;
-        cursor: pointer;
     }
-
-
-/* ==========================================
-   BUTTONS
-   ========================================== */
 
 .buttons {
     display: flex;
-    gap: 20px;
-    margin-top: 25px;
+    gap: 12px;
+    margin-top: 24px;
 }
 
 .submit-button,
 .cancel-button {
     flex: 1;
-    height: 45px;
-    border: none;
-    border-radius: 25px;
-    color: white;
+    height: 48px;
+    border-radius: 10px;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    transition: 0.2s;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 
 .submit-button {
     background: #4d8de3;
+    color: #fff;
+    border: none;
 }
 
     .submit-button:hover {
@@ -225,33 +204,17 @@
     }
 
 .cancel-button {
-    background: #c7c3c1;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
 }
 
     .cancel-button:hover {
-        background: #aaa6a4;
+        background: #f8fafc;
     }
 
-
-
-
-
-/* ==========================================
-   MOBILE
-   ========================================== */
-
-@media (max-width: 700px) {
-
-    .rental-page {
-        padding: 20px 10px;
-    }
-
-    .form-card {
-        padding: 25px 20px;
-    }
-
-    .buttons {
-        flex-direction: column;
-        gap: 10px;
+@media (max-width: 991px) {
+    .form-section {
+        padding: 20px;
     }
 }
