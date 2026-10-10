@@ -11,7 +11,9 @@
     
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <a asp-controller="Landlord" asp-action="Dashboard" class="back-link">← Back to Dashboard</a>
+            <a href="@Url.Action("Dashboard", "Landlord")" class="back-button">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
             <h1 class="fw-bold text-primary mt-2">Edit Property</h1>
             <p class="text-muted m-0">Update your property information and manage its photos.</p>
         </div>

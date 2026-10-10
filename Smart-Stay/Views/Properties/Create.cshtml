@@ -15,8 +15,8 @@
         </div>
     }
 
-    <a href="@Url.Action("Dashboard", "Landlord")" class="back-link mb-3 d-inline-block">
-        ← Back to Dashboard
+    <a href="@Url.Action("Dashboard", "Landlord")" class="back-button">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
     </a>
 
     <div class="mb-4">
@@ -134,9 +134,11 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 py-3">
-                    Add Property
-                </button>
+                <div class="pb-5 mb-4">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 py-3">
+                        Add Property
+                    </button>
+                </div>
             </div>
 
             <!-- RIGHT: Map -->

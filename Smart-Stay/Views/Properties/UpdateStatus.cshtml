@@ -8,8 +8,8 @@
 
 <div class="container-fluid px-lg-5 mt-4">
 
-    <a asp-controller="Landlord" asp-action="Dashboard" class="back-link mb-3 d-inline-block">
-        ← Back to Dashboard
+    <a href="@Url.Action("Dashboard", "Landlord")" class="back-button">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
     </a>
 
     <div class="status-header-simple mb-4">
