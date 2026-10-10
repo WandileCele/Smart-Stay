@@ -1,97 +1,104 @@
-﻿/* ===== PAGE ===== */
+﻿
+
 .profile-page {
-    min-height: 100vh;
-    background: linear-gradient(180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100%);
-    padding: 24px 5vw 80px;
-    font-family: Arial, sans-serif;
-}
-
-.profile-form {
-    max-width: 760px;
+    width: 92%;
+    max-width: 1250px;
     margin: 0 auto;
+    min-height: auto;
+    background: transparent;
+    padding: 10px 0 50px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* ===== BACK BUTTON ===== */
 .back-button {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin: 8px 0 20px;
-    padding: 10px 22px;
-    background: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    border: 1.5px solid rgba(255, 255, 255, 0.7);
-    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
     font-weight: 600;
-    font-size: 15px;
     text-decoration: none;
-    position: relative;
-    z-index: 10;
-    transition: background .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+    margin-bottom: 20px;
+    transition: all 0.2s;
 }
 
     .back-button:hover {
-        background: #ffffff;
-        color: #2563eb;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+        background: #f1f5f9;
+        border-color: #94a3b8;
+        color: #0f172a;
+        text-decoration: none;
     }
 
-.back-arrow {
-    display: inline-block;
-    transition: transform .2s ease;
+    .back-button i {
+        font-size: 16px;
+    }
+
+.back-link {
+    color: #3f5570;
+    text-decoration: none;
+    font-weight: 500;
 }
 
-.back-button:hover .back-arrow {
-    transform: translateX(-4px);
+.page-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #3f5570;
+    margin: 0 0 6px;
 }
 
-/* ===== SUCCESS MESSAGE ===== */
+/* Cards - still clean, no heavy shadow */
+.profile-card {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: none;
+}
+
 .success-message {
-    width: fit-content;
-    margin: 0 auto 24px;
-    color: #15803d;
-    font-size: 16px;
-    font-weight: 600;
-    background: #dcfce7;
-    padding: 12px 18px;
+    width: 100%;
+    color: #166534;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 12px 16px;
     border-radius: 10px;
+    font-weight: 600;
 }
 
     .success-message span {
-        font-size: 22px;
-        margin-left: 10px;
+        margin-left: 8px;
     }
 
-/* ===== PHOTO (centered) ===== */
-.profile-hero {
+.profile-image-section {
     text-align: center;
-    margin-bottom: 28px;
+    margin-bottom: 10px;
 }
 
 .profile-image-container {
-    width: 170px;
-    height: 170px;
-    margin: 0 auto 16px;
+    width: 130px;
+    height: 130px;
     position: relative;
-}
-
-.profile-image,
-.default-profile {
-    width: 100%;
-    height: 100%;
     border-radius: 50%;
-    border: 3px solid #ffffff;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
-    box-sizing: border-box;
+    overflow: hidden;
+    border: 2px solid #e2e8f0;
+    margin: 0 auto;
 }
 
 .profile-image {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     display: block;
 }
 
 .default-profile {
+    width: 100%;
+    height: 100%;
     background: linear-gradient(to bottom, #dce7ed 0%, #dce7ed 55%, #c4d957 55%, #c4d957 100%);
     display: flex;
     justify-content: center;
@@ -99,7 +106,7 @@
 }
 
     .default-profile i {
-        font-size: 85px;
+        font-size: 60px;
         color: #3f5570;
     }
 
@@ -109,38 +116,25 @@
 
 .image-upload-overlay {
     position: absolute;
-    right: 8px;
-    bottom: 8px;
-    width: 42px;
-    height: 42px;
-    background: #2563eb;
+    right: 6px;
+    bottom: 6px;
+    width: 34px;
+    height: 34px;
+    background: #5478aa;
     color: #fff;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border: 3px solid #fff;
-    transition: transform .2s ease, background .2s ease;
-}
-
-    .image-upload-overlay:hover {
-        background: #1d4ed8;
-        transform: scale(1.08);
-    }
-
-.profile-hero h1 {
-    margin: 0 0 4px;
-    color: #fff;
-    font-size: 28px;
-    font-weight: 800;
+    border: 2px solid #fff;
 }
 
 .upload-photo-text {
     display: block;
-    color: rgba(255, 255, 255, .8);
-    font-size: 14px;
-    font-weight: 400;
+    margin-top: 12px;
+    color: #3f5570;
+    font-weight: 600;
     cursor: pointer;
 }
 
@@ -148,44 +142,11 @@
     display: none;
 }
 
-/* ===== SECTION CARDS ===== */
-.profile-section {
-    background: #fff;
-    border-radius: 16px;
-    padding: 26px 28px;
-    margin-bottom: 22px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
-}
-
-    .profile-section h5 {
-        margin: 0 0 4px;
-        font-weight: 700;
-        color: #2563eb;
-    }
-
-.section-note {
-    margin: 0 0 6px;
-    color: #6b7280;
-    font-size: 13px;
-}
-
-.field-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px 20px;
-    margin-top: 16px;
-}
-
-/* ===== FIELDS ===== */
 .form-group {
-    margin-bottom: 14px;
+    margin-bottom: 18px;
 }
 
     .form-group label {
-        display: block;
-        margin-bottom: 6px;
-        color: #1f2937;
-        font-size: 13px;
         font-weight: 600;
         color: #334155;
         font-size: 14px;
@@ -197,29 +158,26 @@
     width: 100%;
     height: 44px;
     box-sizing: border-box;
-    border: 1px solid #d7dae1;
+    border: 1px solid #cbd5e1;
     border-radius: 10px;
-    padding: 10px 14px;
+    padding: 0 14px;
     font-size: 15px;
-    color: #1f2937;
     background: #fff;
-    transition: border-color .2s, box-shadow .2s;
 }
 
     .form-control:focus {
+        border-color: #5478aa;
+        box-shadow: 0 0 0 3px rgba(84,120,170,0.15);
         outline: none;
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
     }
 
-/* ===== PASSWORD ===== */
 .password-wrapper {
     position: relative;
     width: 100%;
 }
 
     .password-wrapper .password-input {
-        padding-right: 50px;
+        padding-right: 44px;
     }
 
 .toggle-password {
@@ -231,48 +189,29 @@
     background: transparent;
     font-size: 18px;
     cursor: pointer;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    color: #6b7280;
+    color: #64748b;
 }
 
-    .toggle-password:hover {
-        color: #2563eb;
-    }
-
-/* requirements as chips */
 .password-requirements {
+    margin-top: 10px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 6px;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .password-requirement {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
-    padding: 5px 12px;
-    border-radius: 999px;
-    transition: background .2s, color .2s;
+    font-size: 13px;
 }
 
     .password-requirement.invalid {
-        background: #fee2e2;
-        color: #b91c1c;
+        color: #dc2626;
     }
 
     .password-requirement.valid {
-        background: #dcfce7;
-        color: #15803d;
-    }
-
-    .password-requirement i {
-        font-size: 13px;
+        color: #16a34a;
     }
 
 .validation-error {
@@ -280,86 +219,57 @@
     font-size: 13px;
     margin-top: 4px;
     display: block;
-    margin-top: 5px;
-    color: #d9534f;
-    font-size: 13px;
 }
 
-/* ===== BUTTONS ===== */
 .profile-buttons {
     display: flex;
-    justify-content: flex-end;
-    gap: 14px;
-    margin-top: 8px;
+    gap: 12px;
+    margin-top: 24px;
 }
 
-.submit-button,
-.cancel-button {
-    height: 50px;
-    min-width: 180px;
-    border-radius: 999px;
-    font-size: 16px;
+.submit-button, .cancel-button {
+    flex: 1;
+    height: 46px;
+    border-radius: 10px;
     font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    transition: all .2s ease;
+    border: none;
+    font-size: 15px;
 }
 
 .submit-button {
-    background: #2563eb;
+    background: #5478aa;
     color: #fff;
-    border: 2px solid #2563eb;
 }
 
     .submit-button:hover {
-        background: #1d4ed8;
-        border-color: #1d4ed8;
-        transform: translateY(-1px);
+        background: #3f6599;
     }
 
 .cancel-button {
-    background: transparent;
-    color: #fff;
-    border: 2px solid rgba(255, 255, 255, .7);
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
 }
 
     .cancel-button:hover {
-        background: #fff;
-        color: #2563eb;
+        background: #f8fafc;
     }
 
-/* ===== PHONE ===== */
-@media (max-width: 600px) {
+@media (max-width: 991px) {
     .profile-page {
-        padding: 16px 16px 60px;
+        width: 94%;
     }
 
-    .profile-image-container {
-        width: 140px;
-        height: 140px;
-    }
-
-    .profile-section {
-        padding: 22px 18px;
-    }
-
-    .field-grid {
-        grid-template-columns: 1fr;
+    .profile-card {
+        padding: 22px;
     }
 
     .profile-buttons {
-        flex-direction: column-reverse;
-    }
-
-    .submit-button,
-    .cancel-button {
-        width: 100%;
+        flex-direction: column;
     }
 }

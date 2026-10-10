@@ -4,7 +4,7 @@
 }
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="~/css/Property.css" asp-append-version="true" />
-<div class="property-page">
+
 <div class="container-fluid px-lg-5 mt-4">
 
     @if (TempData["SuccessMessage"] != null)
@@ -15,173 +15,168 @@
         </div>
     }
 
-        <a href="@Url.Action("Dashboard", "Landlord")" class="back-to-dashboard">
-            <span class="back-arrow">←</span> Back to Dashboard
-        </a>
+    <a href="@Url.Action("Dashboard", "Landlord")" class="back-button">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
 
     <div class="mb-4">
-        <h2 class="fw-bold text-white">Add New Property</h2>
-        <p class="text-white">Complete the information below to list your property.</p>
+        <h2 class="fw-bold text-primary">Add New Property</h2>
+        <p class="text-muted">Complete the information below to list your property.</p>
     </div>
 
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div class="property-layout">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="row g-5">
 
-                <!-- 1. BASIC INFO + PRICING & SIZE -->
-                <div class="area-info">
+           
+            <div class="col-lg-7">
 
-                    <div class="form-section">
-                        <h5>Basic Info</h5>
-                        <div class="mb-3">
-                            <label asp-for="Title"></label>
-                            <input asp-for="Title" class="form-control form-control-lg" placeholder="Enter property title" />
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Description"></label>
-                            <textarea asp-for="Description" rows="5" class="form-control" placeholder="Describe your property"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="PropertyType"></label>
-                                <select asp-for="PropertyType" class="form-select">
-                                    <option value="">Select Property Type</option>
-                                    <option>Apartment</option>
-                                    <option>House</option>
-                                    <option>Flat</option>
-                                    <option>Room</option>
-                                    <option>Student Accommodation</option>
-                                </select>
-                                <span asp-validation-for="PropertyType" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Location"></label>
-                                <select asp-for="Location" id="Location" class="form-select">
-                                    <option value="">Select Area</option>
-                                    <option value="Walmer">Walmer</option>
-                                    <option value="North End">North End</option>
-                                    <option value="Humewood">Humewood</option>
-                                    <option value="Summerstrand">Summerstrand</option>
-                                    <option value="Newton Park">Newton Park</option>
-                                    <option value="Central">Central</option>
-                                </select>
-                                <span asp-validation-for="Location" class="text-danger"></span>
-                            </div>
-                        </div>
+                <div class="form-section">
+                    <h5>Basic Info</h5>
+                    <div class="mb-3">
+                        <label asp-for="Title"></label>
+                        <input asp-for="Title" class="form-control form-control-lg" placeholder="Enter property title" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
-
-                    <div class="form-section">
-                        <h5>Pricing & Size</h5>
-                        <div class="mb-3">
-                            <label asp-for="Price"></label>
-                            <div class="input-group">
-                                <span class="input-group-text">R</span>
-                                <input asp-for="Price" type="number" class="form-control" placeholder="0.00" min="0" step="0.01" />
-                                <select name="pricePeriod" class="form-select" style="max-width:150px;">
-                                    <option>per night</option>
-                                    <option>per week</option>
-                                    <option selected>per month</option>
-                                </select>
-                            </div>
-                            <span asp-validation-for="Price" class="text-danger"></span>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Bedrooms"></label>
-                                <input asp-for="Bedrooms" type="number" class="form-control" min="0" />
-                                <span asp-validation-for="Bedrooms" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Bathrooms"></label>
-                                <input asp-for="Bathrooms" type="number" class="form-control" min="0" />
-                                <span asp-validation-for="Bathrooms" class="text-danger"></span>
-                            </div>
-                        </div>
+                    <div class="mb-3">
+                        <label asp-for="Description"></label>
+                        <textarea asp-for="Description" rows="5" class="form-control" placeholder="Describe your property"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
-
-                </div>
-
-                <!-- 2. MAP -->
-                <div class="area-map">
-                    <div class="map-wrapper">
-                        <div class="form-section p-0">
-                            <div class="p-3">
-                                <label class="fw-bold">Pin Your Property's Location</label>
-                                <div style="position:relative;">
-                                    <input type="text" id="address-search" class="form-control mb-2" autocomplete="off" placeholder="Search an address, or drag the pin on the map below" />
-                                    <div id="address-suggestions" class="list-group" style="position:absolute; z-index:1000; width:100%; display:none; max-height:220px; overflow-y:auto;"></div>
-                                </div>
-                            </div>
-
-                            <div id="property-map" style="height:550px;"></div>
-
-                            <div class="p-3">
-                                <label asp-for="Address"></label>
-                                <input asp-for="Address" id="Address" class="form-control" readonly placeholder="Drag the pin to auto-fill address" />
-                                <span asp-validation-for="Address" class="text-danger"></span>
-
-                                <small id="address-manual-note" class="text-muted" style="display:none;">
-                                    We couldn't recognize this location — please type it manually.
-                                </small>
-
-                                <small id="area-warning" class="text-primary d-block mt-2">
-                                    <strong>Notice:</strong> Your map location will be reviewed. If incorrect, your application may be rejected.
-                                </small>
-
-                                <input asp-for="Latitude" type="hidden" id="Latitude" />
-                                <input asp-for="Longitude" type="hidden" id="Longitude" />
-                            </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PropertyType"></label>
+                            <select asp-for="PropertyType" class="form-select">
+                                <option value="">Select Property Type</option>
+                                <option>Apartment</option>
+                                <option>House</option>
+                                <option>Flat</option>
+                                <option>Room</option>
+                                <option>Student Accommodation</option>
+                            </select>
+                            <span asp-validation-for="PropertyType" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Location"></label>
+                            <select asp-for="Location" id="Location" class="form-select">
+                                <option value="">Select Area</option>
+                                <option value="Walmer">Walmer</option>
+                                <option value="North End">North End</option>
+                                <option value="Humewood">Humewood</option>
+                                <option value="Summerstrand">Summerstrand</option>
+                                <option value="Newton Park">Newton Park</option>
+                                <option value="Central">Central</option>
+                            </select>
+                            <span asp-validation-for="Location" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. IMAGES + AFFIDAVIT + SUBMIT -->
-                <div class="area-uploads">
-
-                    <div class="form-section">
-                        <div class="mb-4">
-                            <div class="label-row">
-                                <label asp-for="PropertyImages">📷 Property Images</label>
-                                <span class="required">*Required (min 3)</span>
-                            </div>
-                            <div class="upload-box" id="imagesBox">
-                                <input asp-for="PropertyImages" type="file" multiple accept=".jpg,.jpeg,.png" id="imagesInput" />
-                                <div class="upload-content">
-                                    <div class="upload-icon">↑</div>
-                                    <div id="imagesUploadText">Click to upload or drag and drop</div>
-                                    <small>JPG or PNG — at least 3 images</small>
-                                </div>
-                            </div>
-                            <span asp-validation-for="PropertyImages" class="text-danger"></span>
+                <div class="form-section">
+                    <h5>Pricing & Size</h5>
+                    <div class="mb-3">
+                        <label asp-for="Price"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">R</span>
+                            <input asp-for="Price" type="number" class="form-control" placeholder="0.00" min="0" step="0.01" />
+                            <select name="pricePeriod" class="form-select" style="max-width:150px;">
+                                <option>per night</option>
+                                <option>per week</option>
+                                <option selected>per month</option>
+                            </select>
                         </div>
-
-                        <div>
-                            <div class="label-row">
-                                <label asp-for="Affidavit">📄 Affidavit/Title Deed</label>
-                                <span class="required">*Required</span>
-                            </div>
-                            <div class="upload-box" id="affidavitBox">
-                                <input asp-for="Affidavit" type="file" accept=".pdf" id="affidavitInput" />
-                                <div class="upload-content">
-                                    <div class="upload-icon">↑</div>
-                                    <div id="affidavitUploadText">Click to upload or drag and drop</div>
-                                    <small>PDF up to 3MB</small>
-                                </div>
-                            </div>
-                            <span asp-validation-for="Affidavit" class="text-danger"></span>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Bedrooms"></label>
+                            <input asp-for="Bedrooms" type="number" class="form-control" min="0" />
+                            <span asp-validation-for="Bedrooms" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Bathrooms"></label>
+                            <input asp-for="Bathrooms" type="number" class="form-control" min="0" />
+                            <span asp-validation-for="Bathrooms" class="text-danger"></span>
                         </div>
                     </div>
+                </div>
 
-                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 py-3 submit-btn">
+                <div class="form-section">
+                    <div class="mb-4">
+                        <div class="label-row">
+                            <label asp-for="PropertyImages">📷 Property Images</label>
+                            <span class="required">*Required (min 3)</span>
+                        </div>
+                        <div class="upload-box" id="imagesBox">
+                            <input asp-for="PropertyImages" type="file" multiple accept=".jpg,.jpeg,.png" id="imagesInput" />
+                            <div class="upload-content">
+                                <div class="upload-icon">↑</div>
+                                <div id="imagesUploadText">Click to upload or drag and drop</div>
+                                <small>JPG or PNG — at least 3 images</small>
+                            </div>
+                        </div>
+                        <span asp-validation-for="PropertyImages" class="text-danger"></span>
+                    </div>
+
+                    <div>
+                        <div class="label-row">
+                            <label asp-for="Affidavit">📄 Affidavit</label>
+                            <span class="required">*Required</span>
+                        </div>
+                        <div class="upload-box" id="affidavitBox">
+                            <input asp-for="Affidavit" type="file" accept=".pdf" id="affidavitInput" />
+                            <div class="upload-content">
+                                <div class="upload-icon">↑</div>
+                                <div id="affidavitUploadText">Click to upload or drag and drop</div>
+                                <small>PDF up to 3MB</small>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Affidavit" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="pb-5 mb-4">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 py-3">
                         Add Property
                     </button>
-
                 </div>
-
             </div>
-        </form>
-</div>
+
+            <!-- RIGHT: Map -->
+            <div class="col-lg-5">
+                <div class="map-wrapper">
+                    <div class="form-section p-0">
+                        <div class="p-3">
+                            <label class="fw-bold">Pin Your Property's Location</label>
+                            <div style="position:relative;">
+                                <input type="text" id="address-search" class="form-control mb-2" autocomplete="off" placeholder="Search an address, or drag the pin on the map below" />
+                                <div id="address-suggestions" class="list-group" style="position:absolute; z-index:1000; width:100%; display:none; max-height:220px; overflow-y:auto;"></div>
+                            </div>
+                        </div>
+
+                        <div id="property-map" style="height:550px;"></div>
+
+                        <div class="p-3">
+                            <label asp-for="Address"></label>
+                            <input asp-for="Address" id="Address" class="form-control" readonly placeholder="Drag the pin to auto-fill address" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+
+                            <small id="address-manual-note" class="text-muted" style="display:none;">
+                                We couldn't recognize this location — please type it manually.
+                            </small>
+
+                            <small id="area-warning" class="text-primary d-block mt-2">
+                                <strong>Notice:</strong> Your map location will be reviewed. If incorrect, your application may be rejected.
+                            </small>
+
+                            <input asp-for="Latitude" type="hidden" id="Latitude" />
+                            <input asp-for="Longitude" type="hidden" id="Longitude" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -420,6 +415,5 @@
 
         
         initPropertyMap();
-        setTimeout(() => map.invalidateSize(), 300);
     </script>
 }
