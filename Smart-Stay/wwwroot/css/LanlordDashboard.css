@@ -4,11 +4,12 @@
 ========================================================= */
 .dashboard {
     padding: 30px;
-    background: linear-gradient( 180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100% );
+    background: #f5f7fb;
     min-height: 100vh;
 }
+
 .dashboard h2 {
-    color: #ffffff;
+    color: #1f2937;
     font-size: 32px;
     margin-bottom: 30px;
 }
@@ -78,23 +79,6 @@
 
     .btn-primary:hover {
         background: #1d4ed8;
-    }
-/* Add Property button only */
-    .add-property-btn {
-    background: #ffffff;
-    color: #2563eb;
-    border: 2px solid #ffffff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    }
-
-    .add-property-btn:hover {
-        background: #2563eb;
-        color: #ffffff;
-        border-color: #2563eb;
     }
 
 
@@ -263,8 +247,8 @@
     position: fixed;
     top: 20px;
     left: 20px;
-    background: #ffffff;
-    color: black;
+    background: #0d6efd;
+    color: white;
     border: none;
     border-radius: 8px;
     padding: 10px 15px;
@@ -272,11 +256,6 @@
     cursor: pointer;
     z-index: 1000;
 }
-    .menu-toggle:hover {
-        background: #2563eb;
-        color: #ffffff;
-        border-color: #2563eb;
-    }
 
 
 /* =========================================================

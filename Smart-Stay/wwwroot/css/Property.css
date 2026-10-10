@@ -10,7 +10,7 @@
 .form-section {
     background: #fff;
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 24px;
     margin-bottom: 24px;
 }
@@ -64,8 +64,8 @@ label {
     font-size: 14px;
 }
 
-.form-control, .form-select{
-    border-radius: 8px;
+.form-control, .form-select {
+    border-radius: 10px;
     padding: 11px 14px;
 }
 
@@ -122,127 +122,18 @@ label {
     font-size: 12px;
     font-weight: 600;
 }
-/* Background from site.css */
-.property-page {
-    background: linear-gradient(180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100%);
-    min-height: 100vh;
-    padding-top: 24px;
-    padding-bottom: 80px; /* space between the button and the footer */
-}
 
-    .property-page a.text-white:hover {
-        text-decoration: underline !important;
-        color: #ffffff;
-    }
 
-/* ---------- Base layout (phone first) ---------- */
-.property-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    row-gap: 1.5rem;
-}
-
-.area-info,
-.area-map,
-.area-uploads {
-    min-width: 0;
-}
-
-.map-wrapper {
-    position: static; /* overrides the sticky rule at the top of the file */
-}
-
-.submit-btn {
+.btn-primary.btn-lg.w-100 {
     margin-bottom: 40px;
 }
 
-/* ---------- Desktop ---------- */
-@media (min-width: 992px) {
-    .property-layout {
-        grid-template-columns: 7fr 5fr;
-        grid-template-areas:
-            "info    map"
-            "uploads uploads";
-        column-gap: 3rem;
-        align-items: stretch;
-    }
-    .area-info .form-section:last-child {
-        margin-bottom: 0;
-    }
-    .area-info {
-        grid-area: info;
-    }
-
-    .area-map {
-        grid-area: map;
-    }
-
-    .area-uploads {
-        grid-area: uploads;
-    }
-
-    .area-map,
-    .area-map .map-wrapper,
-    .area-map .map-wrapper .form-section {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        height: 100%;
-        margin-bottom: 0;
-    }
-
-        .area-map #property-map {
-            flex: 1;
-            height: auto !important;
-            min-height: 350px;
-        }
-
-    .area-uploads .form-section {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 2rem;
-    }
-
-        .area-uploads .form-section .mb-4 {
-            margin-bottom: 0 !important;
-        }
-}
-
-/* ---------- Tablet and phone ---------- */
 @media (max-width: 991px) {
-    .area-map #property-map {
-        height: 380px !important;
-    }
-}
-.back-to-dashboard {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin: 8px 0 20px;
-    padding: 10px 22px;
-    background: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    border: 1.5px solid rgba(255, 255, 255, 0.7);
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 15px;
-    text-decoration: none;
-    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-    .back-to-dashboard:hover {
-        background: #ffffff;
-        color: #2563eb;
-        text-decoration: none;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+    .map-wrapper {
+        position: static;
     }
 
-.back-arrow {
-    display: inline-block;
-    transition: transform 0.2s ease;
-}
-
-.back-to-dashboard:hover .back-arrow {
-    transform: translateX(-4px);
+    .container-fluid.px-lg-5.mt-4 {
+        padding-bottom: 100px !important;
+    }
 }
