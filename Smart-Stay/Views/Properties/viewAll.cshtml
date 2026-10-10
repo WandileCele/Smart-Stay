@@ -218,27 +218,33 @@
             font-size: 21px;
             font-weight: 700;
             margin: 20px 20px 12px;
-            color: #222;
+            color: #0F172A;
         }
 
 
         .card p {
             margin: 8px 20px;
-            color: #777;
-            font-size: 14px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: #1F2937;
         }
 
-
             .card p i {
+                width: 20px;
                 margin-right: 6px;
+                font-size: 15px;
+                text-align: center;
+                color: #0087c9; /* every icon the same blue */
             }
 
 
         #money {
-            color: #0087c9;
-            font-size: 19px;
-            font-weight: 700;
-            margin-top: 15px;
+            margin-top: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1F2937;
         }
 
 
@@ -259,17 +265,32 @@
                 font-size: 17px;
             }
 
+        .star {
+            width: 18px;
+            height: 18px;
+            display: inline-block;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            background: #d1d5db; /* empty */
+        }
 
-            .rating span {
-                margin-left: 7px;
-                font-size: 13px;
-                color: #777;
+            .star.full {
+                background: #f5b301;
             }
 
+            .star.half {
+                background: linear-gradient(90deg, #f5b301 50%, #d1d5db 50%);
+            }
 
-        .no-rating {
-            color: #999 !important;
-            margin-left: 0 !important;
+        .rating span {
+            margin-left: 7px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        .rating .no-rating {
+            margin-left: 0;
+            color: #6b7280;
         }
 
 
@@ -627,61 +648,40 @@
 
 
                         <!-- RATING -->
+                        
+                            <div class="rating">
 
-                        <div class="rating">
-
-                            @if (item.AverageRating.HasValue)
-                            {
-
-                                var fullStars =
-                                (int)Math.Floor(
-                                item.AverageRating.Value
-                                );
-
-                                var hasHalfStar =
-                                item.AverageRating.Value - fullStars >= 0.5;
-
-
-                                @for (int i = 1; i <= 5; i++)
+                                @if (item.AverageRating.HasValue)
                                 {
+                                    var fullStars = (int)Math.Floor(item.AverageRating.Value);
+                                    var hasHalfStar = item.AverageRating.Value - fullStars >= 0.5;
 
-                                    if (i <= fullStars)
+                                    for (int i = 1; i <= 5; i++)
                                     {
-                                        <i class="fa-solid fa-star"></i>
-                                    }
-                                    else if (i == fullStars + 1 && hasHalfStar)
-                                    {
-                                        <i class="fa-solid fa-star-half-stroke"></i>
-                                    }
-                                    else
-                                    {
-                                        <i class="fa-regular fa-star"></i>
+                                        if (i <= fullStars)
+                                        {
+                                            <span class="star full"></span>
+                                        }
+                                        else if (i == fullStars + 1 && hasHalfStar)
+                                        {
+                                            <span class="star half"></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="star"></span>
+                                        }
                                     }
 
+                                    <span>
+                                        @item.AverageRating.Value.ToString("0.0") (@item.ReviewCount)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="no-rating">☆ No ratings yet</span>
                                 }
 
-
-                                <span>
-
-                                    @item.AverageRating.Value.ToString("0.0")
-                                    (@item.ReviewCount)
-
-                                </span>
-
-                            }
-                            else
-                            {
-
-                                <span class="no-rating">
-
-                                    ☆ No ratings yet
-
-                                </span>
-
-                            }
-
-                        </div>
-
+                            </div>
 
                     </div>
 

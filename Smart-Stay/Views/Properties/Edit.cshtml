@@ -6,22 +6,20 @@
     <link rel="stylesheet" href="~/css/PropertyEdit.css" asp-append-version="true" />
 }
 
-<div class="container-fluid px-lg-5 mt-4">
+<div class="edit-page">
 
-    
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <a href="@Url.Action("Dashboard", "Landlord")" class="back-button">
-                <i class="bi bi-arrow-left"></i> Back to Dashboard
-            </a>
-            <h1 class="fw-bold text-primary mt-2">Edit Property</h1>
-            <p class="text-muted m-0">Update your property information and manage its photos.</p>
-        </div>
+    <a asp-controller="Landlord" asp-action="Dashboard" class="back-button">
+        <span class="back-arrow">←</span> Back to Dashboard
+    </a>
+
+    <div class="edit-heading">
+        <h1>Edit Property</h1>
+        <p>Update your property information and manage its photos.</p>
     </div>
 
     @if (Model.IsRejected)
     {
-        <div class="rejection-message mb-4">
+        <div class="rejection-message">
             <h3>Application Rejected</h3>
             <p>Your property listing was rejected by the Admin. Please make the necessary changes and resubmit.</p>
             @if (!string.IsNullOrWhiteSpace(Model.RejectionReason))
@@ -37,127 +35,128 @@
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="PropertyId" />
 
-        <div class="row g-5">
-            
-            <div class="col-lg-7">
-                <div class="edit-card">
-                    <h2>Property Information</h2>
-                    <div class="edit-form-grid">
-                        <div class="edit-field">
-                            <label asp-for="Title">Title</label>
-                            <input asp-for="Title" class="form-control" />
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                        </div>
-                        <div class="edit-field">
-                            <label asp-for="Location">Location</label>
-                            <select asp-for="Location" class="form-select">
-                                <option>Walmer</option>
-                                <option>North End</option>
-                                <option>Humewood</option>
-                                <option>Summerstrand</option>
-                                <option>Newton Park</option>
-                                <option>Central</option>
-                            </select>
-                            <span asp-validation-for="Location" class="text-danger"></span>
-                        </div>
-                        <div class="edit-field">
-                            <label asp-for="Price">Price (R per month)</label>
-                            <input asp-for="Price" type="number" step="0.01" class="form-control" />
-                            <span asp-validation-for="Price" class="text-danger"></span>
-                        </div>
-                        <div class="edit-field">
-                            <label asp-for="PropertyType">Property Type</label>
-                            <select asp-for="PropertyType" class="form-select">
-                                <option>Apartment</option>
-                                <option>House</option>
-                                <option>Flat</option>
-                                <option>Room</option>
-                                <option>Student Accommodation</option>
-                            </select>
-                            <span asp-validation-for="PropertyType" class="text-danger"></span>
-                        </div>
-                        <div class="edit-field">
-                            <label asp-for="Bedrooms">Bedrooms</label>
-                            <input asp-for="Bedrooms" type="number" class="form-control" min="0" />
-                            <span asp-validation-for="Bedrooms" class="text-danger"></span>
-                        </div>
-                        <div class="edit-field">
-                            <label asp-for="Bathrooms">Bathrooms</label>
-                            <input asp-for="Bathrooms" type="number" class="form-control" min="0" />
-                            <span asp-validation-for="Bathrooms" class="text-danger"></span>
-                        </div>
-                        <div class="edit-field edit-field-full">
-                            <label asp-for="Description">Description</label>
-                            <textarea asp-for="Description" rows="5" class="form-control"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
+        <div class="edit-layout">
 
-                <div class="edit-actions">
-                    <a asp-controller="Landlord" asp-action="Dashboard" class="cancel-button">Cancel</a>
-                    @if (Model.IsRejected)
-                    {
-                        <button type="submit" formaction="@Url.Action("Resubmit", "Properties")" class="save-button">
-                            Resubmit Application
-                        </button>
-                    }
-                    else
-                    {
-                        <button type="submit" class="save-button">Save Changes</button>
-                    }
+            <!-- TOP LEFT: property information -->
+            <div class="edit-card">
+                <h2>Property Information</h2>
+                <div class="edit-form-grid">
+                    <div class="edit-field">
+                        <label asp-for="Title">Title</label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="edit-field">
+                        <label asp-for="Location">Location</label>
+                        <select asp-for="Location" class="form-select">
+                            <option>Walmer</option>
+                            <option>North End</option>
+                            <option>Humewood</option>
+                            <option>Summerstrand</option>
+                            <option>Newton Park</option>
+                            <option>Central</option>
+                        </select>
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+                    <div class="edit-field">
+                        <label asp-for="Price">Price (R per month)</label>
+                        <input asp-for="Price" type="number" step="0.01" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="edit-field">
+                        <label asp-for="PropertyType">Property Type</label>
+                        <select asp-for="PropertyType" class="form-select">
+                            <option>Apartment</option>
+                            <option>House</option>
+                            <option>Flat</option>
+                            <option>Room</option>
+                            <option>Student Accommodation</option>
+                        </select>
+                        <span asp-validation-for="PropertyType" class="text-danger"></span>
+                    </div>
+                    <div class="edit-field">
+                        <label asp-for="Bedrooms">Bedrooms</label>
+                        <input asp-for="Bedrooms" type="number" class="form-control" min="0" />
+                        <span asp-validation-for="Bedrooms" class="text-danger"></span>
+                    </div>
+                    <div class="edit-field">
+                        <label asp-for="Bathrooms">Bathrooms</label>
+                        <input asp-for="Bathrooms" type="number" class="form-control" min="0" />
+                        <span asp-validation-for="Bathrooms" class="text-danger"></span>
+                    </div>
+                    <div class="edit-field edit-field-full">
+                        <label asp-for="Description">Description</label>
+                        <textarea asp-for="Description" rows="5" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
 
-            
-            <div class="col-lg-5">
-                <div class="edit-card">
-                    <div class="photo-section-header">
-                        <div>
-                            <h2>Current Photos</h2>
-                            <p>Select the photos you want to delete.</p>
-                        </div>
-                        <span class="photo-count">@Model.ExistingImages.Count photo(s)</span>
+            <!-- TOP RIGHT: current photos -->
+            <div class="edit-card">
+                <div class="photo-section-header">
+                    <div>
+                        <h2>Current Photos</h2>
+                        <p>Select the photos you want to delete.</p>
                     </div>
+                    <span class="photo-count">@Model.ExistingImages.Count photo(s)</span>
+                </div>
 
-                    @if (Model.ExistingImages.Any())
-                    {
-                        <div class="existing-photo-grid">
-                            @for (int i = 0; i < Model.ExistingImages.Count; i++)
-                            {
-                                <div class="existing-photo-card">
-                                    <img src="@Model.ExistingImages[i].ImagePath" alt="Property photo @(i + 1)" />
-                                    <div class="photo-delete">
-                                        <input type="checkbox" name="ImagesToDelete" value="@Model.ExistingImages[i].DocumentId" id="delete-@Model.ExistingImages[i].DocumentId" />
-                                        <label for="delete-@Model.ExistingImages[i].DocumentId">Delete photo</label>
-                                    </div>
+                @if (Model.ExistingImages.Any())
+                {
+                    <div class="existing-photo-grid">
+                        @for (int i = 0; i < Model.ExistingImages.Count; i++)
+                        {
+                            <div class="existing-photo-card">
+                                <img src="@Model.ExistingImages[i].ImagePath" alt="Property photo @(i + 1)" />
+                                <div class="photo-delete">
+                                    <input type="checkbox" name="ImagesToDelete" value="@Model.ExistingImages[i].DocumentId" id="delete-@Model.ExistingImages[i].DocumentId" />
+                                    <label for="delete-@Model.ExistingImages[i].DocumentId">Delete photo</label>
                                 </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="no-existing-photos">
-                            <p>No photos are currently attached.</p>
-                        </div>
-                    }
-                </div>
-
-                <div class="edit-card">
-                    <h2>Add More Photos</h2>
-                    <p class="section-description">Select one or more new photos to add.</p>
-                    <div class="upload-area">
-                        <label for="NewImages" class="upload-label">
-                            <span class="upload-icon">+</span>
-                            <span>Choose Photos</span>
-                            <small>You can select multiple images</small>
-                        </label>
-                        <input type="file" id="NewImages" name="NewImages" accept="image/*" multiple />
+                            </div>
+                        }
                     </div>
-                    <div id="selected-files" class="selected-files"></div>
-                </div>
+                }
+                else
+                {
+                    <div class="no-existing-photos">
+                        <p>No photos are currently attached.</p>
+                    </div>
+                }
             </div>
+
+            <!-- FULL WIDTH: add more photos -->
+            <div class="edit-card edit-upload">
+                <h2>Add More Photos</h2>
+                <p class="section-description">Select one or more new photos to add.</p>
+                <div class="upload-area">
+                    <label for="NewImages" class="upload-label">
+                        <span class="upload-icon">+</span>
+                        <span>Choose Photos</span>
+                        <small>You can select multiple images</small>
+                    </label>
+                    <input type="file" id="NewImages" name="NewImages" accept="image/*" multiple />
+                </div>
+                <div id="selected-files" class="selected-files"></div>
+            </div>
+
         </div>
+
+        <!-- BUTTONS (under everything) -->
+        <div class="edit-actions">
+            <a asp-controller="Landlord" asp-action="Dashboard" class="cancel-button">Cancel</a>
+            @if (Model.IsRejected)
+            {
+                <button type="submit" formaction="@Url.Action("Resubmit", "Properties")" class="save-button">
+                    Resubmit Application
+                </button>
+            }
+            else
+            {
+                <button type="submit" class="save-button">Save Changes</button>
+            }
+        </div>
+
     </form>
 </div>
 
