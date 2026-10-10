@@ -14,388 +14,150 @@
           asp-append-version="true" />
 }
 
-
 <div class="profile-page">
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+    <a asp-controller="Tenant" asp-action="Dashboard" class="back-button">
+        <i class="bi bi-arrow-left back-arrow"></i> Back to Dashboard
+    </a>
 
-    <div class="profile-header">
+    <form asp-action="UpdateProfile"
+          asp-controller="Tenant"
+          method="post"
+          enctype="multipart/form-data"
+          class="profile-form">
 
-        <h1>UPDATE PROFILE</h1>
+        @Html.AntiForgeryToken()
 
-        <a asp-controller="Tenant"
-           asp-action="Dashboard"
-           class="back-button">
-
-            <i class="bi bi-arrow-left"></i>
-
-            Back
-
-        </a>
-
-    </div>
-
-
-
-    <!-- =====================================================
-         PROFILE CARD
-    ====================================================== -->
-
-    <div class="profile-card">
-
-
-        <!-- =================================================
-             SUCCESS MESSAGE
-        ================================================== -->
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="success-message">
-
-                @TempData["SuccessMessage"]
-
-                <span>
-                    ✓
-                </span>
-
+                @TempData["SuccessMessage"] <span>✓</span>
             </div>
         }
 
+        <!-- PHOTO -->
+        <div class="profile-hero">
+            <div class="profile-image-container">
 
-        <!-- =================================================
-             FORM
-        ================================================== -->
+                @if (!string.IsNullOrEmpty(Model.CurrentImagePath))
+                {
+                    <img id="profilePreview" src="@Model.CurrentImagePath"
+                         alt="Profile Picture" class="profile-image" />
+                }
+                else
+                {
+                    <div id="defaultProfile" class="default-profile">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <img id="profilePreview" class="profile-image hidden" alt="Profile Picture" />
+                }
 
-        <form asp-action="UpdateProfile"
-              asp-controller="Tenant"
-              method="post"
-              enctype="multipart/form-data">
+                <label for="ProfileImage" class="image-upload-overlay">
+                    <i class="bi bi-camera"></i>
+                </label>
+            </div>
 
+            <h1>Update Profile</h1>
+            <label for="ProfileImage" class="upload-photo-text">Click the camera to change your photo</label>
 
-            @Html.AntiForgeryToken()
+            <input asp-for="ProfileImage" type="file" id="ProfileImage"
+                   accept=".jpg,.jpeg,.png,.gif" class="image-input" />
+            <span asp-validation-for="ProfileImage" class="validation-error"></span>
+        </div>
 
+        <!-- PERSONAL INFORMATION -->
+        <section class="profile-section">
+            <h5>Personal Information</h5>
+            <div class="field-grid">
 
-            <!-- =============================================
-                 PROFILE IMAGE
-            ============================================== -->
-
-            <div class="profile-image-section">
-
-
-                <div class="profile-image-container">
-
-
-                    @if (!string.IsNullOrEmpty(
-                                        Model.CurrentImagePath))
-                    {
-                        <img id="profilePreview"
-                             src="@Model.CurrentImagePath"
-                             alt="Profile Picture"
-                             class="profile-image" />
-                    }
-                    else
-                    {
-                        <div id="defaultProfile"
-                             class="default-profile">
-
-                            <i class="bi bi-person"></i>
-
-                        </div>
-
-                        <img id="profilePreview"
-                             class="profile-image hidden"
-                             alt="Profile Picture" />
-                    }
-
-
-                    <label for="ProfileImage"
-                           class="image-upload-overlay">
-
-                        <i class="bi bi-camera"></i>
-
-                    </label>
-
-
+                <div class="form-group">
+                    <label asp-for="FirstName">First Name</label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="validation-error"></span>
                 </div>
 
-
-                <label for="ProfileImage"
-                       class="upload-photo-text">
-
-                    Upload photo
-
-                </label>
-
-
-                <input asp-for="ProfileImage"
-                       type="file"
-                       id="ProfileImage"
-                       accept=".jpg,.jpeg,.png,.gif"
-                       class="image-input" />
-
-
-                <span asp-validation-for="ProfileImage"
-                      class="validation-error">
-                </span>
-
-
-            </div>
-
-
-
-            <!-- =============================================
-                 FIRST NAME
-            ============================================== -->
-
-            <div class="form-group">
-
-                <label asp-for="FirstName">
-
-                    First Name
-
-                </label>
-
-
-                <input asp-for="FirstName"
-                       class="form-control" />
-
-
-                <span asp-validation-for="FirstName"
-                      class="validation-error">
-                </span>
-
-            </div>
-
-
-
-            <!-- =============================================
-                 LAST NAME
-            ============================================== -->
-
-            <div class="form-group">
-
-                <label asp-for="SurName">
-
-                    Last Name
-
-                </label>
-
-
-                <input asp-for="SurName"
-                       class="form-control" />
-
-
-                <span asp-validation-for="SurName"
-                      class="validation-error">
-                </span>
-
-            </div>
-
-
-
-            <!-- =============================================
-                 EMAIL
-            ============================================== -->
-
-            <div class="form-group">
-
-                <label asp-for="Email">
-
-                    Email address
-
-                </label>
-
-
-                <input asp-for="Email"
-                       type="email"
-                       class="form-control" />
-
-
-                <span asp-validation-for="Email"
-                      class="validation-error">
-                </span>
-
-            </div>
-
-
-
-            <!-- =============================================
-                 PHONE
-            ============================================== -->
-
-            <div class="form-group">
-
-                <label asp-for="PhoneNo">
-
-                    Phone number
-
-                </label>
-
-
-                <input asp-for="PhoneNo"
-                       maxlength="10"
-                       class="form-control" />
-
-
-                <span asp-validation-for="PhoneNo"
-                      class="validation-error">
-                </span>
-
-            </div>
-
-
-
-            <!-- =============================================
-                 NEW PASSWORD
-            ============================================== -->
-
-            <div class="form-group">
-
-                <label asp-for="NewPassword">
-                    Change password
-                </label>
-
-                <div class="password-wrapper">
-
-                    <input asp-for="NewPassword"
-                           type="password"
-                           id="NewPassword"
-                           class="form-control password-input"
-                           placeholder="Leave blank to keep current password" />
-
-                    <button type="button"
-                            class="toggle-password"
-                            onclick="togglePassword('NewPassword', this)">
-
-                        <i class="bi bi-eye"></i>
-
-                    </button>
-
+                <div class="form-group">
+                    <label asp-for="SurName">Last Name</label>
+                    <input asp-for="SurName" class="form-control" />
+                    <span asp-validation-for="SurName" class="validation-error"></span>
                 </div>
 
-
-                <div class="password-requirements">
-
-                    <div id="lengthRequirement"
-                         class="password-requirement invalid">
-
-                        <i class="bi bi-x-circle-fill"></i>
-                        <span>At least 8 characters</span>
-
-                    </div>
-
-
-                    <div id="uppercaseRequirement"
-                         class="password-requirement invalid">
-
-                        <i class="bi bi-x-circle-fill"></i>
-                        <span>1 uppercase letter</span>
-
-                    </div>
-
-
-                    <div id="numberRequirement"
-                         class="password-requirement invalid">
-
-                        <i class="bi bi-x-circle-fill"></i>
-                        <span>1 number</span>
-
-                    </div>
-
-
-                    <div id="specialRequirement"
-                         class="password-requirement invalid">
-
-                        <i class="bi bi-x-circle-fill"></i>
-                        <span>1 special character</span>
-
-                    </div>
-
+                <div class="form-group">
+                    <label asp-for="Email">Email address</label>
+                    <input asp-for="Email" type="email" class="form-control" />
+                    <span asp-validation-for="Email" class="validation-error"></span>
                 </div>
 
-
-                <span asp-validation-for="NewPassword"
-                      class="validation-error">
-                </span>
-
-            </div>
-
-
-            <!-- =============================================
-                 CONFIRM PASSWORD
-            ============================================== -->
-
-            <div class="form-group">
-
-                <label asp-for="ConfirmPassword">
-
-                    Confirm password
-
-                </label>
-
-
-                <div class="password-wrapper">
-
-                    <input asp-for="ConfirmPassword"
-                           type="password"
-                           id="ConfirmPassword"
-                           class="form-control password-input"
-                           placeholder="Confirm new password" />
-
-
-                    <button type="button"
-                            class="toggle-password"
-                            onclick="togglePassword('ConfirmPassword', this)">
-
-                        <i class="bi bi-eye"></i>
-
-                    </button>
-
+                <div class="form-group">
+                    <label asp-for="PhoneNo">Phone number</label>
+                    <input asp-for="PhoneNo" maxlength="10" class="form-control" />
+                    <span asp-validation-for="PhoneNo" class="validation-error"></span>
                 </div>
 
+            </div>
+        </section>
 
-                <span asp-validation-for="ConfirmPassword"
-                      class="validation-error">
-                </span>
+        <!-- SECURITY -->
+        <section class="profile-section">
+            <h5>Security</h5>
+            <p class="section-note">Leave blank to keep your current password.</p>
+
+            <div class="field-grid">
+
+                <div class="form-group">
+                    <label asp-for="NewPassword">Change password</label>
+                    <div class="password-wrapper">
+                        <input asp-for="NewPassword" type="password" id="NewPassword"
+                               class="form-control password-input"
+                               placeholder="New password" />
+                        <button type="button" class="toggle-password"
+                                onclick="togglePassword('NewPassword', this)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="NewPassword" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword">Confirm password</label>
+                    <div class="password-wrapper">
+                        <input asp-for="ConfirmPassword" type="password" id="ConfirmPassword"
+                               class="form-control password-input"
+                               placeholder="Confirm new password" />
+                        <button type="button" class="toggle-password"
+                                onclick="togglePassword('ConfirmPassword', this)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="validation-error"></span>
+                </div>
 
             </div>
 
-
-
-            <!-- =============================================
-                 BUTTONS
-            ============================================== -->
-
-            <div class="profile-buttons">
-
-
-                <button type="submit"
-                        class="submit-button">
-
-                    Submit Changes
-
-                </button>
-
-
-                <a asp-controller="Tenant"
-                   asp-action="Dashboard"
-                   class="cancel-button">
-
-                    Cancel
-
-                </a>
-
-
+            <div class="password-requirements">
+                <div id="lengthRequirement" class="password-requirement invalid">
+                    <i class="bi bi-x-circle-fill"></i><span>At least 8 characters</span>
+                </div>
+                <div id="uppercaseRequirement" class="password-requirement invalid">
+                    <i class="bi bi-x-circle-fill"></i><span>1 uppercase letter</span>
+                </div>
+                <div id="numberRequirement" class="password-requirement invalid">
+                    <i class="bi bi-x-circle-fill"></i><span>1 number</span>
+                </div>
+                <div id="specialRequirement" class="password-requirement invalid">
+                    <i class="bi bi-x-circle-fill"></i><span>1 special character</span>
+                </div>
             </div>
+        </section>
 
+        <!-- BUTTONS -->
+        <div class="profile-buttons">
+            <a asp-controller="Tenant" asp-action="Dashboard" class="cancel-button">Cancel</a>
+            <button type="submit" class="submit-button">Submit Changes</button>
+        </div>
 
-        </form>
-
-    </div>
-
+    </form>
 </div>
-
 
 
 @section Scripts

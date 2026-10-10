@@ -1,145 +1,152 @@
-﻿
+﻿/* ===== PAGE ===== */
 .status-page {
-    width: 100%;
-    max-width: 100%;
+    background: linear-gradient(180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100%);
     min-height: auto;
-    padding: 20px 0;
-    background: transparent;
-    display: block;
-}
-
-.back-link {
-    color: #1857D6;
-    text-decoration: none;
-    font-weight: 500;
+    padding: 24px 4vw 80px;
 }
 
 .status-header-simple h1 {
-    font-size: 2rem;
+    color: #fff;
     font-weight: 800;
-    margin: 0 0 6px;
+    font-size: 32px;
+    margin: 0 0 4px;
 }
 
 .status-header-simple p {
-    color: #6b7280;
-    margin: 0;
+    color: rgba(255, 255, 255, .85);
+    margin: 0 0 24px;
 }
 
+/* ===== BACK BUTTON ===== */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 20px;
+    padding: 10px 22px;
+    background: rgba(255, 255, 255, .15);
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, .7);
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    position: relative;
+    z-index: 10;
+    transition: background .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+    .back-button:hover {
+        background: #fff;
+        color: #2563eb;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, .2);
+    }
+
+.back-arrow {
+    display: inline-block;
+    transition: transform .2s ease;
+}
+
+.back-button:hover .back-arrow {
+    transform: translateX(-4px);
+}
+
+/* ===== LAYOUT ===== */
+.status-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+@media (min-width: 992px) {
+    .status-layout {
+        grid-template-columns: 5fr 7fr;
+        align-items: stretch; /* both cards are the same height */
+    }
+}
+
+/* ===== CARDS ===== */
 .status-card {
-    width: 100%;
-    max-width: 100%;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 28px;
-    box-shadow: none;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 26px 28px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
 }
 
 .status-header {
     display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #f1f5f9;
-    margin-bottom: 20px;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #e2e8f0;
 }
+
+    .status-header h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1e3a8a;
+        margin: 0 0 2px;
+    }
+
+    .status-header p {
+        font-size: 13px;
+        color: #64748b;
+        margin: 0;
+    }
 
 .status-icon {
     width: 48px;
     height: 48px;
-    border-radius: 10px;
-    background: #eef4ff;
+    border-radius: 8px;
+    background: #dbeafe;
     color: #2563eb;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 18px;
     flex-shrink: 0;
 }
 
-.status-header h2 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.status-header p {
-    margin: 4px 0 0;
-    font-size: 13px;
-    color: #6b7280;
-}
-
 .property-name {
-    margin-bottom: 20px;
-    padding: 16px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
+    background: #f1f5f9;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
 }
 
     .property-name span {
         display: block;
-        margin-bottom: 4px;
         font-size: 11px;
-        font-weight: 600;
+        font-weight: 700;
+        letter-spacing: .6px;
         text-transform: uppercase;
-        letter-spacing: 0.6px;
-        color: #6b7280;
+        color: #64748b;
+        margin-bottom: 2px;
     }
 
     .property-name h2 {
-        margin: 0;
         font-size: 18px;
         font-weight: 700;
         color: #1f2937;
-    }
-
-.form-group {
-    margin-bottom: 22px;
-}
-
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        color: #374151;
-    }
-
-.status-select {
-    width: 100%;
-    height: 48px;
-    padding: 0 14px;
-    border: 1px solid #cfd7e3;
-    border-radius: 10px;
-    background: #f8fafc;
-    font-size: 15px;
-    cursor: pointer;
-    outline: none;
-}
-
-    .status-select:hover {
-        border-color: #9aa8ba;
-    }
-
-    .status-select:focus {
-        border-color: #2563eb;
-        background: #fff;
-        box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+        margin: 0;
     }
 
 .status-explanation {
     display: flex;
     gap: 12px;
-    padding: 16px;
-    background: #f0f6ff;
-    border: 1px solid #cfe0ff;
-    border-radius: 10px;
+    background: #eff6ff;
+    border: 1.5px solid #93c5fd;
+    border-radius: 8px;
+    padding: 14px 18px;
 }
 
 .explanation-icon {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background: #dbeafe;
     color: #2563eb;
@@ -150,63 +157,238 @@
 }
 
 .status-explanation h3 {
-    margin: 0 0 4px;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
     color: #1e40af;
+    margin: 0 0 2px;
 }
 
 .status-explanation p {
-    margin: 0;
     font-size: 13px;
-    line-height: 1.5;
-    color: #4b5563;
+    color: #475569;
+    margin: 0;
 }
 
-.status-actions {
+/* ===== FORM ===== */
+.status-form {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid #f1f5f9;
+    flex-direction: column;
+    height: 100%;
 }
 
-.btn-cancel, .btn-save {
-    height: 44px;
-    padding: 0 20px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
+.form-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin: 0 0 4px;
+}
+
+.form-note {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0 0 18px;
+}
+
+/* ===== STATUS TILES (radio buttons) ===== */
+.status-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.status-option {
+    position: relative;
+    display: block;
+    margin: 0;
     cursor: pointer;
 }
 
-.btn-cancel {
-    background: #fff;
-    border: 1px solid #cfd7e3;
-    color: #4b5563;
-}
-
-    .btn-cancel:hover {
-        background: #f8fafc;
+    /* hide the real radio but keep it usable with the keyboard */
+    .status-option input {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
     }
 
+.option-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    padding: 22px 12px 18px;
+    background: #fff;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    text-align: center;
+    transition: all .2s ease;
+}
+
+    .option-body i {
+        font-size: 28px;
+        margin-bottom: 6px;
+    }
+
+    .option-body strong {
+        font-size: 15px;
+        color: #1f2937;
+    }
+
+    .option-body span {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+.status-option:hover .option-body {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .12);
+}
+
+/* colours per status */
+.opt-available i {
+    color: #16a34a;
+}
+
+.opt-occupied i {
+    color: #dc2626;
+}
+
+.opt-maintenance i {
+    color: #d97706;
+}
+
+/* selected state */
+.opt-available input:checked + .option-body {
+    border-color: #16a34a;
+    background: #f0fdf4;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, .2);
+}
+
+.opt-occupied input:checked + .option-body {
+    border-color: #dc2626;
+    background: #fef2f2;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .2);
+}
+
+.opt-maintenance input:checked + .option-body {
+    border-color: #d97706;
+    background: #fffbeb;
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, .2);
+}
+
+/* keyboard focus */
+.status-option input:focus-visible + .option-body {
+    outline: 3px solid #2563eb;
+    outline-offset: 2px;
+}
+
+/* ===== VISIBILITY STRIP ===== */
+.visibility-strip {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    border: 1.5px solid;
+    transition: all .2s ease;
+}
+
+    .visibility-strip i {
+        font-size: 20px;
+    }
+
+    .visibility-strip strong {
+        display: block;
+        font-size: 14px;
+    }
+
+    .visibility-strip span {
+        font-size: 13px;
+    }
+
+    .visibility-strip.is-visible {
+        background: #f0fdf4;
+        border-color: #86efac;
+        color: #166534;
+    }
+
+    .visibility-strip.is-hidden {
+        background: #fef2f2;
+        border-color: #fca5a5;
+        color: #991b1b;
+    }
+
+/* ===== BUTTONS ===== */
+.status-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: auto; /* pins the buttons to the bottom of the card */
+    padding-top: 24px;
+}
+
+.btn-save,
+.btn-cancel {
+    min-width: 160px;
+    height: 48px;
+    padding: 0 22px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
 .btn-save {
-    border: none;
     background: #2563eb;
     color: #fff;
+    border: 2px solid #2563eb;
 }
 
     .btn-save:hover {
         background: #1d4ed8;
+        border-color: #1d4ed8;
+        transform: translateY(-1px);
     }
 
-@media (max-width: 992px) {
+.btn-cancel {
+    background: #fff;
+    color: #374151;
+    border: 2px solid #94a3b8;
+}
+
+    .btn-cancel:hover {
+        background: #f1f5f9;
+        color: #1f2937;
+    }
+
+/* ===== PHONE ===== */
+@media (max-width: 600px) {
+    .status-page {
+        padding: 16px 16px 60px;
+    }
+
     .status-card {
-        padding: 22px;
+        padding: 20px 18px;
+    }
+
+    .status-options {
+        grid-template-columns: 1fr;
+    }
+
+    .status-actions {
+        flex-direction: column-reverse;
+    }
+
+    .btn-save,
+    .btn-cancel {
+        width: 100%;
     }
 }

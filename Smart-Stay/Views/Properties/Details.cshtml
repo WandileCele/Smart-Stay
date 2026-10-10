@@ -9,82 +9,126 @@
     <link rel="stylesheet" href="~/css/PropertyDetails.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 }
+<div class="pd-bg">
+<div class="pd-page">
 
-<div class="container-fluid px-lg-5 mt-4">
+    <a href="@Model.ReturnUrl" class="pd-back">
+        <span class="pd-back-arrow">←</span> Back
+    </a>
 
-    <a href="@Model.ReturnUrl" class="pd-back">← Back</a>
+    <div class="pd-top">
 
-    <div class="row g-5 mt-1">
-        
-        <div class="col-lg-7">
-            <div class="pd-header-row">
-                <div>
-                    <h1 class="pd-title">@Model.Property.Title</h1>
-                    <p class="pd-sub">@Model.Property.Location · @Model.Property.PropertyType</p>
+        <!-- LEFT: gallery -->
+        <div class="pd-gallery">
+            @if (Model.ImagePaths.Any())
+            {
+                <div class="pd-stage">
+                    <img id="pdImage" class="pd-image" src="@Model.ImagePaths[0]" alt="@Model.Property.Title" />
+
+                    @if (Model.ImagePaths.Count > 1)
+                    {
+                        <button type="button" id="pdPrev" class="pd-arrow pd-arrow-left" aria-label="Previous photo">&#10094;</button>
+                        <button type="button" id="pdNext" class="pd-arrow pd-arrow-right" aria-label="Next photo">&#10095;</button>
+                        <span id="pdCounter" class="pd-counter">1 / @Model.ImagePaths.Count</span>
+                    }
                 </div>
+
+                @if (Model.ImagePaths.Count > 1)
+                {
+                    <div class="pd-thumbs">
+                        @for (int i = 0; i < Model.ImagePaths.Count; i++)
+                        {
+                            <button type="button" class="pd-thumb @(i == 0 ? "active" : "")" data-index="@i">
+                                <img src="@Model.ImagePaths[i]" alt="Photo @(i + 1)" />
+                            </button>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="pd-noimg">No images available</div>
+            }
+        </div>
+
+        <!-- RIGHT: summary card -->
+        <aside class="pd-summary">
+            <div class="pd-summary-card">
+
+                <span class="pd-status pd-status-@((Model.Property.Status ?? "").ToLower())">@Model.Property.Status</span>
+
+                <h1 class="pd-title">@Model.Property.Title</h1>
+                <p class="pd-sub">@Model.Property.Location · @Model.Property.PropertyType</p>
+
+                <div class="pd-price-row">
+                    <span class="pd-price">R @Model.Property.Price.ToString("0.##")</span>
+                    <span class="pd-period">@period</span>
+                </div>
+
+                <div class="pd-stats">
+                    <div class="pd-stat">
+                        <strong>@Model.Property.Bedrooms</strong>
+                        <span>Bedrooms</span>
+                    </div>
+                    <div class="pd-stat">
+                        <strong>@Model.Property.Bathrooms</strong>
+                        <span>Bathrooms</span>
+                    </div>
+                   
+                </div>
+
                 @if (Model.Property.Latitude != null && Model.Property.Longitude != null)
                 {
                     <button type="button" id="pdViewMapBtn" class="pd-view-map-btn">
-                        View On Map <i class="bi bi-map-fill"></i>
+                        <i class="bi bi-map-fill"></i> View On Map
                     </button>
                 }
-            </div>
 
-    @if (Model.ImagePaths.Any())
-    {
-        <img id="pdImage" class="pd-image" src="@Model.ImagePaths[0]" alt="@Model.Property.Title" />
-    }
-    else
-    {
-        <div class="pd-noimg">No images available</div>
-    }
-    @if (Model.ImagePaths.Count > 1)
-    {
-        <div class="pd-slidebar">
-            <button type="button" id="pdPrev" class="pd-navbtn">&laquo; Prev</button>
-            <span id="pdCounter" class="pd-counter">1 / @Model.ImagePaths.Count</span>
-            <button type="button" id="pdNext" class="pd-navbtn">Next &raquo;</button>
-        </div>
-    }
-    <div class="pd-info">
-        <div class="pd-info-row">
-            <span class="pd-info-label">Description:</span>
-            <span class="pd-info-value">@cleanDescription</span>
-        </div>
+                @{
+                    var currentRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                    var loggedIn = User.Identity != null && User.Identity.IsAuthenticated;
+                    var notTenant = loggedIn && currentRole != "Tenant";
+                }
+
+                <div class="pd-buttons">
+                    @if (notTenant)
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="pd-cta">Apply</a>
+                    }
+                    else if (Model.CanApply)
+                    {
+                        <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">Apply</a>
+                    }
+                    else
+                    {
+                        <span class="pd-cta pd-cta-disabled" title="@Model.ApplyBlockedReason">@Model.ApplyBlockedReason</span>
+                    }
+
+                    <a href="@Model.ReturnUrl" class="pd-cta-outline">Back</a>
+                </div>
+
+            </div>
+        </aside>
+    </div>
+
+    <!-- DESCRIPTION + ADDRESS -->
+    <section class="pd-card">
+        <h2 class="pd-section-title">About this property</h2>
+        <p class="pd-description">@cleanDescription</p>
+
         @if (!string.IsNullOrWhiteSpace(Model.Property.Address))
         {
-            <div class="pd-info-row">
-                <span class="pd-info-label">Address:</span>
-                <span class="pd-info-value">@Model.Property.Address</span>
+            <div class="pd-address">
+                <strong>Address</strong>
+                <span>@Model.Property.Address</span>
             </div>
         }
-        <div class="pd-info-row">
-            <span class="pd-info-label">Price:</span>
-            <span class="pd-info-value pd-price">
-                <span class="pd-info-value pd-price">
-                    R @Model.Property.Price.ToString("0.##") @period
-                </span>
-            </span>
-        </div>
-        <div class="pd-info-row">
-            <span class="pd-info-label">Bedrooms:</span>
-            <span class="pd-info-value">@Model.Property.Bedrooms</span>
-        </div>
-        <div class="pd-info-row">
-            <span class="pd-info-label">Bathrooms:</span>
-            <span class="pd-info-value">@Model.Property.Bathrooms</span>
-        </div>
-        <div class="pd-info-row">
-            <span class="pd-info-label">Status:</span>
-            <span class="pd-info-value">@Model.Property.Status</span>
-        </div>
-        <div class="pd-info-row">
-            <span class="pd-info-label">Total Applications:</span>
-            <span class="pd-info-value">@Model.Property.RentalApplications.Count()</span>
-        </div>
-    </div>
-    <div class="pd-reviews">
-        <h2 class="pd-reviews-title">Reviews (@Model.Property.Reviews.Count)</h2>
+    </section>
+
+    <!-- REVIEWS -->
+    <section class="pd-card pd-reviews">
+        <h2 class="pd-section-title">Reviews (@Model.Property.Reviews.Count)</h2>
+
         @if (Model.Property.Reviews.Any())
         {
             <div class="pd-reviews-list">
@@ -109,40 +153,10 @@
         {
             <p class="pd-no-reviews">No reviews yet for this property.</p>
         }
-    </div>
-    <div class="pd-buttons">
+    </section>
 
-        @{
-            var currentRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
-            var loggedIn = User.Identity != null && User.Identity.IsAuthenticated;
-            var notTenant = loggedIn && currentRole != "Tenant";
-        }
-
-        @if (notTenant)
-        {
-            <a asp-controller="Account" asp-action="Login" class="pd-cta">
-                Apply
-            </a>
-        }
-        else if (Model.CanApply)
-        {
-            <a asp-controller="RentalApplications" asp-action="Apply" asp-route-propertyId="@Model.Property.PropertyId" class="pd-cta">
-                Apply
-            </a>
-        }
-        else
-        {
-            <span class="pd-cta pd-cta-disabled" title="@Model.ApplyBlockedReason">
-                @Model.ApplyBlockedReason
-            </span>
-        }
-
-        <a href="@Model.ReturnUrl" class="pd-cta-outline">
-            Back
-        </a>
-
-    </div>
 </div>
+<</div>
 
 @if (Model.Property.Latitude != null && Model.Property.Longitude != null)
 {
@@ -156,23 +170,26 @@
         </div>
     </div>
 }
-
 @section Scripts {
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        
-        const pdImages = @Html.Raw(Json.Serialize(Model.ImagePaths));
+
+                const pdImages = @Html.Raw(Json.Serialize(Model.ImagePaths));
         let pdIndex = 0;
 
         const pdImgEl = document.getElementById("pdImage");
         const pdCounterEl = document.getElementById("pdCounter");
+        const pdThumbs = document.querySelectorAll(".pd-thumb");
 
         function pdRender() {
             if (!pdImgEl) return;
             pdImgEl.src = pdImages[pdIndex];
+
             if (pdCounterEl) {
                 pdCounterEl.textContent = `${pdIndex + 1} / ${pdImages.length}`;
             }
+
+            pdThumbs.forEach((t, i) => t.classList.toggle("active", i === pdIndex));
         }
 
         document.getElementById("pdPrev")?.addEventListener("click", () => {
@@ -184,6 +201,11 @@
             pdIndex = (pdIndex + 1) % pdImages.length;
             pdRender();
         });
+
+        pdThumbs.forEach(t => t.addEventListener("click", () => {
+            pdIndex = parseInt(t.dataset.index, 10);
+            pdRender();
+        }));
 
         
         @if (Model.Property.Latitude != null && Model.Property.Longitude != null)
