@@ -104,7 +104,7 @@
     }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .image-upload-overlay {
@@ -187,11 +187,15 @@
         color: #1f2937;
         font-size: 13px;
         font-weight: 600;
+        color: #334155;
+        font-size: 14px;
+        margin-bottom: 6px;
+        display: block;
     }
 
 .form-control {
     width: 100%;
-    height: 46px;
+    height: 44px;
     box-sizing: border-box;
     border: 1px solid #d7dae1;
     border-radius: 10px;
@@ -203,6 +207,8 @@
 }
 
     .form-control:focus {
+        border-color: #5478aa;
+        box-shadow: 0 0 0 3px rgba(84,120,170,0.15);
         outline: none;
         border-color: #2563eb;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
@@ -220,11 +226,12 @@
 
 .toggle-password {
     position: absolute;
-    right: 12px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     border: none;
     background: transparent;
+    font-size: 18px;
     cursor: pointer;
     padding: 0;
     display: flex;
@@ -271,6 +278,9 @@
     }
 
 .validation-error {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 4px;
     display: block;
     margin-top: 5px;
     color: #d9534f;
