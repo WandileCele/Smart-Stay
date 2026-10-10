@@ -6,107 +6,138 @@
     <link rel="stylesheet" href="~/css/UpdateStatus.css" asp-append-version="true" />
 }
 
-<div class="container-fluid px-lg-5 mt-4">
 
-    <a href="@Url.Action("Dashboard", "Landlord")" class="back-button">
-        <i class="bi bi-arrow-left"></i> Back to Dashboard
+<div class="status-page">
+
+    <a asp-controller="Landlord" asp-action="Dashboard" class="back-button">
+        <span class="back-arrow">←</span> Back to Dashboard
     </a>
 
-    <div class="status-header-simple mb-4">
+    <div class="status-header-simple">
         <h1>Update Property Status</h1>
         <p>Manage the availability of your property.</p>
     </div>
 
-    <div class="row g-4">
-        
-        <div class="col-lg-5">
-            <div class="status-card">
-                <div class="status-header">
-                    <div class="status-icon">
-                        <i class="fa-solid fa-building"></i>
-                    </div>
-                    <div>
-                        <h2>@Model.PropertyTitle</h2>
-                        <p>Current status will affect visibility on the home page.</p>
-                    </div>
-                </div>
+    <div class="status-layout">
 
-                <div class="property-name">
-                    <span>Property</span>
+        <!-- LEFT: property info -->
+        <div class="status-card">
+            <div class="status-header">
+                <div class="status-icon">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+                <div>
                     <h2>@Model.PropertyTitle</h2>
+                    <p>Current status will affect visibility on the home page.</p>
+                </div>
+            </div>
+
+            <div class="property-name">
+                <span>Property</span>
+                <h2>@Model.PropertyTitle</h2>
+            </div>
+
+            <div class="status-explanation" id="status-explanation">
+                <div class="explanation-icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <div>
+                    <h3 id="status-explanation-title"></h3>
+                    <p id="status-explanation-text"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: form -->
+        <div class="status-card">
+            <form asp-action="UpdateStatus" method="post" class="status-form">
+                <input type="hidden" asp-for="PropertyId" />
+
+                <h3 class="form-title">Choose a status</h3>
+                <p class="form-note">Select how this property should appear to tenants.</p>
+
+                <div class="status-options">
+
+                    <label class="status-option opt-available">
+                        <input type="radio" asp-for="Status" value="Available" />
+                        <div class="option-body">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <strong>Available</strong>
+                            <span>Open for tenants</span>
+                        </div>
+                    </label>
+
+                    <label class="status-option opt-occupied">
+                        <input type="radio" asp-for="Status" value="Occupied" />
+                        <div class="option-body">
+                            <i class="fa-solid fa-user-check"></i>
+                            <strong>Occupied</strong>
+                            <span>Currently let</span>
+                        </div>
+                    </label>
+
+                    <label class="status-option opt-maintenance">
+                        <input type="radio" asp-for="Status" value="Maintenance" />
+                        <div class="option-body">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                            <strong>Maintenance</strong>
+                            <span>Being repaired</span>
+                        </div>
+                    </label>
+
                 </div>
 
-                <div class="status-explanation" id="status-explanation">
-                    <div class="explanation-icon">
-                        <i class="fa-solid fa-circle-info"></i>
-                    </div>
+                <div class="visibility-strip" id="visibility-strip">
+                    <i class="fa-solid fa-eye" id="visibility-icon"></i>
                     <div>
-                        <h3 id="status-explanation-title"></h3>
-                        <p id="status-explanation-text"></p>
+                        <strong id="visibility-title"></strong>
+                        <span id="visibility-text"></span>
                     </div>
                 </div>
-            </div>
+
+                <div class="status-actions">
+                    <a asp-controller="Landlord" asp-action="Dashboard" class="btn-cancel">Cancel</a>
+                    <button type="submit" class="btn-save">
+                        <i class="fa-solid fa-check"></i> Save Status
+                    </button>
+                </div>
+            </form>
         </div>
 
-        
-        <div class="col-lg-7">
-            <div class="status-card">
-                <form asp-action="UpdateStatus" method="post">
-                    <input type="hidden" asp-for="PropertyId" />
-
-                    <div class="form-group">
-                        <label asp-for="Status">Property Status</label>
-                        <select asp-for="Status" class="status-select" id="Status">
-                            <option value="Available">Available</option>
-                            <option value="Occupied">Occupied</option>
-                            <option value="Maintenance">Maintenance</option>
-                        </select>
-                    </div>
-
-                    <div class="status-actions">
-                        <a asp-controller="Landlord" asp-action="Dashboard" class="btn-cancel">
-                            Cancel
-                        </a>
-                        <button type="submit" class="btn-save">
-                            <i class="fa-solid fa-check"></i>
-                            Save Status
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 </div>
-
 <script>
-    
-    const statusSelect = document.getElementById("Status");
+    const radios = document.querySelectorAll('input[name="Status"]');
     const statusTitle = document.getElementById("status-explanation-title");
     const statusText = document.getElementById("status-explanation-text");
+    const strip = document.getElementById("visibility-strip");
+    const stripIcon = document.getElementById("visibility-icon");
+    const stripTitle = document.getElementById("visibility-title");
+    const stripText = document.getElementById("visibility-text");
+
+    const messages = {
+        Available: "The property is available for tenants and will be displayed on the home page.",
+        Occupied: "The property is currently full or occupied and will not be displayed on the home page.",
+        Maintenance: "The property is currently under maintenance and will not be displayed on the home page."
+    };
 
     function updateStatusExplanation() {
-        const value = statusSelect.value;
+        const checked = document.querySelector('input[name="Status"]:checked');
+        const value = checked ? checked.value : "Available";
+        const visible = value === "Available";
 
-        switch (value) {
-            case "Available":
-                statusTitle.textContent = "Available";
-                statusText.textContent = "The property is available for tenants and will be displayed on the home page.";
-                break;
+        statusTitle.textContent = value;
+        statusText.textContent = messages[value];
 
-            case "Occupied":
-                statusTitle.textContent = "Occupied";
-                statusText.textContent = "The property is currently full or occupied and will not be displayed on the home page.";
-                break;
-
-            case "Maintenance":
-                statusTitle.textContent = "Maintenance";
-                statusText.textContent = "The property is currently under maintenance and will not be displayed on the home page.";
-                break;
-        }
+        strip.classList.toggle("is-visible", visible);
+        strip.classList.toggle("is-hidden", !visible);
+        stripIcon.className = visible ? "fa-solid fa-eye" : "fa-solid fa-eye-slash";
+        stripTitle.textContent = visible ? "Visible on the home page" : "Hidden from the home page";
+        stripText.textContent = visible
+            ? "Tenants can find and apply for this property."
+            : "Tenants cannot see or apply for this property.";
     }
 
-    statusSelect.addEventListener("change", updateStatusExplanation);
-
-   
+    radios.forEach(r => r.addEventListener("change", updateStatusExplanation));
     updateStatusExplanation();
 </script>

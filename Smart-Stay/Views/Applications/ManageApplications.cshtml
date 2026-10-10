@@ -10,9 +10,9 @@
 }
 
 <div class="applications-page">
-    <button type="button" class="back-button" onclick="history.back()">
-        <span aria-hidden="true">←</span> Back
-    </button>
+    <a asp-controller="Landlord" asp-action="Dashboard" class="back-button">
+        <span class="back-arrow" aria-hidden="true">←</span> Back to Dashboard
+    </a>
     <h1>APPLICATIONS</h1>
 
     @if (TempData["SuccessMessage"] != null)
@@ -42,87 +42,93 @@
         <p class="no-applications">No applications found.</p>
     }
 
+    <div class="applications-grid">
+        @foreach (var app in Model)
+        {
+            <div class="application-card">
+
+                <div class="app-header">
+                    <span class="tenant-name">
+                        <span class="icon icon-user">👤</span> @app.TenantName
+                    </span>
+                    <span class="applied-date">Applied: @app.ApplicationDate.ToString("yyyy-MM-dd")</span>
+                </div>
+
+                <p class="contact-line"><span class="icon icon-mail">✉️</span> @app.Email</p>
+                <p class="contact-line"><span class="icon icon-phone">📞</span> @app.PhoneNumber</p>
+
+                <div class="app-details">
+                    <div>
+                        <strong>Employment</strong>
+                        <div>@app.Employment</div>
+                    </div>
+                    <div>
+                        <strong>Proof of Income</strong>
+                        @if (app.PayslipPath != null)
+                        {
+                            <a href="@app.PayslipPath" target="_blank" class="payslip-link">📄 View Payslip</a>
+                        }
+                        else
+                        {
+                            <span class="not-uploaded">Not uploaded</span>
+                        }
+                    </div>
+                </div>
+
+                <p class="property-tag">Property: <strong>@app.PropertyTitle</strong></p>
+
+                @if (app.Status != "Rejected" && app.LeaseStartDate.HasValue && app.LeaseEndDate.HasValue)
+                {
+                    <p class="property-tag">
+                        Lease: <strong>@app.LeaseStartDate.Value.ToString("yyyy-MM-dd")</strong>
+                        to
+                        <strong>@app.LeaseEndDate.Value.ToString("yyyy-MM-dd")</strong>
+                    </p>
+                }
+
+                @if (app.Status == "Pending")
+                {
+                    <div class="action-buttons">
+
+                        <form asp-action="Approve" asp-route-id="@app.RentalApplicationId" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn-approve">Approve</button>
+                        </form>
+
+                        <button type="button"
+                                class="btn-reject"
+                                data-bs-toggle="modal"
+                                data-bs-target="#rejectModal-@app.RentalApplicationId">
+                            Reject
+                        </button>
+
+                        <button type="button"
+                                class="btn-info"
+                                data-bs-toggle="modal"
+                                data-bs-target="#infoModal-@app.RentalApplicationId">
+                            Request more info
+                        </button>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="action-buttons">
+                        <span class="status-badge status-@app.Status.ToLower()">@app.Status</span>
+                    </div>
+                }
+
+            </div>
+        }
+    </div>
+
+    @* ---------- MODALS (outside the grid) ---------- *@
     @foreach (var app in Model)
     {
-        <div class="application-card">
-
-            <div class="app-header">
-                <span class="tenant-name">
-                    <span class="icon icon-user">👤</span> @app.TenantName
-                </span>
-                <span class="applied-date">Applied: @app.ApplicationDate.ToString("yyyy-MM-dd")</span>
-            </div>
-
-            <p class="contact-line"><span class="icon icon-mail">✉️</span> @app.Email</p>
-            <p class="contact-line"><span class="icon icon-phone">📞</span> @app.PhoneNumber</p>
-
-            <div class="app-details">
-                <div>
-                    <strong>Employment</strong>
-                    <div>@app.Employment</div>
-                </div>
-                <div>
-                    <strong>Proof of Income</strong>
-                    @if (app.PayslipPath != null)
-                    {
-                        <a href="@app.PayslipPath" target="_blank" class="payslip-link">📄 View Payslip</a>
-                    }
-                    else
-                    {
-                        <span class="not-uploaded">Not uploaded</span>
-                    }
-                </div>
-            </div>
-
-            <p class="property-tag">Property: <strong>@app.PropertyTitle</strong></p>
-
-            @if (app.Status != "Rejected" && app.LeaseStartDate.HasValue && app.LeaseEndDate.HasValue)
-            {
-                <p class="property-tag">
-                    Lease: <strong>@app.LeaseStartDate.Value.ToString("yyyy-MM-dd")</strong>
-                    to
-                    <strong>@app.LeaseEndDate.Value.ToString("yyyy-MM-dd")</strong>
-                </p>
-            }
-
-            @if (app.Status == "Pending")
-            {
-                <div class="action-buttons">
-
-                    <form asp-action="Approve" asp-route-id="@app.RentalApplicationId" method="post">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn-approve">Approve</button>
-                    </form>
-
-
-                    <button type="button"
-                            class="btn-reject"
-                            data-bs-toggle="modal"
-                            data-bs-target="#rejectModal-@app.RentalApplicationId">
-                        Reject
-                    </button>
-
-                    <button type="button"
-                            class="btn-info"
-                            data-bs-toggle="modal"
-                            data-bs-target="#infoModal-@app.RentalApplicationId">
-                        Request more info
-                    </button>
-
-                </div>
-            }
-            else
-            {
-                <span class="status-badge status-@app.Status.ToLower()">@app.Status</span>
-            }
-
-        </div>
-
         <!-- REQUEST MORE INFO MODAL -->
         <div class="modal fade" id="infoModal-@app.RentalApplicationId" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
-
                     <form asp-action="RequestMoreInfo" method="post">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@app.RentalApplicationId" />
@@ -144,27 +150,21 @@
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-warning">Send</button>
                         </div>
-
                     </form>
-
                 </div>
             </div>
         </div>
-
 
         <!-- REJECTION REASON MODAL -->
         <div class="modal fade"
              id="rejectModal-@app.RentalApplicationId"
              tabindex="-1"
              aria-hidden="true">
-
             <div class="modal-dialog">
                 <div class="modal-content">
-
                     <form asp-action="Reject"
                           asp-route-id="@app.RentalApplicationId"
                           method="post">
-
                         @Html.AntiForgeryToken()
 
                         <div class="modal-header">
@@ -200,9 +200,7 @@
                                 Confirm Rejection
                             </button>
                         </div>
-
                     </form>
-
                 </div>
             </div>
         </div>
