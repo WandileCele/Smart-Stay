@@ -4,6 +4,13 @@
     var period = tag.Success ? tag.Groups[1].Value : "per month";
     var cleanDescription = System.Text.RegularExpressions.Regex.Replace(Model.Property.Description ?? "", @"\s*\[PricePeriod:.+?\]", "");
     ViewData["Title"] = "Property Details";
+    string FixPath(string p)
+    {
+        if (string.IsNullOrWhiteSpace(p)) return "/images/no-image.png";
+        p = p.Replace("\\", "/").Replace("wwwroot", "", StringComparison.OrdinalIgnoreCase);
+        if (!p.StartsWith("/")) p = "/" + p.TrimStart('/');
+        return p;
+    }
 }
 @section Styles {
     <link rel="stylesheet" href="~/css/PropertyDetails.css" asp-append-version="true" />
@@ -134,18 +141,27 @@
             <div class="pd-reviews-list">
                 @foreach (var review in Model.Property.Reviews.OrderByDescending(r => r.ReviewDate))
                 {
-                    <div class="pd-review-item">
-                        <div class="pd-review-header">
-                            <span class="pd-review-rating">
-                                @for (int i = 1; i <= 5; i++)
-                                {
-                                    <span class="@(i <= review.Rating ? "pd-star-filled" : "pd-star-empty")">&#9733;</span>
-                                }
-                            </span>
-                            <span class="pd-review-date">@review.ReviewDate.ToString("dd MMM yyyy")</span>
-                        </div>
-                        <p class="pd-review-comment">@review.Comment</p>
+                    <div class="pd-reviews-list">
+                        @foreach (var review in Model.Property.Reviews.OrderByDescending(r => r.ReviewDate))
+                        {
+                            <div class="pd-review-item">
+                                <div class="pd-review-header">
+                                    <span class="pd-review-rating">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <span class="@(i <= review.Rating ? "pd-star-filled" : "pd-star-empty")">&#9733;</span>
+                                        }
+                                    </span>
+                                    <span class="pd-review-date">@review.ReviewDate.ToString("dd MMM yyyy")</span>
+                                </div>
+                                <p class="pd-review-comment">@review.Comment</p>
+                            </div>
+                        }
                     </div>
+                }
+                else
+                {
+                    <p class="pd-no-reviews">No reviews yet for this property.</p>
                 }
             </div>
         }
@@ -177,6 +193,7 @@
                 const pdImages = @Html.Raw(Json.Serialize(Model.ImagePaths));
         let pdIndex = 0;
 
+        let pdIndex = 0;
         const pdImgEl = document.getElementById("pdImage");
         const pdCounterEl = document.getElementById("pdCounter");
         const pdThumbs = document.querySelectorAll(".pd-thumb");
@@ -191,6 +208,8 @@
 
             pdThumbs.forEach((t, i) => t.classList.toggle("active", i === pdIndex));
         }
+        document.getElementById("pdPrev")?.addEventListener("click", () => { pdIndex = (pdIndex - 1 + pdImages.length) % pdImages.length; pdRender(); });
+        document.getElementById("pdNext")?.addEventListener("click", () => { pdIndex = (pdIndex + 1) % pdImages.length; pdRender(); });
 
         document.getElementById("pdPrev")?.addEventListener("click", () => {
             pdIndex = (pdIndex - 1 + pdImages.length) % pdImages.length;
@@ -214,41 +233,19 @@
                 const pdLat = @Model.Property.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 const pdLng = @Model.Property.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 const pdAddress = @Html.Raw(Json.Serialize(Model.Property.Address ?? Model.Property.Location));
-
                 let pdMap = null;
-
                 function pdOpenMapModal() {
                     document.getElementById("pdMapModalOverlay").classList.add("active");
-
                     if (!pdMap) {
                         pdMap = L.map("pdMap").setView([pdLat, pdLng], 16);
-
-                        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                            maxZoom: 19,
-                            attribution: "&copy; OpenStreetMap contributors"
-                        }).addTo(pdMap);
-
-                        L.marker([pdLat, pdLng])
-                           .addTo(pdMap)
-                           .bindPopup(pdAddress)
-                           .openPopup();
-                    } else {
-                        setTimeout(() => pdMap.invalidateSize(), 100);
-                    }
+                        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" }).addTo(pdMap);
+                        L.marker([pdLat, pdLng]).addTo(pdMap).bindPopup(pdAddress).openPopup();
+                    } else { setTimeout(() => pdMap.invalidateSize(), 100); }
                 }
-
-                function pdCloseMapModal() {
-                    document.getElementById("pdMapModalOverlay").classList.remove("active");
-                }
-
+                function pdCloseMapModal() { document.getElementById("pdMapModalOverlay").classList.remove("active"); }
                 document.getElementById("pdViewMapBtn")?.addEventListener("click", pdOpenMapModal);
                 document.getElementById("pdMapModalClose")?.addEventListener("click", pdCloseMapModal);
-
-                document.getElementById("pdMapModalOverlay")?.addEventListener("click", function (e) {
-                    if (e.target === this) {
-                        pdCloseMapModal();
-                    }
-                });
+                document.getElementById("pdMapModalOverlay")?.addEventListener("click", function (e) { if (e.target === this) { pdCloseMapModal(); } });
                 </text>
         }
     </script>
