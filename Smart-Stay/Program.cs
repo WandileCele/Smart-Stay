@@ -38,6 +38,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<Smart_Stay.Services.IEmailService, Smart_Stay.Services.EmailService>();
 
@@ -73,4 +74,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 //app.MapRazorPages();
 
-app.Run("http://0.0.0.0:5000");
+app.Run();
