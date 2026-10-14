@@ -15,143 +15,56 @@ namespace Smart_Stay.Controllers
         private readonly SmartDbContext _context;
         private readonly IEmailService _emailService;
 
-        public AdminController(
-            SmartDbContext context,
-            IEmailService emailService)
+        public AdminController(SmartDbContext context, IEmailService emailService)
         {
             _context = context;
             _emailService = emailService;
         }
 
-        // ============================================================
-        // ADMIN DASHBOARD
-        // ============================================================
-
         public async Task<IActionResult> Dashboard()
         {
             var model = new AdminDashboardViewModel();
+            int adminUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            int adminUserId =
-                int.Parse(User.FindFirstValue(
-                    ClaimTypes.NameIdentifier)!);
+            model.FirstName = await _context.Users.Where(u => u.UserId == adminUserId).Select(u => u.FirstName).FirstOrDefaultAsync() ?? "Admin";
+            model.ProfileImagePath = await _context.Users.Where(u => u.UserId == adminUserId).Select(u => u.ProfileImagePath).FirstOrDefaultAsync();
 
-            model.FirstName =
-                await _context.Users
-                    .Where(u => u.UserId == adminUserId)
-                    .Select(u => u.FirstName)
-                    .FirstOrDefaultAsync()
-                    ?? "Admin";
-            model.ProfileImagePath =
-              await _context.Users
-              .Where(u => u.UserId == adminUserId)
-              .Select(u => u.ProfileImagePath)
-              .FirstOrDefaultAsync();
+            model.PendingApplications = await _context.ListingApplications.CountAsync(a => a.ApplicationStatus == "Pending");
+            model.ApprovedApplications = await _context.ListingApplications.CountAsync(a => a.ApplicationStatus == "Approved");
+            model.RejectedApplications = await _context.ListingApplications.CountAsync(a => a.ApplicationStatus == "Rejected");
 
-            model.PendingApplications =
-                await _context.ListingApplications
-                    .CountAsync(a =>
-                        a.ApplicationStatus == "Pending");
-
-            model.ApprovedApplications =
-                await _context.ListingApplications
-                    .CountAsync(a =>
-                        a.ApplicationStatus == "Approved");
-
-            model.RejectedApplications =
-                await _context.ListingApplications
-                    .CountAsync(a =>
-                        a.ApplicationStatus == "Rejected");
-
-            model.Applications =
-                await _context.ListingApplications
-                    .Include(a => a.Property)
-                    .Include(a => a.Landlord)
-                        .ThenInclude(l => l.User)
-                    .Where(a =>
-                        a.ApplicationStatus == "Pending")
-                    .Select(a =>
-                        new ListingApplicationCardViewModel
-                        {
-                            ListingApplicationId =
-                                a.ListingApplicationId,
-
-                            PropertyId =
-                                a.PropertyId ?? 0,
-
-                            PropertyTitle =
-                                a.Property != null
-                                    ? a.Property.Title
-                                    : "",
-
-                            LandlordName =
-                                a.Landlord != null
-                                    ? a.Landlord.User.FirstName
-                                      + " "
-                                      + a.Landlord.User.SurName
-                                    : "",
-
-                            Location =
-                                a.Property != null
-                                    ? a.Property.Location
-                                    : "",
-
-                            Price =
-                                a.Property != null
-                                    ? a.Property.Price
-                                    : 0,
-
-                            PropertyType =
-                                a.Property != null
-                                    ? a.Property.PropertyType
-                                    : "",
-
-                            ApplicationDate =
-                                a.ApplicationDate,
-
-                            ApplicationStatus =
-                                a.ApplicationStatus
-                        })
-                    .ToListAsync();
+            model.Applications = await _context.ListingApplications
+                   .Include(a => a.Property)
+                   .Include(a => a.Landlord).ThenInclude(l => l.User)
+                   .Where(a => a.ApplicationStatus == "Pending")
+                   .Select(a => new ListingApplicationCardViewModel
+                   {
+                       ListingApplicationId = a.ListingApplicationId,
+                       PropertyId = a.PropertyId ?? 0,
+                       PropertyTitle = a.Property != null ? a.Property.Title : "",
+                       LandlordName = a.Landlord != null ? a.Landlord.User.FirstName + " " + a.Landlord.User.SurName : "",
+                       Location = a.Property != null ? a.Property.Location : "",
+                       Price = a.Property != null ? a.Property.Price : 0,
+                       PropertyType = a.Property != null ? a.Property.PropertyType : "",
+                       ApplicationDate = a.ApplicationDate,
+                       ApplicationStatus = a.ApplicationStatus
+                   }).ToListAsync();
 
             return View(model);
         }
 
-        // ============================================================
-        // APPROVE APPLICATION
-        // ============================================================
-
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Approve(int id)
         {
-            var application =
-                await _context.ListingApplications
-                    .Include(a => a.Property)
-                    .FirstOrDefaultAsync(a =>
-                        a.ListingApplicationId == id);
-
-            if (application == null)
-            {
-                return NotFound();
-            }
+            var application = await _context.ListingApplications.Include(a => a.Property).FirstOrDefaultAsync(a => a.ListingApplicationId == id);
+            if (application == null) return NotFound();
 
             application.ApplicationStatus = "Approved";
-
-            // Clear any previous rejection reason
             application.RejectionReason = null;
-
-            if (application.Property != null)
-            {
-                application.Property.Status = "Available";
-            }
-
+            if (application.Property != null) application.Property.Status = "Available";
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(Dashboard));
         }
-
-        // ============================================================
-        // REJECT APPLICATION
-        // ============================================================
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
@@ -159,829 +72,178 @@ namespace Smart_Stay.Controllers
         public async Task<IActionResult> Reject(int id, string reason)
         {
             var application = await _context.ListingApplications
-                .Include(a => a.Property)
-                .Include(a => a.Landlord)
-                    .ThenInclude(l => l.User)
-                .FirstOrDefaultAsync(a =>
-                    a.ListingApplicationId == id);
+               .Include(a => a.Property).Include(a => a.Landlord).ThenInclude(l => l.User)
+               .FirstOrDefaultAsync(a => a.ListingApplicationId == id);
 
-            if (application == null)
-                return NotFound();
+            if (application == null) return NotFound();
 
-            // Only pending listing applications can be rejected
             if (application.ApplicationStatus != "Pending")
             {
-                TempData["ErrorMessage"] =
-                    "Only pending listing applications can be rejected.";
-
+                TempData["ErrorMessage"] = "Only pending listing applications can be rejected.";
                 return RedirectToAction(nameof(Dashboard));
             }
 
-            // Validate the rejection reason
             if (string.IsNullOrWhiteSpace(reason))
             {
-                TempData["ErrorMessage"] =
-                    "Please provide a reason for rejection.";
-
-                return RedirectToAction(
-                    nameof(ApplicationDetails), new { id });
+                TempData["ErrorMessage"] = "Please provide a reason for rejection.";
+                return RedirectToAction(nameof(ApplicationDetails), new { id });
             }
 
             reason = reason.Trim();
-
-            // Save rejection details
             application.ApplicationStatus = "Rejected";
             application.RejectionReason = reason;
-
-            if (application.Property != null)
-            {
-                application.Property.Status = "Rejected";
-            }
-
+            if (application.Property != null) application.Property.Status = "Rejected";
             await _context.SaveChangesAsync();
 
-            // Get the landlord's email address
             var landlordEmail = application.Landlord?.User?.Email;
-
             if (string.IsNullOrWhiteSpace(landlordEmail))
             {
-                TempData["ErrorMessage"] =
-                    "The listing was rejected and saved, but the landlord's email address could not be found.";
-
+                TempData["ErrorMessage"] = "The listing was rejected and saved, but the landlord's email address could not be found.";
                 return RedirectToAction(nameof(Dashboard));
             }
 
-            var propertyTitle =
-                application.Property?.Title ?? "your property";
-
-            var landlordFirstName =
-                application.Landlord?.User?.FirstName ?? "there";
-
-            // Encode user-provided values before placing them in HTML
-            var safeName =
-                System.Net.WebUtility.HtmlEncode(landlordFirstName);
-
-            var safeTitle =
-                System.Net.WebUtility.HtmlEncode(propertyTitle);
-
-            var safeReason =
-                System.Net.WebUtility.HtmlEncode(reason)
-                    .Replace("\r\n", "<br>")
-                    .Replace("\n", "<br>");
-
+            var propertyTitle = application.Property?.Title ?? "your property";
+            var landlordFirstName = application.Landlord?.User?.FirstName ?? "there";
+            var safeName = System.Net.WebUtility.HtmlEncode(landlordFirstName);
+            var safeTitle = System.Net.WebUtility.HtmlEncode(propertyTitle);
+            var safeReason = System.Net.WebUtility.HtmlEncode(reason).Replace("\r\n", "<br>").Replace("\n", "<br>");
             var subject = $"Listing Rejected - {propertyTitle}";
+            var htmlBody = $@"<div style='font-family:Arial,sans-serif;line-height:1.6;color:#333;'><h2>Smart Stay - Listing Application Update</h2><p>Dear {safeName},</p><p>Unfortunately, your property listing <strong>{safeTitle}</strong> has not been approved.</p><h3>Reason for rejection</h3><p>{safeReason}</p><p>Please review the reason above and make any necessary corrections before resubmitting.</p><p>Kind regards,<br/>Smart Stay Team</p></div>";
 
-            var htmlBody = $@"
-        <div style='font-family:Arial,sans-serif;line-height:1.6;color:#333;'>
-            <h2>Smart Stay - Listing Application Update</h2>
+            try { await _emailService.SendEmailAsync(landlordEmail, subject, htmlBody); }
+            catch (Exception) { TempData["ErrorMessage"] = "The listing was rejected and saved, but the notification email could not be sent."; return RedirectToAction(nameof(Dashboard)); }
 
-            <p>Dear {safeName},</p>
-
-            <p>
-                Unfortunately, your property listing
-                <strong>{safeTitle}</strong>
-                has not been approved by the Smart Stay admin team.
-            </p>
-
-            <h3>Reason for rejection</h3>
-
-            <p>{safeReason}</p>
-
-            <p>
-                Please review the reason above and make any necessary
-                corrections before resubmitting your listing for review.
-            </p>
-
-            <p>
-                Kind regards,<br />
-                Smart Stay Team
-            </p>
-        </div>";
-
-            // Email failure must not undo the saved rejection
-            try
-            {
-                await _emailService.SendEmailAsync(
-                    landlordEmail,
-                    subject,
-                    htmlBody);
-            }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] =
-                    "The listing was rejected and saved, but the notification email could not be sent.";
-
-                return RedirectToAction(nameof(Dashboard));
-            }
-
-            TempData["SuccessMessage"] =
-                "Listing rejected successfully. The landlord has been notified by email.";
-
+            TempData["SuccessMessage"] = "Listing rejected successfully. The landlord has been notified by email.";
             return RedirectToAction(nameof(Dashboard));
         }
-   
-
-        // ============================================================
-        // APPLICATION DETAILS
-        // ============================================================
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ApplicationDetails(int id)
         {
-            var application =
-                await _context.ListingApplications
-                    .Include(a => a.Property)
-                    .Include(a => a.Landlord)
-                        .ThenInclude(l => l.User)
-                    .FirstOrDefaultAsync(a =>
-                        a.ListingApplicationId == id);
+            var application = await _context.ListingApplications
+               .Include(a => a.Property).Include(a => a.Landlord).ThenInclude(l => l.User)
+               .FirstOrDefaultAsync(a => a.ListingApplicationId == id);
 
-            if (application == null ||
-                application.Property == null)
+            if (application == null || application.Property == null) return NotFound();
+
+            var documents = await _context.Documents.Where(d => d.ListingApplication == id).ToListAsync();
+
+            var model = new ListingApplicationReviewViewModel
             {
-                return NotFound();
-            }
-
-            var documents =
-                await _context.Documents
-                    .Where(d =>
-                        d.ListingApplication == id)
-                    .ToListAsync();
-
-            var model =
-                new ListingApplicationReviewViewModel
-                {
-                    ListingApplicationId =
-                        application.ListingApplicationId,
-
-                    ApplicationStatus =
-                        application.ApplicationStatus,
-
-                    ApplicationDate =
-                        application.ApplicationDate,
-
-                    // NEW:
-                    // Send rejection reason to the view
-                    RejectionReason =
-                        application.RejectionReason,
-
-                    PropertyId =
-                        application.Property.PropertyId,
-
-                    Title =
-                        application.Property.Title,
-
-                    Description =
-                        application.Property.Description,
-
-                    Location =
-                        application.Property.Location,
-
-                    Address =
-                        application.Property.Address,
-
-                    Latitude =
-                        application.Property.Latitude,
-
-                    Longitude =
-                        application.Property.Longitude,
-
-                    Price =
-                        application.Property.Price,
-
-                    PropertyType =
-                        application.Property.PropertyType,
-
-                    Bedrooms =
-                        application.Property.Bedrooms,
-
-                    Bathrooms =
-                        application.Property.Bathrooms,
-
-                    LandlordName =
-                        application.Landlord != null
-                            ? application.Landlord.User.FirstName
-                              + " "
-                              + application.Landlord.User.SurName
-                            : "",
-
-                    AffidavitPath =
-                        documents
-                            .Where(d =>
-                                d.DocumentType == "Affidavit")
-                            .Select(d => d.DocumentPath)
-                            .FirstOrDefault(),
-
-                    ImagePaths =
-                        documents
-                            .Where(d =>
-                                d.DocumentType == "Image")
-                            .Select(d => d.DocumentPath)
-                            .ToList()
-                };
-
+                ListingApplicationId = application.ListingApplicationId,
+                ApplicationStatus = application.ApplicationStatus,
+                ApplicationDate = application.ApplicationDate,
+                RejectionReason = application.RejectionReason,
+                PropertyId = application.Property.PropertyId,
+                Title = application.Property.Title,
+                Description = application.Property.Description,
+                Location = application.Property.Location,
+                Address = application.Property.Address,
+                Latitude = application.Property.Latitude,
+                Longitude = application.Property.Longitude,
+                Price = application.Property.Price,
+                PropertyType = application.Property.PropertyType,
+                Bedrooms = application.Property.Bedrooms,
+                Bathrooms = application.Property.Bathrooms,
+                LandlordName = application.Landlord != null ? application.Landlord.User.FirstName + " " + application.Landlord.User.SurName : "",
+                AffidavitPath = documents.Where(d => d.DocumentType == "Affidavit").Select(d => d.DocumentPath).FirstOrDefault(),
+                ImagePaths = documents.Where(d => d.DocumentType == "Image").Select(d => d.DocumentPath).ToList()
+            };
             return View(model);
         }
 
-        // ============================================================
-        // MANAGE LANDLORDS
-        // ============================================================
-
         public async Task<IActionResult> ManageLandlords()
         {
-            var landlords =
-                await _context.Landlords
-                    .Include(l => l.User)
-                    .Include(l => l.Properties)
-                    .ToListAsync();
-
+            var landlords = await _context.Landlords.Include(l => l.User).Include(l => l.Properties).ToListAsync();
             return View(landlords);
         }
 
-        // ============================================================
-        // DELETE LANDLORD
-        // ============================================================
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteLandlord(int id)
-        {
-            var landlord =
-                await _context.Landlords
-                    .Include(l => l.User)
-                    .FirstOrDefaultAsync(l =>
-                        l.UserId == id);
-
-            if (landlord == null)
-            {
-                return NotFound();
-            }
-
-            using var transaction =
-                await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                var properties =
-                    await _context.Properties
-                        .Where(p =>
-                            p.LandlordId == id)
-                        .ToListAsync();
-
-                var propertyIds =
-                    properties
-                        .Select(p => p.PropertyId)
-                        .ToList();
-
-                if (propertyIds.Any())
-                {
-                    var reviews =
-                        await _context.Reviews
-                            .Where(r =>
-                                propertyIds.Contains(
-                                    r.PropertyId))
-                            .ToListAsync();
-
-                    _context.Reviews.RemoveRange(reviews);
-                }
-
-                var listingApplications =
-                    await _context.ListingApplications
-                        .Where(a =>
-                            a.LandlordId == id)
-                        .ToListAsync();
-
-                var listingApplicationIds =
-                    listingApplications
-                        .Select(a =>
-                            a.ListingApplicationId)
-                        .ToList();
-
-                if (listingApplicationIds.Any())
-                {
-                    var listingDocuments =
-                        await _context.Documents
-                            .Where(d =>
-                                d.ListingApplication != null &&
-                                listingApplicationIds.Contains(
-                                    d.ListingApplication.Value))
-                            .ToListAsync();
-
-                    _context.Documents.RemoveRange(
-                        listingDocuments);
-                }
-
-                _context.ListingApplications.RemoveRange(
-                    listingApplications);
-
-                var rentalApplications =
-                    await _context.RentalApplications
-                        .Where(r =>
-                            r.LandlordId == id)
-                        .ToListAsync();
-
-                var rentalApplicationIds =
-                    rentalApplications
-                        .Select(r =>
-                            r.RentalApplicationId)
-                        .ToList();
-
-                if (rentalApplicationIds.Any())
-                {
-                    var rentalDocuments =
-                        await _context.Documents
-                            .Where(d =>
-                                d.RentalApplicationId.HasValue &&
-                                rentalApplicationIds.Contains(
-                                    d.RentalApplicationId.Value))
-                            .ToListAsync();
-
-                    _context.Documents.RemoveRange(
-                        rentalDocuments);
-                }
-
-                _context.RentalApplications.RemoveRange(
-                    rentalApplications);
-
-                _context.Properties.RemoveRange(
-                    properties);
-
-                _context.Landlords.Remove(landlord);
-
-                _context.Users.Remove(landlord.User);
-
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-
-                return RedirectToAction(
-                    nameof(ManageLandlords));
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
-
-        // ============================================================
-        // MANAGE USERS
-        // ============================================================
-
         public async Task<IActionResult> ManageUsers()
         {
-            var users =
-                await _context.Users.ToListAsync();
-
+            var users = await _context.Users.ToListAsync();
             return View(users);
         }
-
-        // ============================================================
-        // SUSPEND / UNSUSPEND USER
-        // ============================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SuspendUser(int id)
         {
-            var user =
-                await _context.Users
-                    .FirstOrDefaultAsync(u =>
-                        u.UserId == id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
+            if (user == null) return NotFound();
 
             user.IsSuspended = !user.IsSuspended;
-
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] =
-                user.IsSuspended
-                    ? "User suspended successfully."
-                    : "User unsuspended successfully.";
-
-            return RedirectToAction(
-                nameof(ManageUsers));
+            TempData["SuccessMessage"] = user.IsSuspended ? "User suspended successfully." : "User unsuspended successfully.";
+            return RedirectToAction(nameof(ManageUsers));
         }
-
-        // ============================================================
-        // DELETE USER
-        // ============================================================
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            var user =
-                await _context.Users
-                    .FirstOrDefaultAsync(u =>
-                        u.UserId == id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            using var transaction =
-                await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                // ====================================================
-                // TENANT SIDE
-                // ====================================================
-
-                var rentalIdsForUser =
-                    await _context.RentalApplications
-                        .Where(r =>
-                            r.TenantId == id)
-                        .Select(r =>
-                            r.RentalApplicationId)
-                        .ToListAsync();
-
-                if (rentalIdsForUser.Any())
-                {
-                    await _context.Documents
-                        .Where(d =>
-                            d.RentalApplicationId != null &&
-                            rentalIdsForUser.Contains(
-                                d.RentalApplicationId.Value))
-                        .ExecuteDeleteAsync();
-                }
-
-                await _context.Reviews
-                    .Where(r =>
-                        r.TenantId == id)
-                    .ExecuteDeleteAsync();
-
-                await _context.RentalApplications
-                    .Where(r =>
-                        r.TenantId == id)
-                    .ExecuteDeleteAsync();
-
-                await _context.Tenants
-                    .Where(t =>
-                        t.UserId == id)
-                    .ExecuteDeleteAsync();
-
-                // ====================================================
-                // LANDLORD SIDE
-                // ====================================================
-
-                var propIds =
-                    await _context.Properties
-                        .Where(p =>
-                            p.LandlordId == id)
-                        .Select(p =>
-                            p.PropertyId)
-                        .ToListAsync();
-
-                if (propIds.Any())
-                {
-                    await _context.Reviews
-                        .Where(r =>
-                            propIds.Contains(
-                                r.PropertyId))
-                        .ExecuteDeleteAsync();
-
-                    var rentalIdsByProps =
-                        await _context.RentalApplications
-                            .Where(r =>
-                                propIds.Contains(
-                                    r.PropertyId))
-                            .Select(r =>
-                                r.RentalApplicationId)
-                            .ToListAsync();
-
-                    if (rentalIdsByProps.Any())
-                    {
-                        await _context.Documents
-                            .Where(d =>
-                                d.RentalApplicationId != null &&
-                                rentalIdsByProps.Contains(
-                                    d.RentalApplicationId.Value))
-                            .ExecuteDeleteAsync();
-                    }
-
-                    await _context.RentalApplications
-                        .Where(r =>
-                            propIds.Contains(
-                                r.PropertyId))
-                        .ExecuteDeleteAsync();
-                }
-
-                var listingIds =
-                    await _context.ListingApplications
-                        .Where(a =>
-                            a.LandlordId == id)
-                        .Select(a =>
-                            a.ListingApplicationId)
-                        .ToListAsync();
-
-                if (listingIds.Any())
-                {
-                    await _context.Documents
-                        .Where(d =>
-                            d.ListingApplication != null &&
-                            listingIds.Contains(
-                                d.ListingApplication.Value))
-                        .ExecuteDeleteAsync();
-                }
-
-                await _context.ListingApplications
-                    .Where(a =>
-                        a.LandlordId == id)
-                    .ExecuteDeleteAsync();
-
-                await _context.Properties
-                    .Where(p =>
-                        p.LandlordId == id)
-                    .ExecuteDeleteAsync();
-
-                await _context.Landlords
-                    .Where(l =>
-                        l.UserId == id)
-                    .ExecuteDeleteAsync();
-
-                await _context.Admins
-                    .Where(a =>
-                        a.UserId == id)
-                    .ExecuteDeleteAsync();
-
-                _context.Users.Remove(user);
-
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-
-                TempData["SuccessMessage"] =
-                    "User deleted successfully.";
-
-                return RedirectToAction(
-                    nameof(ManageUsers));
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
-
-        // ============================================================
-        // UPDATE ADMIN PROFILE - GET
-        // ============================================================
 
         [HttpGet]
         public async Task<IActionResult> UpdateProfile()
         {
-            var userIdString =
-                User.FindFirstValue(
-                    ClaimTypes.NameIdentifier);
-
-            if (!int.TryParse(
-                userIdString,
-                out int userId))
-            {
-                return RedirectToAction(
-                    "Login",
-                    "Account");
-            }
-
-            var user =
-                await _context.Users
-                    .FirstOrDefaultAsync(u =>
-                        u.UserId == userId);
-
-            if (user == null)
-            {
-                return RedirectToAction(
-                    "Login",
-                    "Account");
-            }
-
-            var model =
-                new UpdateProfileViewModel
-                {
-                    FirstName = user.FirstName,
-                    SurName = user.SurName,
-                    Email = user.Email,
-                    PhoneNo = user.PhoneNo,
-                    CurrentImagePath =
-                        user.ProfileImagePath
-                };
-
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out int userId)) return RedirectToAction("Login", "Account");
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null) return RedirectToAction("Login", "Account");
+            var model = new UpdateProfileViewModel { FirstName = user.FirstName, SurName = user.SurName, Email = user.Email, PhoneNo = user.PhoneNo, CurrentImagePath = user.ProfileImagePath };
             return View(model);
         }
 
-        // ============================================================
-        // UPDATE ADMIN PROFILE - POST
-        // ============================================================
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateProfile(
-            UpdateProfileViewModel model)
+        public async Task<IActionResult> UpdateProfile(UpdateProfileViewModel model)
         {
-            var userIdString =
-                User.FindFirstValue(
-                    ClaimTypes.NameIdentifier);
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out int userId)) return RedirectToAction("Login", "Account");
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null) return RedirectToAction("Login", "Account");
 
-            if (!int.TryParse(
-                userIdString,
-                out int userId))
+            bool passwordEntered = !string.IsNullOrWhiteSpace(model.NewPassword);
+            bool confirmPasswordEntered = !string.IsNullOrWhiteSpace(model.ConfirmPassword);
+            if (passwordEntered || confirmPasswordEntered)
             {
-                return RedirectToAction(
-                    "Login",
-                    "Account");
+                if (!passwordEntered) ModelState.AddModelError("NewPassword", "Please enter a new password.");
+                if (!confirmPasswordEntered) ModelState.AddModelError("ConfirmPassword", "Please confirm your password.");
+                if (passwordEntered && confirmPasswordEntered && model.NewPassword != model.ConfirmPassword) ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
+                if (passwordEntered && model.NewPassword!.Length < 6) ModelState.AddModelError("NewPassword", "Password must be at least 6 characters.");
             }
 
-            var user =
-                await _context.Users
-                    .FirstOrDefaultAsync(u =>
-                        u.UserId == userId);
+            var emailExists = await _context.Users.AnyAsync(u => u.Email == model.Email && u.UserId != userId);
+            if (emailExists) ModelState.AddModelError("Email", "This email is already being used.");
 
-            if (user == null)
+            if (!ModelState.IsValid) { model.CurrentImagePath = user.ProfileImagePath; return View(model); }
+
+            user.FirstName = model.FirstName.Trim();
+            user.SurName = model.SurName.Trim();
+            user.Email = model.Email.Trim();
+            user.PhoneNo = model.PhoneNo.Trim();
+            if (!string.IsNullOrWhiteSpace(model.NewPassword)) user.Password = model.NewPassword;
+
+            if (model.ProfileImage != null && model.ProfileImage.Length > 0)
             {
-                return RedirectToAction(
-                    "Login",
-                    "Account");
-            }
-
-            bool passwordEntered =
-                !string.IsNullOrWhiteSpace(
-                    model.NewPassword);
-
-            bool confirmPasswordEntered =
-                !string.IsNullOrWhiteSpace(
-                    model.ConfirmPassword);
-
-            if (passwordEntered ||
-                confirmPasswordEntered)
-            {
-                if (!passwordEntered)
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                var extension = Path.GetExtension(model.ProfileImage.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(extension))
                 {
-                    ModelState.AddModelError(
-                        "NewPassword",
-                        "Please enter a new password.");
+                    ModelState.AddModelError("ProfileImage", "Only JPG, JPEG, PNG, GIF and WEBP files are allowed.");
+                    model.CurrentImagePath = user.ProfileImagePath; return View(model);
                 }
-
-                if (!confirmPasswordEntered)
+                if (model.ProfileImage.Length > 5 * 1024 * 1024)
                 {
-                    ModelState.AddModelError(
-                        "ConfirmPassword",
-                        "Please confirm your password.");
+                    ModelState.AddModelError("ProfileImage", "Image must be smaller than 5MB.");
+                    model.CurrentImagePath = user.ProfileImagePath; return View(model);
                 }
-
-                if (passwordEntered &&
-                    confirmPasswordEntered &&
-                    model.NewPassword !=
-                    model.ConfirmPassword)
-                {
-                    ModelState.AddModelError(
-                        "ConfirmPassword",
-                        "Passwords do not match.");
-                }
-
-                if (passwordEntered &&
-                    model.NewPassword!.Length < 6)
-                {
-                    ModelState.AddModelError(
-                        "NewPassword",
-                        "Password must be at least 6 characters.");
-                }
-            }
-
-            var emailExists =
-                await _context.Users.AnyAsync(
-                    u =>
-                        u.Email == model.Email &&
-                        u.UserId != userId);
-
-            if (emailExists)
-            {
-                ModelState.AddModelError(
-                    "Email",
-                    "This email is already being used.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                model.CurrentImagePath =
-                    user.ProfileImagePath;
-
-                return View(model);
-            }
-
-            user.FirstName =
-                model.FirstName.Trim();
-
-            user.SurName =
-                model.SurName.Trim();
-
-            user.Email =
-                model.Email.Trim();
-
-            user.PhoneNo =
-                model.PhoneNo.Trim();
-
-            if (!string.IsNullOrWhiteSpace(
-                model.NewPassword))
-            {
-                user.Password =
-                    model.NewPassword;
-            }
-
-            if (model.ProfileImage != null &&
-                model.ProfileImage.Length > 0)
-            {
-                var allowedExtensions =
-                    new[]
-                    {
-                        ".jpg",
-                        ".jpeg",
-                        ".png",
-                        ".gif",
-                        ".webp"
-                    };
-
-                var extension =
-                    Path.GetExtension(
-                        model.ProfileImage.FileName)
-                        .ToLowerInvariant();
-
-                if (!allowedExtensions.Contains(
-                    extension))
-                {
-                    ModelState.AddModelError(
-                        "ProfileImage",
-                        "Only JPG, JPEG, PNG, GIF and WEBP files are allowed.");
-
-                    model.CurrentImagePath =
-                        user.ProfileImagePath;
-
-                    return View(model);
-                }
-
-                if (model.ProfileImage.Length >
-                    5 * 1024 * 1024)
-                {
-                    ModelState.AddModelError(
-                        "ProfileImage",
-                        "Image must be smaller than 5MB.");
-
-                    model.CurrentImagePath =
-                        user.ProfileImagePath;
-
-                    return View(model);
-                }
-
-                var uploadFolder =
-                    Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "uploads",
-                        "profile-images");
-
-                if (!Directory.Exists(
-                    uploadFolder))
-                {
-                    Directory.CreateDirectory(
-                        uploadFolder);
-                }
-
-                var fileName =
-                    Guid.NewGuid().ToString()
-                    + extension;
-
-                var filePath =
-                    Path.Combine(
-                        uploadFolder,
-                        fileName);
-
-                using (var stream =
-                    new FileStream(
-                        filePath,
-                        FileMode.Create))
-                {
-                    await model.ProfileImage
-                        .CopyToAsync(stream);
-                }
-
-                user.ProfileImagePath =
-                    "/uploads/profile-images/"
-                    + fileName;
+                var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profile-images");
+                if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
+                var fileName = Guid.NewGuid().ToString() + extension;
+                var filePath = Path.Combine(uploadFolder, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create)) { await model.ProfileImage.CopyToAsync(stream); }
+                user.ProfileImagePath = "/uploads/profile-images/" + fileName;
             }
 
             await _context.SaveChangesAsync();
-
-            TempData["SuccessMessage"] =
-                "Profile updated successfully!";
-
-            return RedirectToAction(
-                nameof(UpdateProfile));
+            TempData["SuccessMessage"] = "Profile updated successfully!";
+            return RedirectToAction(nameof(UpdateProfile));
         }
     }
 }

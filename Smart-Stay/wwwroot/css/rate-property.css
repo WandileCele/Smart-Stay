@@ -1,19 +1,12 @@
-﻿
-/* ============================================================
-   RATE PROPERTY PAGE
-============================================================ */
-.rate-property-page {
+﻿.rate-property-page {
     min-height: 100vh;
-    padding: 50px 20px;
+    background: linear-gradient(to bottom, #1857D6 0%, #122E4D 100%);
+    padding: 50px 20px 100px 20px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
-
-
-/* ============================================================
-   MAIN CARD
-============================================================ */
 
 .rate-property-card {
     width: 100%;
@@ -21,13 +14,9 @@
     background: #ffffff;
     border-radius: 20px;
     padding: 40px;
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255,255,255,0.2);
 }
-
-
-/* ============================================================
-   HEADER
-============================================================ */
 
 .rate-property-header {
     text-align: center;
@@ -46,18 +35,13 @@
     color: #222;
 }
 
-
-/* ============================================================
-   PROPERTY NAME
-============================================================ */
-
 .property-name {
     display: inline-block;
     margin-top: 15px;
     padding: 10px 20px;
     border-radius: 30px;
-    background: #f3f4f6;
-    color: #222;
+    background: #eef3ff;
+    color: #1857D6;
     font-size: 19px;
     font-weight: 600;
 }
@@ -67,11 +51,6 @@
     color: #777;
     font-size: 15px;
 }
-
-
-/* ============================================================
-   RATING SECTION
-============================================================ */
 
 .rating-section {
     text-align: center;
@@ -86,11 +65,6 @@
     color: #333;
 }
 
-
-/* ============================================================
-   STAR RATING
-============================================================ */
-
 .star-rating {
     display: inline-flex;
     flex-direction: row-reverse;
@@ -101,17 +75,11 @@
     background: #fafafa;
 }
 
-
-    /* Hide radio buttons */
-
     .star-rating input {
         position: absolute;
         opacity: 0;
         pointer-events: none;
     }
-
-
-    /* Individual stars */
 
     .star-rating label {
         display: inline-block;
@@ -122,47 +90,19 @@
         transition: color 0.2s ease, transform 0.2s ease;
     }
 
-
-        /* ============================================================
-   STAR HOVER
-============================================================ */
-
-        /* Highlight the hovered star */
-
         .star-rating label:hover {
             color: #f5b301;
             transform: scale(1.15);
         }
 
-
-            /* Highlight the hovered star and all stars before it */
-
             .star-rating label:hover ~ label {
                 color: #f5b301;
             }
 
-
-    /* ============================================================
-   SELECTED STAR
-============================================================ */
-
-    /* Highlight selected star and all stars to its left */
-
     .star-rating input:checked ~ label {
         color: #f5b301;
-    }
-
-
-    /* Slightly enlarge the selected stars */
-
-    .star-rating input:checked ~ label {
         transform: scale(1.05);
     }
-
-
-    /* ============================================================
-   KEYBOARD ACCESSIBILITY
-============================================================ */
 
     .star-rating input:focus-visible + label {
         outline: 3px solid rgba(245, 179, 1, 0.35);
@@ -170,10 +110,13 @@
         border-radius: 6px;
     }
 
-
-/* ============================================================
-   RATING HELP
-============================================================ */
+.selected-rating {
+    margin-top: 12px;
+    font-weight: 700;
+    color: #1857D6;
+    font-size: 16px;
+    min-height: 24px;
+}
 
 .rating-help {
     margin-top: 12px;
@@ -181,10 +124,6 @@
     font-size: 13px;
 }
 
-
-/* ============================================================
-   COMMENT
-============================================================ */
 
 .comment-section {
     margin-bottom: 30px;
@@ -213,8 +152,8 @@
 }
 
     .comment-section textarea:focus {
-        border-color: #777;
-        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        border-color: #1857D6;
+        box-shadow: 0 0 0 3px rgba(24, 87, 214, 0.12);
     }
 
 .character-limit {
@@ -224,10 +163,6 @@
     font-size: 12px;
 }
 
-
-/* ============================================================
-   BUTTONS
-============================================================ */
 
 .rating-actions {
     display: flex;
@@ -246,46 +181,33 @@
     text-decoration: none;
     cursor: pointer;
     transition: 0.2s ease;
+    border: none;
 }
 
-
-/* ============================================================
-   CANCEL
-============================================================ */
-
 .cancel-rating {
-    background: #f1f1f1;
-    color: #444;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
 }
 
     .cancel-rating:hover {
-        background: #e4e4e4;
+        background: #e2e8f0;
     }
 
-
-/* ============================================================
-   SUBMIT
-============================================================ */
-
 .submit-rating {
-    border: none;
-    background: #222;
+    background: #1857D6;
     color: white;
 }
 
     .submit-rating:hover {
-        background: #444;
+        background: #122E4D;
     }
 
-
-/* ============================================================
-   MOBILE
-============================================================ */
 
 @media (max-width: 600px) {
 
     .rate-property-page {
-        padding: 25px 15px;
+        padding: 25px 15px 80px 15px;
     }
 
     .rate-property-card {
@@ -320,5 +242,7 @@
         text-align: center;
         width: 100%;
         box-sizing: border-box;
+        justify-content: center;
+        display: flex;
     }
 }

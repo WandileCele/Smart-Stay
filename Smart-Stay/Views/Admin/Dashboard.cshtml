@@ -3,13 +3,127 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 @section Styles {
-    <link rel="stylesheet"
-          href="~/css/AdminSidebar.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/AdminSidebar.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
     <style>
+        /* BLUE BACKGROUND - LIKE TENANT DASHBOARD */
+        body {
+            background: linear-gradient( 180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100% );
+            background-attachment: fixed !important;
+            min-height: 100vh;
+        }
 
+        /* LAYOUT FIX */
+        .dashboard-header {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .dashboard-header h2 {
+                color: #fff !important;
+                font-weight: 800;
+                margin-bottom: 25px;
+            }
+
+        /* STAT CARDS - CENTERED, NOT SPREAD */
+        .statistics {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px 35px;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+        }
+
+            .stat-card h3 {
+                font-size: 32px;
+                font-weight: 800;
+                color: #1857D6;
+                margin: 0;
+            }
+
+            .stat-card p {
+                color: #64748b;
+                font-weight: 600;
+                font-size: 13px;
+                margin-top: 6px;
+            }
+
+        hr {
+            border-color: rgba(255,255,255,0.2) !important;
+            margin: 25px 0;
+        }
+
+        /* TABLE - WHITE CARD */
+        .table-container {
+            background: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .admin-table thead {
+                background: #1565ff;
+                color: #fff;
+            }
+
+            .admin-table th {
+                padding: 18px 16px;
+                text-align: left;
+                font-weight: 700;
+            }
+
+            .admin-table td {
+                padding: 16px;
+                border-bottom: 1px solid #eef2f7;
+            }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+            .status.pending {
+                background: #fff3cd;
+                color: #856404;
+            }
+
+            .status.approved {
+                background: #d4edda;
+                color: #155724;
+            }
+
+            .status.rejected {
+                background: #f8d7da;
+                color: #721c24;
+            }
+
+        .approve-btn {
+            background: #1857D6;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* YOUR ORIGINAL STYLES - KEPT */
         .global-loader {
             display: none;
             position: fixed;
@@ -25,6 +139,7 @@
             align-items: center;
             justify-content: flex-end;
             gap: 14px;
+            margin-bottom: 10px;
         }
 
         .profile-pic-circle {
@@ -32,7 +147,7 @@
             height: 42px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #0d6efd;
+            border: 2px solid #fff;
         }
 
         .profile-pic-fallback {
@@ -42,14 +157,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #e9ecef;
-            color: #0d6efd;
+            background: #fff;
+            color: #1857D6;
             font-size: 22px;
-            border: 2px solid #0d6efd;
+            border: 2px solid #fff;
         }
-            .global-loader.active {
-                display: flex;
-            }
+
+        .global-loader.active {
+            display: flex;
+        }
 
         .loader-box {
             text-align: center;
@@ -138,11 +254,21 @@
             transition: opacity 0.25s ease;
         }
 
+        /* LOGOUT BUTTON WHITE PILL */
+        .logout-btn {
+            background: red;
+            color: #1857D6;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
     </style>
 }
 <partial name="_AdminSidebar" />
 <div class="top-bar">
-
     <a asp-controller="Admin" asp-action="UpdateProfile" title="Update Profile">
         @if (!string.IsNullOrWhiteSpace(Model.ProfileImagePath))
         {
@@ -155,19 +281,15 @@
             </div>
         }
     </a>
-
-    <form asp-controller="Account"
-          asp-action="Logout"
-          method="post"
-          id="logoutForm">
+    <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
         <button type="submit" class="logout-btn">
-            <i class="bi bi-box-arrow-right"></i>
-            Logout
+            <i class="bi bi-box-arrow-right"></i> Logout
         </button>
     </form>
 </div>
+
 <div class="dashboard-header">
-    <h2>Welcome back, @Model.FirstName 👨‍💼!</h2>
+    <h2>Welcome back, @Model.FirstName 👨💼!</h2>
     <div class="statistics">
         <div class="stat-card">
             <h3>@Model.PendingApplications</h3>
@@ -209,29 +331,19 @@
                     <td>
                         @if (item.ApplicationStatus == "Pending")
                         {
-                            <span class="status pending">
-                                Pending
-                            </span>
+                            <span class="status pending">Pending</span>
                         }
                         else if (item.ApplicationStatus == "Approved")
                         {
-                            <span class="status approved">
-                                Approved
-                            </span>
+                            <span class="status approved">Approved</span>
                         }
                         else
                         {
-                            <span class="status rejected">
-                                Rejected
-                            </span>
+                            <span class="status rejected">Rejected</span>
                         }
                     </td>
                     <td class="actions">
-                        <a asp-action="ApplicationDetails"
-                           asp-route-id="@item.ListingApplicationId"
-                           class="approve-btn">
-                            🔍 View
-                        </a>
+                        <a asp-action="ApplicationDetails" asp-route-id="@item.ListingApplicationId" class="approve-btn">🔍 View</a>
                     </td>
                 </tr>
             }
@@ -241,59 +353,35 @@
 
 <div id="logout-loader" class="global-loader">
     <div class="loader-box">
-
-        <div class="house-loader">
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-
-                <!-- House outline -->
-                <path class="house-outline"
-                      d="M15 50 L50 20 L85 50 L85 85 L15 85 Z M35 85 L35 60 L65 60 L65 85" />
-
-                <!-- Key -->
-                <g class="house-key">
-                    <circle cx="45" cy="55" r="6" />
-                    <line x1="51" y1="55" x2="65" y2="55" />
-                    <line x1="60" y1="55" x2="60" y2="61" />
-                    <line x1="65" y1="55" x2="65" y2="61" />
-                </g>
-
+        <div class="house-loader" [STRIPPED 27 bytes]"0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path class="house-outline" d="M15 50 L50 20 L85 50 L85 85 L15 85 Z M35 85 L35 60 L65 60 L65 85" />
+            <g class="house-key">
+                <circle cx="45" cy="55" r="6" />
+                <line x1="51" y1="55" x2="65" y2="55" />
+                <line x1="60" y1="55" x2="60" y2="61" />
+                <line x1="65" y1="55" x2="65" y2="61" />
+            </g>
             </svg>
         </div>
-
         <p id="logout-loader-text">Locking up...</p>
     </div>
 </div>
 
 @section Scripts {
-
     <script>
-
-              (function () {
+        (function () {
             const form = document.getElementById("logoutForm");
             const loader = document.getElementById("logout-loader");
             const loaderText = document.getElementById("logout-loader-text");
-
             const adminName = "@Model.FirstName";
-
-            const captions = [
-                "Logging out of the admin panel...",
-                "Securing the dashboard...",
-                "Saving your review queue...",
-                "See you soon, " + adminName + "!"
-            ];
-
+            const captions = ["Logging out of the admin panel...", "Securing the dashboard...", "Saving your review queue...", "See you soon, " + adminName + "!"];
             let captionIndex = 0;
-
             form.addEventListener("submit", function () {
-
                 loaderText.textContent = captions[0];
                 loader.classList.add("active");
-
                 setInterval(function () {
                     captionIndex = (captionIndex + 1) % captions.length;
-
                     loaderText.style.opacity = 0;
-
                     setTimeout(function () {
                         loaderText.textContent = captions[captionIndex];
                         loaderText.style.opacity = 1;
@@ -301,7 +389,5 @@
                 }, 1200);
             });
         })();
-
     </script>
-
 }
