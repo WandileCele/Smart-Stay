@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Verify Reset Code";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Smart Stay - Verify Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .box {
+            background: white;
+            padding: 32px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 440px;
+            box-shadow: 0 4px 20px #00000015;
+        }
+
+        h2 {
+            color: #4868ff;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px;
+            margin: 12px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 20px;
+            letter-spacing: 6px;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #4868ff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .error {
+            color: #d32f2f;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #0087c9;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Verify Your Email</h2>
+
+        <p>Enter the six-digit code sent to @ViewBag.Email.</p>
+        <p>The code expires after 10 minutes.</p>
+
+        <div asp-validation-summary="All" class="error"></div>
+
+        <form asp-controller="Account"
+              asp-action="VerifyResetCode"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   name="flowId"
+                   value="@ViewBag.FlowId" />
+
+            <label for="code">Verification code</label>
+
+            <input type="text"
+                   id="code"
+                   name="code"
+                   inputmode="numeric"
+                   pattern="[0-9]{6}"
+                   maxlength="6"
+                   minlength="6"
+                   autocomplete="one-time-code"
+                   placeholder="000000"
+                   required />
+
+            <button type="submit">Verify Code</button>
+        </form>
+
+        <a asp-controller="Account" asp-action="ForgotPassword">
+            Request another code
+        </a>
+    </div>
+</body>
+</html>
