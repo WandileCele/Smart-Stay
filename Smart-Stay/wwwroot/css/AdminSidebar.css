@@ -16,22 +16,24 @@ body {
         color: #1f2937;
         margin-bottom: 35px;
     }
-
 .statistics {
     display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 25px;
+    width: 95%;
+    margin: 0 auto;
 }
 
 .stat-card {
-    width: 220px;
+    flex: 1;
+    min-width: 0;
     background: #fff;
-    padding: 25px;
-    border-radius: 18px;
+    padding: 25px 15px;
+    border-radius: 8px;
     text-align: center;
-    box-shadow: 0 8px 20px rgba(0,0,0,.08);
-    transition: .3s;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
 }
 
     .stat-card:hover {
@@ -58,26 +60,34 @@ body {
 }
 
 .logout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     background: #dc3545;
     color: white;
     border: none;
     border-radius: 30px;
     padding: 10px 22px;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: .3s;
+    transition: background 0.3s ease, transform 0.3s ease;
 }
+
+    .logout-btn i {
+        font-size: 19px;
+    }
 
     .logout-btn:hover {
         background: #bb2d3b;
         transform: translateY(-2px);
     }
-
 .table-container {
     width: 95%;
     margin: 35px auto;
     background: white;
-    border-radius: 20px;
+    border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 8px 20px rgba(0,0,0,.08);
 }
@@ -115,7 +125,7 @@ body {
 .status {
     color: white;
     padding: 8px 18px;
-    border-radius: 30px;
+    border-radius: 8px;
     font-weight: bold;
     display: inline-block;
 }
@@ -165,21 +175,26 @@ body {
         background: #bb2d3b;
         color: white;
     }
-
 .menu-toggle {
     position: fixed;
     top: 20px;
     left: 20px;
-    background: #0d6efd;
-    color: white;
+    background: #fff;
+    color: #000;
     border: none;
     border-radius: 8px;
     padding: 10px 15px;
     font-size: 22px;
     cursor: pointer;
     z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
+    .menu-toggle:hover {
+        background: #0d6efd;
+        color: #fff;
+    }
 .sidebar {
     position: fixed;
     top: 0;
@@ -226,17 +241,21 @@ body {
     }
 
 @media(max-width:900px) {
+        .statistics {
+            flex-direction: column;
+            align-items: stretch;
+            width: 90%;
+        }
+        .stat-card {
+            width: auto;
+            flex: auto;
+        }
 
-    .statistics {
-        flex-direction: column;
-        align-items: center;
-    }
+        .actions {
+            flex-direction: column;
+        }
 
-    .actions {
-        flex-direction: column;
-    }
-
-    .table-container {
-        overflow-x: auto;
-    }
+        .table-container {
+            overflow-x: auto;
+        }
 }

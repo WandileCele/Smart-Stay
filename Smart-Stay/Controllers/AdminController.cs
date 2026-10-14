@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Smart_Stay.Data;
 using Smart_Stay.Models;
+using Microsoft.AspNetCore.Identity;
 using Smart_Stay.Services;
 using System.Linq;
 using System.Security.Claims;
@@ -244,6 +245,47 @@ namespace Smart_Stay.Controllers
             await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Profile updated successfully!";
             return RedirectToAction(nameof(UpdateProfile));
+        }
+        [HttpGet]
+        public IActionResult RegisterAdmin()
+        {
+            return View(new AdminRegisterViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterAdmin(AdminRegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var email = model.Email.Trim().ToLowerInvariant();
+
+            if (await _context.Users.AnyAsync(u => u.Email == email))
+            {
+                ModelState.AddModelError("Email", "This email is already registered.");
+                return View(model);
+            }
+
+            var nameParts = model.FullName.Trim().Split(' ', 2);
+
+            var user = new User
+            {
+                FirstName = nameParts[0],
+                SurName = nameParts.Length > 1 ? nameParts[1] : "",
+                Email = email,
+                PhoneNo = model.PhoneNo.Trim(),
+                Role = "Admin",
+                DateRegistered = DateOnly.FromDateTime(DateTime.Now)
+            };
+
+            user.Password = new PasswordHasher<User>().HashPassword(user, model.Password);
+
+            _context.Admins.Add(new Admin { User = user });
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Admin account created for {user.FirstName}.";
+            return RedirectToAction(nameof(Dashboard));
         }
     }
 }

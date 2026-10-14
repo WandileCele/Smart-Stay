@@ -245,6 +245,58 @@
             padding: 8px 16px;
             cursor: pointer;
         }
+        /* =========================
+           REVIEW PAGE BACKGROUND
+        ========================= */
+
+        .review-container {
+            background: transparent;
+            position: relative;
+            z-index: 1;
+        }
+
+        body:has(.review-container) {
+            background: linear-gradient( 180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100% );
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* Page heading */
+        .review-header-row h2 {
+            color: #ffffff;
+        }
+
+        /* Horizontal divider */
+        .review-container hr {
+            border-color: rgba(255, 255, 255, 0.5);
+            opacity: 1;
+        }
+
+        /* Keep the property details readable */
+        .property-details,
+        .affidavit-section,
+        .images-section {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Responsive spacing */
+        @@media (max-width: 768px) {
+            .review-container
+
+        {
+            padding: 20px 12px;
+        }
+
+        .property-details,
+        .affidavit-section,
+        .images-section {
+            padding: 16px;
+        }
+
+        }
 
     </style>
 }

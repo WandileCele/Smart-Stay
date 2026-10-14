@@ -8,7 +8,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/LanlordDashboard.css" asp-append-version="true" />
-
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <style>
         .top-bar {
             display: flex;
@@ -227,9 +227,9 @@
                 Update Property
             </a>
 
-            <a asp-controller="Applications"
-               asp-action="ManageApplications">
-                📄 Manage Applications
+            <a asp-controller="Applications" asp-action="ManageApplications">
+                <i class="bi bi-file-earmark-text-fill"></i>
+                Manage Applications
             </a>
 
             <a asp-controller="Landlord"
@@ -238,9 +238,9 @@
                 Update Profile
             </a>
 
-            <a asp-controller="Home"
-               asp-action="Index">
-                🏠 Home
+            <a asp-controller="Home" asp-action="Index">
+                <i class="bi bi-house-door"></i>
+                Home
             </a>
 
         </div>

@@ -525,8 +525,11 @@ namespace Smart_Stay.Controllers
         // ==================== REGISTER ====================
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Register(string? role)
         {
+            if (role == "Admin" && !User.IsInRole("Admin"))
+                return Forbid();
+
             return View();
         }
 
@@ -534,6 +537,11 @@ namespace Smart_Stay.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            var allowedRoles = new[] { "Landlord", "Tenant" };
+            if (!allowedRoles.Contains(model.Role))
+                return BadRequest();
+
+
             if (!ModelState.IsValid)
                 return View(model);
 
