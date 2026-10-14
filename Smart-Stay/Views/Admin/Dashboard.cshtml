@@ -265,16 +265,7 @@
         }
 
         /* LOGOUT BUTTON WHITE PILL */
-        .logout-btn {
-            background: red;
-            color: #1857D6;
-            border: none;
-            padding: 9px 16px;
-            border-radius: 50px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+       
         .dashboard-header h2 {
             color: #fff;
             font-size: 38px;
@@ -313,7 +304,6 @@
     </style>
 }
 <partial name="_AdminSidebar" />
-<div class="top-bar">
 <div class="admin-dashboard">
  <div class="top-bar">
 
@@ -337,7 +327,6 @@
 </div>
 
 <div class="dashboard-header">
-    <h2>Welcome back, @Model.FirstName 👨💼!</h2>
     <h2>Welcome back, @Model.FirstName !👨‍💼</h2>
     <div class="statistics">
         <div class="stat-card">
@@ -403,16 +392,20 @@
 
 <div id="logout-loader" class="global-loader">
     <div class="loader-box">
-        <div class="house-loader" [STRIPPED 27 bytes]"0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <path class="house-outline" d="M15 50 L50 20 L85 50 L85 85 L15 85 Z M35 85 L35 60 L65 60 L65 85" />
-            <g class="house-key">
-                <circle cx="45" cy="55" r="6" />
-                <line x1="51" y1="55" x2="65" y2="55" />
-                <line x1="60" y1="55" x2="60" y2="61" />
-                <line x1="65" y1="55" x2="65" y2="61" />
-            </g>
+        <div class="house-loader">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path class="house-outline"
+                      d="M15 50 L50 20 L85 50 L85 85 L15 85 Z M35 85 L35 60 L65 60 L65 85" />
+
+                <g class="house-key">
+                    <circle cx="45" cy="55" r="6" />
+                    <line x1="51" y1="55" x2="65" y2="55" />
+                    <line x1="60" y1="55" x2="60" y2="61" />
+                    <line x1="65" y1="55" x2="65" y2="61" />
+                </g>
             </svg>
         </div>
+
         <p id="logout-loader-text">Locking up...</p>
     </div>
 </div>

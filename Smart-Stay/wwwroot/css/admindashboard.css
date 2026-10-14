@@ -5,8 +5,8 @@
 ============================================================ */
 
 /* Blue gradient background - like ManageUsers + RateProperty */
-body {
-    background: linear-gradient( 180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100% );
+html, body {
+    background: linear-gradient( 180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100% ) !important;
     background-attachment: fixed !important;
     min-height: 100vh;
 }
@@ -14,6 +14,9 @@ body {
 .admin-dashboard-page {
     padding: 20px 30px 100px 30px;
     min-height: 100vh;
+    background: transparent !important;
+    box-sizing: border-box;
+
 }
 
 /* =========================
@@ -51,20 +54,23 @@ body {
 }
 
 .logout-btn {
-    background: #fff;
-    color: #1857D6;
+    background: #dc3545;
+    color: #ffffff;
     border: none;
-    padding: 9px 16px;
-    border-radius: 50px;
-    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: .3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-    .logout-btn:hover {
-        background: #eef3ff;
-    }
-
+.logout-btn:hover {
+    background: #bb2d3b;
+    transform: translateY(-2px);
+}
 /* =========================
    DASHBOARD HEADER - WHITE TEXT ON BLUE
    ========================= */
@@ -87,7 +93,7 @@ body {
 
 .stat-card {
     background: #fff;
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 22px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0,0,0,0.18);
