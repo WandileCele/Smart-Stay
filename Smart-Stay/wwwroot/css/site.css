@@ -428,46 +428,46 @@ nav {
     }
 }
 
-
 /* ============================================================
    ABOUT PAGE
 ============================================================ */
-
 .about-wrap {
     max-width: 1000px;
     margin: 0 auto;
     padding: 40px 20px 80px;
     position: relative;
     overflow: hidden;
+    background: transparent;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+.about-wrap::before,
+.about-wrap::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.15;
+    z-index: -1;
+    animation: blobFloat 12s ease-in-out infinite;
 }
 
-    .about-wrap::before,
-    .about-wrap::after {
-        content: "";
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(60px);
-        opacity: 0.15;
-        z-index: -1;
-        animation: blobFloat 12s ease-in-out infinite;
-    }
+.about-wrap::before {
+    width: 300px;
+    height: 300px;
+    background: #2563eb;
+    top: -50px;
+    left: -100px;
+}
 
-    .about-wrap::before {
-        width: 300px;
-        height: 300px;
-        background: #2563eb;
-        top: -50px;
-        left: -100px;
-    }
-
-    .about-wrap::after {
-        width: 250px;
-        height: 250px;
-        background: #60a5fa;
-        bottom: 0;
-        right: -80px;
-        animation-delay: 3s;
-    }
+.about-wrap::after {
+    width: 250px;
+    height: 250px;
+    background: #60a5fa;
+    bottom: 0;
+    right: -80px;
+    animation-delay: 3s;
+}
 
 @keyframes blobFloat {
     0%, 100% {
@@ -483,17 +483,28 @@ nav {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    text-decoration: none;
-    color: #333;
+    padding: 10px 22px;
+    border-radius: 50px;
+    background: #ffffff;
+    color: #2d7df7;
+    border: 1px solid #ffffff;
     font-weight: 600;
+    text-decoration: none;
     margin-bottom: 30px;
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition: all 0.25s ease;
     opacity: 0;
     animation: aboutFadeUp 0.6s ease forwards;
 }
 
     .about-back:hover {
-        color: #2563eb;
+        background: #2d7df7;
+        color: #ffffff;
+        border-color: #ffffff;
+        transform: translateX(-4px);
+    }
+
+    .about-back:hover {
+        color: #bfdbfe;
         transform: translateX(-4px);
     }
 
@@ -509,12 +520,13 @@ nav {
     font-size: 2rem;
     font-weight: 800;
     margin-bottom: 20px;
+    color: #ffffff;
 }
 
 .about-desc {
     max-width: 700px;
     margin: 0 auto;
-    color: #555;
+    color: #e2e8f0;
     line-height: 1.7;
 }
 
@@ -526,6 +538,7 @@ nav {
     opacity: 0;
     animation: aboutFadeUp 0.6s ease forwards;
     animation-delay: 0.35s;
+    color: #ffffff;
 }
 
 @keyframes aboutFadeUp {
@@ -547,7 +560,6 @@ nav {
     gap: 40px;
 }
 
-
 /* Scroll-triggered reveal for each team card */
 
 .team-member {
@@ -564,7 +576,6 @@ nav {
         transform: translateY(0);
     }
 
-
 /* Gradient spinning ring around photo + tilt on hover */
 
 .team-photo-wrap {
@@ -580,7 +591,7 @@ nav {
         position: absolute;
         inset: -6px;
         border-radius: 50%;
-        background: conic-gradient(from 0deg, #2563eb, #60a5fa, #2563eb);
+        background: conic-gradient( from 0deg, #2563eb, #60a5fa, #2563eb );
         animation: ringSpin 4s linear infinite;
     }
 
@@ -613,6 +624,7 @@ nav {
     font-weight: 700;
     margin-bottom: 6px;
     transition: letter-spacing 0.25s ease;
+    color: #ffffff;
 }
 
     .team-name::after {
@@ -622,7 +634,7 @@ nav {
         bottom: -4px;
         width: 0;
         height: 2px;
-        background: #2563eb;
+        background: #60a5fa;
         transition: width 0.3s ease;
     }
 
@@ -636,68 +648,27 @@ nav {
 
 .team-desc {
     font-size: 0.9rem;
-    color: #666;
+    color: #e2e8f0;
     line-height: 1.5;
 }
-
-
-/* ============================================================
-   NO PROPERTIES
-============================================================ */
-
-.no-properties {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 60px 20px;
-    animation: fadeIn 0.6s ease-out;
+/* ABOUT PAGE BACKGROUND */
+html:has(.about-wrap),
+body:has(.about-wrap) {
+    min-height: 100%;
+    background: #122E4D;
 }
 
-    .no-properties i {
-        font-size: 3rem;
-        color: #b0b8c9;
-        margin-bottom: 16px;
-        animation: float 3s ease-in-out infinite;
+    body:has(.about-wrap) main {
+        background: transparent;
     }
 
-    .no-properties h3 {
-        font-size: 1.3rem;
-        color: #e8eefb; /* CHANGED */
-        margin-bottom: 6px;
+    body:has(.about-wrap) .about-wrap {
+        background: linear-gradient( 180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100% );
     }
 
-    .no-properties p {
-        color: #a9bde0; /* CHANGED */
-        font-size: 0.95rem;
-    }
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-8px);
-    }
-}
 /* =========================================================
    LANDLORD CONTACT ICONS
 ========================================================= */
-
 .landlord-contact {
     display: flex;
     justify-content: center;

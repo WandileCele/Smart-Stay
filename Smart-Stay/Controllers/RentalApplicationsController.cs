@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using Smart_Stay.Data;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Smart_Stay.Models;
 using System.Security.Claims;
 
@@ -18,6 +19,7 @@ namespace Smart_Stay.Controllers
     {
         private readonly SmartDbContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly PasswordHasher<User> _idNumberHasher =  new PasswordHasher<User>();
 
         public RentalApplicationsController(
             SmartDbContext context,
@@ -192,7 +194,7 @@ namespace Smart_Stay.Controllers
             {
                 ModelState.AddModelError(
                     nameof(model.Payslip),
-                    "Please upload your payslip.");
+                    "Please upload your payslip/Proof of funding.");
             }
 
             if (!model.AcceptTerms)
@@ -206,7 +208,7 @@ namespace Smart_Stay.Controllers
             {
                 ModelState.AddModelError(
                 nameof(model.Payslip),
-                "Please upload your payslip.");
+                "Please upload your payslip/Proof of funding.");
             }
             else
             {
@@ -214,7 +216,7 @@ namespace Smart_Stay.Controllers
                 {
                     ModelState.AddModelError(
                         nameof(model.Payslip),
-                        "Payslip must be 3MB or smaller.");
+                        "Payslip/Proof of funding must be 3MB or smaller.");
                 }
 
                 var extension = Path.GetExtension(model.Payslip.FileName)
@@ -224,7 +226,7 @@ namespace Smart_Stay.Controllers
                 {
                     ModelState.AddModelError(
                         nameof(model.Payslip),
-                        "Only PDF payslips are allowed.");
+                        "Only PDF payslips/proof of funding are allowed.");
                 }
             }
 
@@ -245,7 +247,7 @@ namespace Smart_Stay.Controllers
                 TenantId = tenantId,
                 ApplicationDate = DateOnly.FromDateTime(DateTime.Now),
                 RentalApplicationStatus = "Pending",
-                IdNumber = model.IdNumber,
+                IdNumber = _idNumberHasher.HashPassword(new User(),model.IdNumber.Trim()),
                 LandlordId = property.LandlordId,
                 PropertyId = model.PropertyId,
                 LeaseStartDate = model.LeaseStartDate,
@@ -406,7 +408,7 @@ namespace Smart_Stay.Controllers
                       column.Item().PaddingTop(15).Text("APPLICATION STATUS").Bold().FontSize(15);
                       column.Item().Text($"Status: {application.RentalApplicationStatus}");
                      column.Item().Text($"Lease: {model.LeaseStartDate} to {model.LeaseEndDate}");
-                       column.Item().Text("Payslip: Uploaded successfully");
+                       column.Item().Text("Payslip/Proof of funding: Uploaded successfully");
                        column.Item().Text("Terms and Conditions: Accepted");
 
                        column.Item().PaddingTop(30)

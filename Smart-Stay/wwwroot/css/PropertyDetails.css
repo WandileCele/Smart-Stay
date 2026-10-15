@@ -9,34 +9,33 @@
 .pd-back {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 6px;
     margin: 4px 0 20px;
-    padding: 9px 22px;
-    background: #fff;
-    color: #111827;
-    border: 1.5px solid #111827;
-    border-radius: 999px;
+    padding: 10px 18px;
+    background: #ffffff;
+    color: #0087c9;
+    border: 1px solid #0087c9;
+    border-radius: 8px;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 14px;
     text-decoration: none;
-    transition: background .2s ease, color .2s ease, transform .2s ease;
+    transition: all 0.2s ease;
 }
 
-    .pd-back:hover {
-        background: #111827;
-        color: #fff;
-        transform: translateY(-1px);
-    }
+.pd-back:hover {
+    background: #0087c9;
+    color: #ffffff;
+}
 
 .pd-back-arrow {
     display: inline-block;
-    transition: transform .2s ease;
+    transition: transform 0.2s ease;
 }
 
 .pd-back:hover .pd-back-arrow {
     transform: translateX(-4px);
 }
-
 /* ===== TOP LAYOUT ===== */
 .pd-top {
     display: grid;

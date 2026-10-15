@@ -4,11 +4,10 @@
 
 .faq-page {
     padding: 55px 40px 80px;
-    background: #f7f9fb;
-    min-height: 650px;
+    background: linear-gradient( 180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100% );
+    min-height: 100vh;
+    box-sizing: border-box;
 }
-
-
 /* =========================================================
    HEADER
 ========================================================= */
@@ -22,15 +21,14 @@
     .faq-header h1 {
         font-size: 36px;
         font-weight: 700;
-        color: #222;
+        color: #ffffff;
         margin-bottom: 10px;
     }
 
     .faq-header p {
-        color: #777;
+        color: #e2e8f0;
         font-size: 16px;
     }
-
 
 /* =========================================================
    BACK BUTTON
@@ -44,21 +42,24 @@
 .faq-back-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    padding: 11px 20px;
-    background: #0087c9;
-    color: white;
+    padding: 10px 22px;
+    background: #ffffff;
+    color: #2d7df7;
+    border: 1px solid #ffffff;
+    border-radius: 50px;
     text-decoration: none;
-    border-radius: 9px;
     font-size: 14px;
     font-weight: 600;
-    transition: 0.2s ease;
+    transition: all 0.25s ease;
 }
 
     .faq-back-btn:hover {
-        background: #006fa6;
-        color: white;
-        transform: translateY(-1px);
+        background: #2d7df7;
+        color: #ffffff;
+        border-color: #ffffff;
+        transform: translateX(-4px);
     }
 
 
