@@ -134,13 +134,24 @@
                         </div>
                         <span asp-validation-for="Payslip" class="validation"></span>
                     </div>
-
+                    
+                   
                     <div class="terms mt-4">
                         <input asp-for="AcceptTerms" type="checkbox" id="acceptTerms" />
-                        <label asp-for="AcceptTerms">I Accept T's & C's</label>
-                    </div>
-                    <span asp-validation-for="AcceptTerms" class="validation"></span>
 
+                        <label for="acceptTerms">
+                            I accept the
+                            <a asp-controller="Home"
+                               asp-action="Terms"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                T's & C's
+                            </a>
+                        </label>
+                    </div>
+
+                    <span asp-validation-for="AcceptTerms" class="validation"></span>
+             
                     <div class="buttons">
                         <button type="submit" class="submit-button">Submit Application</button>
                         <a href="javascript:history.back()" class="cancel-button">Cancel</a>

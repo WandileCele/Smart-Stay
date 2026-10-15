@@ -410,57 +410,11 @@
     <!-- =========================================================
          BACK BUTTON
     ========================================================= -->
-
-    <div class="pd-buttons">
-
-        @if (User.Identity != null && User.Identity.IsAuthenticated)
-        {
-            if (User.IsInRole("Landlord"))
-            {
-                <a asp-controller="Landlord"
-                   asp-action="Dashboard"
-                   class="pd-cta-outline">
-
-                    &laquo; Back to Dashboard
-
-                </a>
-            }
-            else if (User.IsInRole("Admin"))
-            {
-                <a asp-controller="Admin"
-                   asp-action="Dashboard"
-                   class="pd-cta-outline">
-
-                    &laquo; Back to Dashboard
-
-                </a>
-            }
-            else if (User.IsInRole("Tenant"))
-            {
-                <a asp-controller="Tenant"
-                   asp-action="Dashboard"
-                   class="pd-cta-outline">
-
-                    &laquo; Back to Dashboard
-
-                </a>
-            }
-        }
-        else
-        {
-            <a asp-controller="Home"
-               asp-action="Index"
-               class="pd-cta-outline">
-
-                &laquo; Back to Home
-
+        <div class="pd-buttons">
+            <a href="javascript:history.back()" class="pd-cta-outline">
+                <i class="fa-solid fa-arrow-left"></i> Back
             </a>
-        }
-
-    </div>
-
-
-
+        </div>
     <!-- =========================================================
          HEADER
     ========================================================= -->

@@ -4,8 +4,9 @@
 
 .contact-page {
     padding: 60px 40px 80px;
-    background: #f7f9fb;
-    min-height: 650px;
+    background: linear-gradient( 180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100% );
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 
