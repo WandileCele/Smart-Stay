@@ -2,20 +2,14 @@
 @{
     ViewData["Title"] = "Manage Users";
 }
-
 @section Styles {
     <link rel="stylesheet" href="~/css/manageusers.css" asp-append-version="true" />
 }
-
 <div class="manage-users-page">
     <div class="page-header">
-        <div>
-            <h2>Manage Users</h2>
-            <p>View and suspend user accounts.</p>
-        </div>
+        <div><h2>Manage Users</h2><p>View and suspend user accounts.</p></div>
         <a asp-controller="Admin" asp-action="Dashboard" class="back-button">← Back to Dashboard</a>
     </div>
-
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="feedback-message feedback-success">✓ @TempData["SuccessMessage"]</div>
@@ -25,130 +19,89 @@
         <div class="feedback-message feedback-error">✕ @TempData["ErrorMessage"]</div>
     }
 
-    @if (Model == null || !Model.Any())
-    {
-        <div class="users-table-container"><div class="empty-message">No user accounts found.</div></div>
-    }
-    else
-    {
-        <div class="users-table-container">
-            <div style="overflow-x:auto;">
-                <table class="users-table">
-                    <thead>
+    <div class="users-table-container">
+        <div style="overflow-x:auto;">
+            <table class="users-table">
+                <thead><tr><th>User ID</th><th>Name</th><th>Email</th><th>Role</th><th>Action</th></tr></thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
                         <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
-                            <th>Surname</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Role</th>
-                            <th>Action</th>
+                            <td>@user.UserId</td>
+                            <td>@user.FirstName @user.SurName</td>
+                            <td>@user.Email</td>
+                            <td>
+                                <span class="role-badge role-@user.Role.ToLower()">@user.Role</span>
+                                @if (user.IsSuspended)
+                                {
+                                    <span class="suspended-badge">Suspended</span>
+                                }
+                            </td>
+                            <td>
+                                <button type="button" class="action-button @(user.IsSuspended ? "unsuspend-button" : "suspend-button")"
+                                        onclick="openConfirmation('@user.UserId','@user.FirstName @user.SurName','@user.Email', @user.IsSuspended.ToString().ToLower())">
+                                    @(user.IsSuspended ? "Unsuspend" : "Suspend")
+                                </button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var user in Model)
-                        {
-                            <tr>
-                                <td>@user.UserId</td>
-                                <td>@user.FirstName</td>
-                                <td>@user.SurName</td>
-                                <td>@user.Email</td>
-                                <td>@user.PhoneNo</td>
-                                <td>
-                                    @if (user.Role == "Admin")
-                                    {
-                                        <span class="role-badge role-admin">Admin</span>
-                                    }
-                                    else if (user.Role == "Landlord")
-                                    {
-
-                                        <span class="role-badge role-landlord">Landlord</span>
-                                    }
-                                    else
-                                    {
-
-                                        <span class="role-badge role-tenant">Tenant</span>
-                                    }
-                                    @if (user.IsSuspended)
-                                    {
-                                        <span class="suspended-badge">Suspended</span>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <form asp-controller="Admin" asp-action="SuspendUser" method="post" class="suspend-form">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="id" value="@user.UserId" />
-                                            <button type="button"
-                                                    class="action-button @(user.IsSuspended ? "unsuspend-button" : "suspend-button")"
-                                                    onclick="openConfirmation('@user.UserId','@user.FirstName @user.SurName', @user.IsSuspended.ToString().ToLower())">
-                                                @(user.IsSuspended ? "Unsuspend" : "Suspend")
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    }
-</div>
-
-<div id="confirmationOverlay" class="confirmation-overlay">
-    <div class="confirmation-box">
-        <div class="confirmation-header"><h4 id="confirmationTitle">Confirm Action</h4></div>
-        <div class="confirmation-body"><p id="confirmationMessage">Are you sure?</p></div>
-        <div class="confirmation-footer">
-            <button type="button" class="modal-cancel" onclick="closeConfirmation()">Cancel</button>
-            <button type="button" id="confirmActionButton" class="modal-confirm">Confirm</button>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<script>
-    let selectedUserId = "";
-    let selectedUserName = "";
-    let selectedIsSuspended = false;
+<div id="confirmationOverlay" class="confirmation-overlay" style="display:none;">
+    <div class="confirmation-box">
+        <form id="suspendForm" asp-controller="Admin" asp-action="SuspendUser" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="suspendUserId" />
+            <div class="confirmation-header"><h4 id="confirmationTitle">Confirm Action</h4></div>
+            <div class="confirmation-body">
+                <p id="confirmationMessage"></p>
+                <div id="reasonContainer" style="margin-top:12px;">
+                    <label for="suspendReason"><b>Reason for suspension *</b></label>
+                    <textarea id="suspendReason" name="reason" class="form-control" rows="4" required minlength="10" placeholder="e.g. Violation of listing policy, fake documents..."></textarea>
+                    <small>Will be sent to user via email.</small>
+                </div>
+            </div>
+            <div class="confirmation-footer">
+                <button type="button" class="modal-cancel" onclick="closeConfirmation()">Cancel</button>
+                <button type="submit" id="confirmActionButton" class="modal-confirm">Confirm</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-    function openConfirmation(userId, userName, isSuspended) {
-        selectedUserId = userId;
-        selectedUserName = userName;
-        selectedIsSuspended = isSuspended;
+<script>
+    function openConfirmation(userId, userName, userEmail, isSuspended) {
+        document.getElementById('suspendUserId').value = userId;
         const overlay = document.getElementById("confirmationOverlay");
         const title = document.getElementById("confirmationTitle");
         const message = document.getElementById("confirmationMessage");
-        const confirmButton = document.getElementById("confirmActionButton");
+        const reasonBox = document.getElementById("reasonContainer");
+        const confirmBtn = document.getElementById("confirmActionButton");
+        const reasonInput = document.getElementById("suspendReason");
 
         if (isSuspended === true) {
             title.innerText = "Confirm Unsuspension";
-            message.innerHTML = "Are you sure you want to unsuspend <span class='user-name-confirmation'>" + selectedUserName + "</span>? The user will be able to access their account again.";
-            confirmButton.innerText = "Unsuspend";
-            confirmButton.className = "modal-confirm modal-confirm-unsuspend";
+            message.innerHTML = "Are you sure you want to unsuspend <span class='user-name-confirmation'>" + userName + "</span> ("+userEmail+")?";
+            reasonBox.style.display = "none";
+            reasonInput.required = false;
+            confirmBtn.innerText = "Unsuspend";
+            confirmBtn.className = "modal-confirm modal-confirm-unsuspend";
         } else {
             title.innerText = "Confirm Suspension";
-            message.innerHTML = "Are you sure you want to suspend <span class='user-name-confirmation'>" + selectedUserName + "</span>? The user will no longer be able to access their account.";
-            confirmButton.innerText = "Suspend";
-            confirmButton.className = "modal-confirm modal-confirm-suspend";
+            message.innerHTML = "Suspend <span class='user-name-confirmation'>" + userName + "</span>? The user will be emailed the reason.";
+            reasonBox.style.display = "block";
+            reasonInput.required = true;
+            reasonInput.value = "";
+            confirmBtn.innerText = "Suspend & Send Email";
+            confirmBtn.className = "modal-confirm modal-confirm-suspend";
         }
         overlay.style.display = "flex";
     }
-
-    function closeConfirmation() {
-        document.getElementById("confirmationOverlay").style.display = "none";
-    }
-
-    document.getElementById("confirmActionButton").addEventListener("click", function () {
-        const input = document.querySelector('.suspend-form input[name="id"][value="' + selectedUserId + '"]');
-        if (input) { input.closest("form").submit(); }
-    });
-
-    document.getElementById("confirmationOverlay").addEventListener("click", function (event) {
-        if (event.target === this) { closeConfirmation(); }
-    });
-
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") { closeConfirmation(); }
-    });
+    function closeConfirmation() { document.getElementById("confirmationOverlay").style.display = "none"; }
+    document.getElementById("confirmationOverlay").addEventListener("click", e => { if(e.target===e.currentTarget) closeConfirmation(); });
+    document.addEventListener("keydown", e => { if(e.key==="Escape") closeConfirmation(); });
 </script>

@@ -1,12 +1,10 @@
-﻿/* =========================================================
-   TENANT DASHBOARD
-========================================================= */
+﻿
 .tenant-dashboard {
     min-height: 100vh;
     background: linear-gradient(180deg, #2d7df7 0%, #1f5fc4 35%, #174a94 65%, #122E4D 100%);
 }
 
-/* menu button: same as the landlord dashboard */
+
 .menu-toggle {
     position: fixed;
     top: 20px;
@@ -123,14 +121,16 @@
 
 .tenant-logout {
     background: #dc3545;
+    color: #ffffff;
     border: none;
-    color: white;
-    padding: 12px 28px;
-    border-radius: 25px;
-    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 30px;
     font-weight: 600;
     cursor: pointer;
     transition: .3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
     .tenant-logout:hover {
@@ -548,9 +548,7 @@
     }
 }
 
-/* =========================================================
-   TABLET + PHONE: keep heading clear of the fixed buttons
-========================================================= */
+
 
 @media (max-width: 1100px) {
 

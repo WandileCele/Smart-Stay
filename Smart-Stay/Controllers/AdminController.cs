@@ -167,15 +167,70 @@ namespace Smart_Stay.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SuspendUser(int id)
+        public async Task<IActionResult> SuspendUser(int id, string reason)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
             if (user == null) return NotFound();
 
-            user.IsSuspended = !user.IsSuspended;
+
+            if (user.IsSuspended)
+            {
+                user.IsSuspended = false;
+                await _context.SaveChangesAsync();
+
+                try
+                {
+                    var subject = "SmartStay - Account Reactivated";
+                    var body = $@"<div style='font-family:Arial'><h2>Account Reactivated</h2>
+            <p>Hi {System.Net.WebUtility.HtmlEncode(user.FirstName)},</p>
+            <p>Your account <b>{user.Email}</b> has been reactivated. You can now log in.</p></div>";
+                    await _emailService.SendEmailAsync(user.Email, subject, body);
+                }
+                catch { }
+
+                TempData["SuccessMessage"] = $"User {user.Email} unsuspended.";
+                return RedirectToAction(nameof(ManageUsers));
+            }
+
+
+            if (string.IsNullOrWhiteSpace(reason))
+            {
+                TempData["ErrorMessage"] = "Please provide a reason for suspension.";
+                return RedirectToAction(nameof(ManageUsers));
+            }
+
+            reason = reason.Trim();
+            if (reason.Length < 10)
+            {
+                TempData["ErrorMessage"] = "Reason must be at least 10 characters.";
+                return RedirectToAction(nameof(ManageUsers));
+            }
+
+            user.IsSuspended = true;
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = user.IsSuspended ? "User suspended successfully." : "User unsuspended successfully.";
+
+            var safeName = System.Net.WebUtility.HtmlEncode(user.FirstName);
+            var safeReason = System.Net.WebUtility.HtmlEncode(reason).Replace("\r\n", "<br>").Replace("\n", "<br>");
+            var htmlBody = $@"<div style='font-family:Arial,sans-serif;line-height:1.6;color:#333;'>
+        <h2>Smart Stay - Account Suspension Notice</h2>
+        <p>Dear {safeName},</p>
+        <p>Your account has been suspended.</p>
+        <h3>Reason for suspension</h3>
+        <p style='background:#fff3cd;padding:12px;border-radius:6px;'>{safeReason}</p>
+        <p>If you believe this is a mistake, please contact support.</p>
+        <p>Kind regards,<br/>Smart Stay Team</p></div>";
+
+            try
+            {
+                await _emailService.SendEmailAsync(user.Email, "Account Suspended - SmartStay", htmlBody);
+                TempData["SuccessMessage"] = $"User {user.Email} suspended and emailed reason.";
+            }
+            catch
+            {
+                TempData["SuccessMessage"] = $"User {user.Email} suspended (email failed to send).";
+            }
+
             return RedirectToAction(nameof(ManageUsers));
         }
 

@@ -39,7 +39,8 @@
             height: 42px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #0d6efd;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         .profile-pic-fallback {
@@ -183,7 +184,7 @@
 
             <a asp-controller="Home" asp-action="Index">
                 <i class="bi bi-house-door"></i>
-                Back to Main Site
+                Home
             </a>
 
         </div>
@@ -230,7 +231,7 @@
                     @Html.AntiForgeryToken()
 
                     <button type="submit" class="tenant-logout">
-                        Logout
+                        <i class="bi bi-box-arrow-right"></i> Logout
                     </button>
 
                 </form>
