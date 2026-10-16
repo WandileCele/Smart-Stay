@@ -366,6 +366,58 @@ namespace Smart_Stay.Controllers
             return File(pdfBytes, "application/pdf", "SmartStay_Rental_Application.pdf");
         }
 
+        // ============================================================
+        // DELETE RENTAL APPLICATION - WITH CONFIRMATION
+        // ============================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out int tenantId))
+                return RedirectToAction("Login", "Account");
+
+            var application = await _context.RentalApplications
+               .Include(a => a.Documents)
+               .FirstOrDefaultAsync(a => a.RentalApplicationId == id && a.TenantId == tenantId);
+
+            if (application == null)
+            {
+                TempData["ErrorMessage"] = "Application not found.";
+                return RedirectToAction("Dashboard", "Tenant");
+            }
+
+            if (application.RentalApplicationStatus != "Pending")
+            {
+                TempData["ErrorMessage"] = $"You cannot delete an application that is {application.RentalApplicationStatus}.";
+                return RedirectToAction("Dashboard", "Tenant");
+            }
+
+            // Delete payslip files
+            foreach (var doc in application.Documents.ToList())
+            {
+                if (!string.IsNullOrEmpty(doc.DocumentPath))
+                {
+                    var fullPath = Path.Combine(_environment.WebRootPath, doc.DocumentPath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+                    if (System.IO.File.Exists(fullPath))
+                        System.IO.File.Delete(fullPath);
+                }
+                _context.Documents.Remove(doc);
+            }
+
+            // Delete generated PDF
+            var pdfPath = Path.Combine(_environment.ContentRootPath, "App_Data", "GeneratedPdfs", $"application_{id}.pdf");
+            if (System.IO.File.Exists(pdfPath))
+                System.IO.File.Delete(pdfPath);
+
+            _context.RentalApplications.Remove(application);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Application for '{application.Property?.Title ?? "property"}' deleted successfully.";
+            return RedirectToAction("Dashboard", "Tenant");
+        }
+
 
         // ============================================================
         // CREATE APPLICATION PDF

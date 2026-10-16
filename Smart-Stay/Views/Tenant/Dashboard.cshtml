@@ -1,20 +1,16 @@
 ﻿@model Smart_Stay.Models.TenantDashboardViewModel
-
 @{
     ViewData["Title"] = "Tenant Dashboard";
 }
-
 @section Styles {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/tenant-dashboard.css" asp-append-version="true" />
-
     <style>
-
         .global-loader {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255,255,255,0.85);
             z-index: 9999;
             align-items: center;
             justify-content: center;
@@ -103,40 +99,44 @@
                 stroke-width: 3;
                 stroke-linecap: round;
             }
-
         @@keyframes draw-house {
-            0% {
-                stroke-dashoffset: 220;
-                opacity: 0.3;
-            }
+            0%
 
-            50% {
-                stroke-dashoffset: 0;
-                opacity: 1;
-            }
-
-            100% {
-                stroke-dashoffset: 0;
-                opacity: 0.3;
-            }
+        {
+            stroke-dashoffset: 220;
+            opacity: 0.3;
         }
 
+        50% {
+            stroke-dashoffset: 0;
+            opacity: 1;
+        }
+
+        100% {
+            stroke-dashoffset: 0;
+            opacity: 0.3;
+        }
+
+        }
         @@keyframes turn-key {
-            0%, 20% {
-                transform: rotate(0deg);
-            }
+            0%,20%
 
-            40% {
-                transform: rotate(-25deg);
-            }
+        {
+            transform: rotate(0deg);
+        }
 
-            60% {
-                transform: rotate(15deg);
-            }
+        40% {
+            transform: rotate(-25deg);
+        }
 
-            80%, 100% {
-                transform: rotate(0deg);
-            }
+        60% {
+            transform: rotate(15deg);
+        }
+
+        80%, 100% {
+            transform: rotate(0deg);
+        }
+
         }
 
         #logout-loader-text {
@@ -147,69 +147,219 @@
             transition: opacity 0.25s ease;
         }
 
+        .tenant-alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideDown 0.3s ease;
+        }
+        @@keyframes slideDown {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .tenant-alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .tenant-alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .delete-application-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+            margin-left: 8px;
+            padding: 8px 14px;
+            background: #fff;
+            border: 1px solid #ffe1e6;
+            color: #e11d48;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+            .delete-application-btn:hover {
+                background: #fff1f3;
+                transform: translateY(-1px);
+            }
+
+        .view-property-button, .rate-property-button, .already-rated, .delete-application-btn {
+            vertical-align: middle;
+        }
+
+        .reject-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 2500;
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+
+            .reject-modal-overlay.active {
+                display: flex;
+            }
+
+        .reject-modal {
+            background: #fff;
+            border-radius: 16px;
+            width: min(460px,92vw);
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            animation: modalPop 0.2s ease;
+        }
+        @@keyframes modalPop {
+            from
+
+        {
+            transform: scale(0.96);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        }
+
+        .reject-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px 14px;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+            .reject-modal-header strong {
+                font-size: 16px;
+                font-weight: 800;
+                color: #122E4D;
+            }
+
+        .reject-modal-close {
+            color: #94a3b8;
+            font-size: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+            .reject-modal-close:hover {
+                color: #334155;
+            }
+
+        .reject-modal-body {
+            padding: 20px 22px 18px;
+        }
+
+            .reject-modal-body label {
+                display: block;
+                font-weight: 700;
+                margin-bottom: 8px;
+                font-size: 13px;
+                color: #122E4D;
+            }
+
+            .reject-modal-body p {
+                font-size: 13.5px;
+                color: #475569;
+                margin: 8px 0 0;
+            }
+
+            .reject-modal-body small {
+                display: block;
+                margin-top: 8px;
+                color: #64748b;
+                font-size: 11.5px;
+            }
+
+        .reject-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .reject-modal-cancel-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 9px 16px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            color: #475569;
+        }
+
+            .reject-modal-cancel-btn:hover {
+                background: #f1f5f9;
+            }
+
+        .reject-modal-confirm-btn {
+            background: #ef4444;
+            border: none;
+            color: #fff;
+            border-radius: 10px;
+            padding: 9px 18px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(239,68,68,0.25);
+        }
+
+            .reject-modal-confirm-btn:hover {
+                background: #dc2626;
+            }
     </style>
 }
-
 <div class="tenant-dashboard">
-
     <div class="sidebar-container">
-
-        <button class="menu-toggle" onclick="toggleMenu()">
-            ☰
-        </button>
-
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
         <div class="sidebar" id="sidebar">
-
             <h3>Tenant Menu</h3>
-
-            <a asp-controller="Tenant" asp-action="Dashboard">
-                <i class="bi bi-speedometer2"></i>
-                Dashboard
-            </a>
-
-            <a href="#applications">
-                <i class="bi bi-file-earmark-text-fill"></i>
-                My Applications
-            </a>
-
-            <a asp-controller="Tenant" asp-action="BrowseProperties">
-                <i class="bi bi-search"></i>
-                Browse Properties
-            </a>
-
-            <a asp-controller="Tenant" asp-action="UpdateProfile">
-                <i class="bi bi-person-circle"></i>
-                Update Profile
-            </a>
-
-            <a asp-controller="Home" asp-action="Index">
-                <i class="bi bi-house-door"></i>
-                Home
-            </a>
-
+            <a asp-controller="Tenant" asp-action="Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            <a href="#applications"><i class="bi bi-file-earmark-text-fill"></i> My Applications</a>
+            <a asp-controller="Tenant" asp-action="BrowseProperties"><i class="bi bi-search"></i> Browse Properties</a>
+            <a asp-controller="Tenant" asp-action="UpdateProfile"><i class="bi bi-person-circle"></i> Update Profile</a>
+            <a asp-controller="Home" asp-action="Index"><i class="bi bi-house-door"></i> Home</a>
         </div>
-
     </div>
 
     <main class="tenant-main expanded" id="tenantMain">
-
         <div class="tenant-header">
-
             <div class="tenant-welcome">
-
-                <h1>
-                    Welcome back, @Model.TenantName! 🏠
-                </h1>
-
-                <p>
-                    Track your accommodation applications
-                    and manage your rental journey.
-                </p>
-
+                <h1>Welcome back, @Model.TenantName! 🏠</h1>
+                <p>Track your accommodation applications and manage your rental journey.</p>
             </div>
-
             <div class="tenant-header-actions">
-
                 <a asp-controller="Tenant" asp-action="UpdateProfile" title="Update Profile">
                     @if (!string.IsNullOrWhiteSpace(Model.ProfileImagePath))
                     {
@@ -217,405 +367,223 @@
                     }
                     else
                     {
-                        <div class="profile-pic-fallback">
-                            <i class="bi bi-person-fill"></i>
-                        </div>
+                        <div class="profile-pic-fallback"><i class="bi bi-person-fill"></i></div>
                     }
                 </a>
-
-                <form asp-controller="Account"
-                      asp-action="Logout"
-                      method="post"
-                      id="logoutForm">
-
+                <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
                     @Html.AntiForgeryToken()
-
-                    <button type="submit" class="tenant-logout">
-                        <i class="bi bi-box-arrow-right"></i> Logout
-                    </button>
-
+                    <button type="submit" class="tenant-logout"><i class="bi bi-box-arrow-right"></i> Logout</button>
                 </form>
-
             </div>
-
         </div>
 
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="tenant-alert tenant-alert-success" id="successAlert">
+                <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="tenant-alert tenant-alert-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
+            </div>
+        }
+
         <section class="dashboard-summary">
-
-            <div class="summary-card">
-                <div class="summary-number">
-                    @Model.TotalApplications
-                </div>
-                <div class="summary-title">
-                    Total Applications
-                </div>
-            </div>
-
-            <div class="summary-card">
-                <div class="summary-number">
-                    @Model.ApprovedApplications
-                </div>
-                <div class="summary-title">
-                    Approved
-                </div>
-            </div>
-
-            <div class="summary-card">
-                <div class="summary-number">
-                    @Model.PendingApplications
-                </div>
-                <div class="summary-title">
-                    Pending
-                </div>
-            </div>
-
-            <div class="summary-card">
-                <div class="summary-number">
-                    @Model.RejectedApplications
-                </div>
-                <div class="summary-title">
-                    Rejected
-                </div>
-            </div>
-
+            <div class="summary-card"><div class="summary-number">@Model.TotalApplications</div><div class="summary-title">Total Applications</div></div>
+            <div class="summary-card"><div class="summary-number">@Model.ApprovedApplications</div><div class="summary-title">Approved</div></div>
+            <div class="summary-card"><div class="summary-number">@Model.PendingApplications</div><div class="summary-title">Pending</div></div>
+            <div class="summary-card"><div class="summary-number">@Model.RejectedApplications</div><div class="summary-title">Rejected</div></div>
         </section>
 
         <section class="applications-section" id="applications">
-
             <div class="section-heading">
-
-                <h2>
-                    My Accommodations
-                </h2>
-
-                <a asp-controller="Tenant"
-                   asp-action="BrowseProperties">
-                    Browse Properties
-                </a>
-
+                <h2>My Accommodations</h2>
+                <a asp-controller="Tenant" asp-action="BrowseProperties">Browse Properties</a>
             </div>
 
             <div class="accommodation-filters">
-
-                <button type="button"
-                        class="filter-pill active"
-                        data-filter="Current">
-                    Current
-                </button>
-
-                <button type="button"
-                        class="filter-pill"
-                        data-filter="Past">
-                    Past
-                </button>
-
-                <button type="button"
-                        class="filter-pill"
-                        data-filter="Rejected">
-                    Rejected
-                </button>
-
+                <button type="button" class="filter-pill active" data-filter="Current">Current</button>
+                <button type="button" class="filter-pill" data-filter="Past">Past</button>
+                <button type="button" class="filter-pill" data-filter="Rejected">Rejected</button>
             </div>
 
-            @if (Model.Applications != null &&
-                        Model.Applications.Any())
+            @if (Model.Applications != null && Model.Applications.Any())
             {
-
-                <div class="tenant-application-grid"
-                     id="accommodationGrid">
-
+                <div class="tenant-application-grid" id="accommodationGrid">
                     @foreach (var application in Model.Applications)
                     {
-
-                        <div class="tenant-property-card"
-                             data-category="@application.FilterCategory">
-
+                        <div class="tenant-property-card" data-category="@application.FilterCategory">
                             <div class="tenant-property-image">
-
                                 @if (!string.IsNullOrEmpty(application.ImagePath))
                                 {
-                                    <img src="@application.ImagePath"
-                                         alt="@application.PropertyTitle" />
+                                    <img src="@application.ImagePath" alt="@application.PropertyTitle" />
                                 }
                                 else
                                 {
-                                    <div class="no-property-image">
-                                        🏠
-                                    </div>
+                                    <div class="no-property-image">🏠</div>
                                 }
-
                             </div>
-
                             <div class="tenant-property-content">
-
-                                <h3>
-                                    @application.PropertyTitle
-                                </h3>
-
-                                <!-- LOCATION -->
-                                <p class="property-location">
-                                    <i class="fa-solid fa-location-dot"></i>
-                                    @application.Location
-                                </p>
-
-                                <!-- BEDROOMS -->
-                                <p>
-                                    <i class="fa-solid fa-bed"></i>
-                                    @application.Bedrooms Bedrooms
-                                </p>
-
-                                <!-- BATHROOMS -->
-                                <p>
-                                    <i class="fa-solid fa-bath"></i>
-                                    @application.Bathrooms Bathrooms
-                                </p>
-
-                                <!-- PRICE -->
-                                <p class="property-price">
-                                    <i class="fa-solid fa-money-bill"></i>
-                                    R @application.Price.ToString("N2") / Month
-                                </p>
-
-                                <p class="application-date">
-                                    Applied:
-                                    @application.ApplicationDate.ToString("dd MMM yyyy")
-                                </p>
-
-                                @if (application.LeaseStartDate.HasValue &&
-                                                        application.LeaseEndDate.HasValue)
+                                <h3>@application.PropertyTitle</h3>
+                                <p class="property-location"><i class="fa-solid fa-location-dot"></i> @application.Location</p>
+                                <p><i class="fa-solid fa-bed"></i> @application.Bedrooms Bedrooms</p>
+                                <p><i class="fa-solid fa-bath"></i> @application.Bathrooms Bathrooms</p>
+                                <p class="property-price"><i class="fa-solid fa-money-bill"></i> R @application.Price.ToString("N2") / Month</p>
+                                <p class="application-date">Applied: @application.ApplicationDate.ToString("dd MMM yyyy")</p>
+                                @if (application.LeaseStartDate.HasValue && application.LeaseEndDate.HasValue)
                                 {
-                                    <p class="application-date">
-                                        Lease:
-                                        @application.LeaseStartDate.Value.ToString("dd MMM yyyy")
-                                        to
-                                        @application.LeaseEndDate.Value.ToString("dd MMM yyyy")
-                                    </p>
+                                    <p class="application-date">Lease: @application.LeaseStartDate.Value.ToString("dd MMM yyyy") to @application.LeaseEndDate.Value.ToString("dd MMM yyyy")</p>
                                 }
-
                                 <div class="application-status">
-
                                     @if (application.ApplicationStatus == "Approved")
                                     {
-                                        <span class="status approved">
-                                            ✓ Approved
-                                        </span>
+                                        <span class="status approved">✓ Approved</span>
                                     }
                                     else if (application.ApplicationStatus == "Pending")
                                     {
-                                        <span class="status pending">
-                                            ⏳ Pending
-                                        </span>
+
+                                        <span class="status pending">⏳ Pending</span>
                                     }
                                     else if (application.ApplicationStatus == "Rejected")
                                     {
-                                        <span class="status rejected">
-                                            ✕ Rejected
-                                        </span>
+
+                                        <span class="status rejected">✕ Rejected</span>
                                     }
                                     else
                                     {
-                                        <span class="status">
-                                            @application.ApplicationStatus
-                                        </span>
-                                    }
 
+                                        <span class="status">@application.ApplicationStatus</span>
+                                    }
                                 </div>
 
-                                <!-- BUTTONS — KEPT SIDE-BY-SIDE -->
-                                <a asp-controller="Properties"
-                                   asp-action="Details"
-                                   asp-route-id="@application.PropertyId"
-                                   class="view-property-button">
-                                    View Property
-                                </a>
+                                <a asp-controller="Properties" asp-action="Details" asp-route-id="@application.PropertyId" class="view-property-button">View Property</a>
 
-                                @if (application.CanRate &&
-                                                        !application.HasRated)
+                                @if (application.CanRate && !application.HasRated)
                                 {
-                                    <a asp-controller="Tenant"
-                                       asp-action="RateProperty"
-                                       asp-route-applicationId="@application.RentalApplicationId"
-                                       class="rate-property-button">
-                                        ⭐ Rate Property
-                                    </a>
+                                    <a asp-controller="Tenant" asp-action="RateProperty" asp-route-applicationId="@application.RentalApplicationId" class="rate-property-button">⭐ Rate Property</a>
                                 }
                                 else if (application.HasRated)
                                 {
-                                    <span class="already-rated">
-                                        ✓ Rated
-                                    </span>
+                                    <span class="already-rated">✓ Rated</span>
                                 }
 
+                                @if (application.ApplicationStatus == "Pending")
+                                {
+                                    <button type="button" class="delete-application-btn" data-id="@application.RentalApplicationId" data-title="@application.PropertyTitle">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                }
                             </div>
-
                         </div>
-
                     }
-
                 </div>
-
-                <p class="no-applications"
-                   id="noFilterResults"
-                   style="display:none;">
-                    No accommodations in this category.
-                </p>
-
+                <p class="no-applications" id="noFilterResults" style="display:none;">No accommodations in this category.</p>
             }
             else
             {
-
                 <div class="no-applications">
-
-                    <div class="no-applications-icon">
-                        🏠
-                    </div>
-
-                    <h3>
-                        You haven't applied for any
-                        accommodation yet.
-                    </h3>
-
-                    <p>
-                        Browse available properties and find
-                        a place that feels like home.
-                    </p>
-
-                    <a asp-controller="Tenant"
-                       asp-action="BrowseProperties"
-                       class="browse-button">
-                        Browse Properties
-                    </a>
-
+                    <div class="no-applications-icon">🏠</div>
+                    <h3>You haven't applied for any accommodation yet.</h3>
+                    <p>Browse available properties and find a place that feels like home.</p>
+                    <a asp-controller="Tenant" asp-action="BrowseProperties" class="browse-button">Browse Properties</a>
                 </div>
-
             }
-
         </section>
-
     </main>
-
 </div>
 
 <div id="logout-loader" class="global-loader">
     <div class="loader-box">
-
         <div class="house-loader">
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-
-                <!-- House outline -->
-                <path class="house-outline"
-                      d="M15 50 L50 20 L85 50 L85 85 L15 85 Z M35 85 L35 60 L65 60 L65 85" />
-
-                <!-- Key -->
+                <path class="house-outline" d="M15 50 L50 20 L85 50 L85 85 L15 85 Z M35 85 L35 60 L65 60 L65 85" />
                 <g class="house-key">
                     <circle cx="45" cy="55" r="6" />
                     <line x1="51" y1="55" x2="65" y2="55" />
                     <line x1="60" y1="55" x2="60" y2="61" />
                     <line x1="65" y1="55" x2="65" y2="61" />
                 </g>
-
             </svg>
         </div>
-
         <p id="logout-loader-text">Wrapping up your search...</p>
     </div>
 </div>
 
+<div id="deleteConfirmOverlay" class="reject-modal-overlay">
+    <div class="reject-modal">
+        <div class="reject-modal-header"><strong>Delete Application</strong><button type="button" id="deleteModalClose" class="reject-modal-close">&times;</button></div>
+        <form id="deleteForm" asp-controller="RentalApplications" asp-action="Delete" method="post" class="reject-modal-body">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="deleteApplicationId" />
+            <label>Are you sure you want to delete?</label>
+            <p>You are about to delete your application for <strong id="deletePropertyName"></strong>. This action cannot be undone.</p>
+            <small>Your payslip and confirmation PDF will be permanently removed.</small>
+            <div class="reject-modal-actions">
+                <button type="button" id="deleteModalCancel" class="reject-modal-cancel-btn">Cancel</button>
+                <button type="submit" class="reject-modal-confirm-btn">Delete Application</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @section Scripts {
-
     <script>
-
-        function toggleMenu() {
-            var sidebar = document.getElementById("sidebar");
-            sidebar.classList.toggle("show");
-        }
-
-        const filterButtons =
-            document.querySelectorAll(".filter-pill");
-
-        const propertyCards =
-            document.querySelectorAll(".tenant-property-card");
-
-        const noResultsMsg =
-            document.getElementById("noFilterResults");
-
+        function toggleMenu() { var sidebar = document.getElementById("sidebar"); sidebar.classList.toggle("show"); }
+        const filterButtons = document.querySelectorAll(".filter-pill");
+        const propertyCards = document.querySelectorAll(".tenant-property-card");
+        const noResultsMsg = document.getElementById("noFilterResults");
         function applyFilter(category) {
             let visibleCount = 0;
-
             propertyCards.forEach(card => {
-
-                if (card.dataset.category === category) {
-                    card.style.display = "";
-                    visibleCount++;
-                }
-                else {
-                    card.style.display = "none";
-                }
-
+                if (card.dataset.category === category) { card.style.display = ""; visibleCount++; }
+                else { card.style.display = "none"; }
             });
-
-            if (noResultsMsg) {
-                noResultsMsg.style.display =
-                    visibleCount === 0 ? "block" : "none";
-            }
+            if (noResultsMsg) { noResultsMsg.style.display = visibleCount === 0 ? "block" : "none"; }
         }
-
         filterButtons.forEach(button => {
-
             button.addEventListener("click", function () {
-
-                filterButtons.forEach(b =>
-                    b.classList.remove("active"));
-
+                filterButtons.forEach(b => b.classList.remove("active"));
                 this.classList.add("active");
-
                 applyFilter(this.dataset.filter);
-
             });
-
         });
+        if (propertyCards.length > 0) { applyFilter("Current"); }
 
-        if (propertyCards.length > 0) {
-            applyFilter("Current");
-        }
+        const deleteOverlay = document.getElementById("deleteConfirmOverlay");
+        const deletePropertyName = document.getElementById("deletePropertyName");
+        const deleteApplicationId = document.getElementById("deleteApplicationId");
+        document.querySelectorAll(".delete-application-btn").forEach(btn => {
+            btn.addEventListener("click", function() {
+                deleteApplicationId.value = this.dataset.id;
+                deletePropertyName.textContent = this.dataset.title;
+                deleteOverlay.classList.add("active");
+            });
+        });
+        document.getElementById("deleteModalClose")?.addEventListener("click", () => deleteOverlay.classList.remove("active"));
+        document.getElementById("deleteModalCancel")?.addEventListener("click", () => deleteOverlay.classList.remove("active"));
+        deleteOverlay?.addEventListener("click", e => { if(e.target === deleteOverlay) deleteOverlay.classList.remove("active"); });
 
-        // ================================================
-        // LOGOUT LOADER
-        // ================================================
+        const successAlert = document.getElementById("successAlert");
+        if(successAlert){ setTimeout(()=> successAlert.style.display="none", 4000); }
 
         (function () {
             const form = document.getElementById("logoutForm");
             const loader = document.getElementById("logout-loader");
             const loaderText = document.getElementById("logout-loader-text");
-
             const tenantName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TenantName));
-
-            const captions = [
-                "Wrapping up your search...",
-                "Saving your applications...",
-                "Securing your account...",
-                "See you soon, " + tenantName + "!"
-            ];
-
+            const captions = ["Wrapping up your search...", "Saving your applications...", "Securing your account...", "See you soon, " + tenantName + "!"];
             let captionIndex = 0;
-
             form.addEventListener("submit", function () {
-
                 loaderText.textContent = captions[0];
                 loader.classList.add("active");
-
                 setInterval(function () {
                     captionIndex = (captionIndex + 1) % captions.length;
-
                     loaderText.style.opacity = 0;
-
-                    setTimeout(function () {
-                        loaderText.textContent = captions[captionIndex];
-                        loaderText.style.opacity = 1;
-                    }, 200);
+                    setTimeout(function () { loaderText.textContent = captions[captionIndex]; loaderText.style.opacity = 1; }, 200);
                 }, 1200);
             });
         })();
-
     </script>
 }
