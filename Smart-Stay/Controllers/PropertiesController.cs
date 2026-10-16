@@ -833,6 +833,9 @@ namespace Smart_Stay.Controllers
 
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = $"\"{property.Title}\" is now marked as {model.Status}.";
+
+
             return RedirectToAction(
                 "Dashboard",
                 "Landlord");
@@ -893,9 +896,14 @@ namespace Smart_Stay.Controllers
             _context.ListingApplications.RemoveRange(
                 property.ListingApplications);
 
+            var deletedTitle = property.Title;
+
             _context.Properties.Remove(property);
 
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+        $"\"{deletedTitle}\" was deleted successfully.";
 
             return RedirectToAction(
                 "Dashboard",

@@ -29,12 +29,13 @@
 
     <!-- BACK BUTTON -->
     <div class="terms-back">
-
-        <a href="javascript:history.back()" class="terms-back-btn">
+        <a asp-controller="Home"
+           asp-action="Index"
+           id="termsBackBtn"
+           class="terms-back-btn">
             <i class="bi bi-arrow-left"></i>
             Back
         </a>
-
     </div>
 
 
@@ -399,3 +400,14 @@
     </div>
 
 </div>
+@section Scripts {
+    <script>
+        document.getElementById("termsBackBtn").addEventListener("click", function (e) {
+            if (window.history.length > 1) {
+                e.preventDefault();
+                window.history.back();
+            }
+            // otherwise the link's normal href (Home) is followed
+        });
+    </script>
+}

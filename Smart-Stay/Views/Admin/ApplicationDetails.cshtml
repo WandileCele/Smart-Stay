@@ -68,7 +68,11 @@
         }
     </div>
     <div class="actions">
-        <a asp-action="Approve" asp-route-id="@Model.ListingApplicationId" class="approve-btn">✔ Approve</a>
+        <form asp-action="Approve" method="post" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.ListingApplicationId" />
+            <button type="submit" class="approve-btn">✔ Approve</button>
+        </form>
         <button type="button" id="openRejectModalBtn" class="reject-btn">✖ Reject</button>
     </div>
 </div>

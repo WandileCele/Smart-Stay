@@ -121,22 +121,65 @@ namespace Smart_Stay.Controllers
                 var tag = System.Text.RegularExpressions.Regex.Match(p.Description ?? "", @"\[PricePeriod:(.+?)\]");
                 return new PropertyCardViewModel
                 {
-                    PropertyID = p.PropertyId,
-                    Title = p.Title,
-                    Location = p.Location,
-                    Price = p.Price,
-                    PricePeriod = tag.Success ? tag.Groups[1].Value : "per month",
-                    Bedrooms = p.Bedrooms ?? 0,
-                    Bathrooms = p.Bathrooms ?? 0,
-                    ImagePath = _context.ListingApplications.Where(la => la.PropertyId == p.PropertyId)
-                        .Join(_context.Documents.Where(d => d.DocumentType == "Image"), la => la.ListingApplicationId, d => d.ListingApplication, (la, d) => d.DocumentPath).FirstOrDefault() ?? "",
-                    Status = p.Status,
-                    ApplicationCount = p.RentalApplications.Count(),
-                    AverageRating = p.Reviews.Any() ? p.Reviews.Average(r => (double)r.Rating) : null,
-                    ReviewCount = p.Reviews.Count()
-                };
-            }).ToList();
-            ViewBag.Search = search; ViewBag.Location = location; ViewBag.Price = price;
+                    var tag = System.Text.RegularExpressions.Regex.Match(
+                        p.Description ?? "",
+                        @"\[PricePeriod:(.+?)\]"
+                    );
+
+                    return new PropertyCardViewModel
+                    {
+                        PropertyID = p.PropertyId,
+
+                        Title = p.Title,
+
+                        Location = p.Location,
+
+                        Price = p.Price,
+
+                        PricePeriod = tag.Success
+                            ? tag.Groups[1].Value
+                            : "per month",
+
+                        Bedrooms = p.Bedrooms ?? 0,
+
+                        Bathrooms = p.Bathrooms ?? 0,
+
+                        ImagePath =
+                            _context.ListingApplications
+                                .Where(la =>
+                                    la.PropertyId == p.PropertyId)
+                                .Join(
+                                    _context.Documents.Where(d =>
+                                        d.DocumentType == "Image"),
+                                    la => la.ListingApplicationId,
+                                    d => d.ListingApplication,
+                                    (la, d) => d.DocumentPath
+                                )
+                                .FirstOrDefault() ?? "",
+
+                        Status = p.Status,
+
+                        ApplicationCount =
+                            p.RentalApplications.Count(),
+                        AverageRating = _context.Reviews
+                       .Where(r => r.PropertyId == p.PropertyId)
+                       .Select(r => (double?)r.Rating)
+                       .Average(),
+
+                        ReviewCount = _context.Reviews
+                       .Count(r => r.PropertyId == p.PropertyId)
+                    };
+                })
+                .ToList();
+
+
+            ViewBag.Search = search;
+
+            ViewBag.Location = location;
+
+            ViewBag.Price = price;
+
+
             return View(model);
         }
 

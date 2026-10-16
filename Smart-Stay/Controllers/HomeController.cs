@@ -25,12 +25,13 @@ namespace Smart_Stay.Controllers
         public async Task<IActionResult> Index()
         {
             var properties = await _context.Properties
-           .Include(p => p.Landlord)
-           .ThenInclude(l => l.User)
-           .Where(p => p.Status == "Available" || p.Status == "Approved")
-           .OrderByDescending(p => p.DateListed)
-           .Take(3)
-           .ToListAsync();
+        .Include(p => p.Landlord)
+        .ThenInclude(l => l.User)
+        .Include(p => p.Reviews)        
+        .Where(p => p.Status == "Available" || p.Status == "Approved")
+        .OrderByDescending(p => p.DateListed)
+        .Take(3)
+        .ToListAsync();
             var model = properties
                 .Select(p =>
                 {

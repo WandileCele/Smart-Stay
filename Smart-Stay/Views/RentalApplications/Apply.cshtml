@@ -121,7 +121,7 @@
                     <h5>Supporting Documents</h5>
                     <div class="form-group payslip-group">
                         <div class="label-row">
-                            <label asp-for="Payslip">Upload payslip</label>
+                            <label asp-for="Payslip">Upload payslip/Bank statement/Proof of funding</label>
                             <span class="required">*Required</span>
                         </div>
                         <div class="upload-box" id="payslipBox">
@@ -134,20 +134,12 @@
                         </div>
                         <span asp-validation-for="Payslip" class="validation"></span>
                     </div>
-                    
-                   
+
                     <div class="terms mt-4">
                         <input asp-for="AcceptTerms" type="checkbox" id="acceptTerms" />
 
-                        <label for="acceptTerms">
-                            I accept the
-                            <a asp-controller="Home"
-                               asp-action="Terms"
-                               target="_blank"
-                               rel="noopener noreferrer">
-                                T's & C's
-                            </a>
-                        </label>
+                        <label for="acceptTerms">I accept the</label>
+                        <a asp-controller="Home" asp-action="Terms">T's &amp; C's</a>
                     </div>
 
                     <span asp-validation-for="AcceptTerms" class="validation"></span>
@@ -202,9 +194,9 @@
             // Must be PDF
             const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
             if (!isPdf) {
-                alert("Please upload a PDF payslip.");
+                alert("Please upload a PDF payslip/bank statement/proof of funding.");
                 this.value = "";
-                uploadText.textContent = "Click to upload or drag and drop";
+                uploadText.textContent = "Click to upload or drag and drop all the 3 files";
                 payslipBox.classList.remove("has-file");
                 return;
             }
@@ -213,7 +205,7 @@
             if (file.size > 3 * 1024 * 1024) {
                 alert("Payslip must be 3MB or smaller.");
                 this.value = "";
-                uploadText.textContent = "Click to upload or drag and drop";
+                uploadText.textContent = "Click to upload or drag and drop all the 3 files";
                 payslipBox.classList.remove("has-file");
                 return;
             }
@@ -253,5 +245,52 @@
                 leaseEndDate.value = "";
             }
         });
+
+             (function () {
+            const key = "rentalApplyDraft";
+
+            // Fields to remember (by element id). IdNumber is left out on purpose
+            // so the ID isn't stored in the browser; the user retypes it.
+            const fieldIds = [
+                "firstName", "lastName", "phoneNumber", "Email", "Employment",
+                "leaseStartDate", "leaseEndDate", "acceptTerms"
+            ];
+
+            const form = document.querySelector('form[enctype="multipart/form-data"]');
+            if (!form) return;
+
+            // Restore
+            try {
+                const saved = JSON.parse(sessionStorage.getItem(key) || "{}");
+                fieldIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el || !(id in saved)) return;
+                    if (el.type === "checkbox") el.checked = saved[id];
+                    else el.value = saved[id];
+                });
+
+                // keep the end-date minimum in sync with the restored start date
+                if (leaseStartDate.value) leaseEndDate.min = leaseStartDate.value;
+            } catch { }
+
+            // Save whenever the user types or changes something
+            function save() {
+                const data = {};
+                fieldIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    data[id] = el.type === "checkbox" ? el.checked : el.value;
+                });
+                try { sessionStorage.setItem(key, JSON.stringify(data)); } catch { }
+            }
+
+            form.addEventListener("input", save);
+            form.addEventListener("change", save);
+
+            // Clear the draft once the form is submitted
+            form.addEventListener("submit", function () {
+                sessionStorage.removeItem(key);
+            });
+        })();
     </script>
 }

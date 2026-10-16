@@ -54,16 +54,84 @@ namespace Smart_Stay.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+ 
+          [Authorize(Roles = "Admin")]
+          [HttpPost]
+          [ValidateAntiForgeryToken]
         public async Task<IActionResult> Approve(int id)
         {
-            var application = await _context.ListingApplications.Include(a => a.Property).FirstOrDefaultAsync(a => a.ListingApplicationId == id);
-            if (application == null) return NotFound();
+            var application = await _context.ListingApplications
+                .Include(a => a.Property)
+                .Include(a => a.Landlord)
+                    .ThenInclude(l => l.User)
+                .FirstOrDefaultAsync(a => a.ListingApplicationId == id);
+
+            if (application == null)
+                return NotFound();
+
+            if (application.ApplicationStatus != "Pending")
+            {
+                TempData["ErrorMessage"] =
+                    "Only pending listing applications can be approved.";
+
+                return RedirectToAction(nameof(Dashboard));
+            }
 
             application.ApplicationStatus = "Approved";
             application.RejectionReason = null;
-            if (application.Property != null) application.Property.Status = "Available";
+
+            if (application.Property != null)
+                application.Property.Status = "Available";
+
             await _context.SaveChangesAsync();
+
+            var landlordEmail = application.Landlord?.User?.Email;
+            var propertyTitle = application.Property?.Title ?? "your property";
+            var landlordFirstName =
+                application.Landlord?.User?.FirstName ?? "there";
+
+            if (string.IsNullOrWhiteSpace(landlordEmail))
+            {
+                TempData["ErrorMessage"] =
+                    "Listing approved, but the landlord's email address could not be found.";
+
+                return RedirectToAction(nameof(Dashboard));
+            }
+
+            var safeName =
+                System.Net.WebUtility.HtmlEncode(landlordFirstName);
+            var safeTitle =
+                System.Net.WebUtility.HtmlEncode(propertyTitle);
+
+            var subject = $"Listing Approved - {propertyTitle}";
+
+            var htmlBody = $@"
+        <div style='font-family:Arial,sans-serif;
+                    line-height:1.6;color:#333;'>
+            <h2>Smart Stay - Listing Application Approved</h2>
+            <p>Dear {safeName},</p>
+            <p>Good news! Your property listing
+               <strong>{safeTitle}</strong>
+               has been approved by the Smart Stay administrator.</p>
+            <p>Your property is now available for tenants to view and you can update its status.</p>
+            <p>Thank you for choosing Smart Stay.</p>
+            <p>Kind regards,<br/>Smart Stay Team</p>
+        </div>";
+
+            try
+            {
+                await _emailService.SendEmailAsync(
+                    landlordEmail, subject, htmlBody);
+
+                TempData["SuccessMessage"] =
+                    "Listing approved successfully. The landlord has been notified by email.";
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] =
+                    "Listing approved successfully, but the notification email could not be sent.";
+            }
+
             return RedirectToAction(nameof(Dashboard));
         }
 
