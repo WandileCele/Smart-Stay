@@ -25,6 +25,7 @@ namespace Smart_Stay.Models
         public string PropertyTitle { get; set; } = "";
         public string Location { get; set; } = "";
         public decimal Price { get; set; }
+        public string PricePeriod { get; set; } = "per month";
         public int Bedrooms { get; set; }
         public int Bathrooms { get; set; }
         public string? ImagePath { get; set; }

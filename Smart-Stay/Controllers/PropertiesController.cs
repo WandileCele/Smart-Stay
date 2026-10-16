@@ -26,7 +26,7 @@ namespace Smart_Stay.Controllers
         // ============================================================
 
         private static readonly string[] AllowedPricePeriods =
-            { "per night", "per month" };
+            { "per night","per week", "per month" };
 
         private static string GetPricePeriod(string? description)
         {
@@ -121,9 +121,9 @@ namespace Smart_Stay.Controllers
                     Price = p.Price,
 
                     PricePeriod =
-                        p.Description != null && p.Description.Contains("PricePeriod:per night")
-                            ? "per night"
-                            : "per month",
+                    p.Description != null && p.Description.Contains("PricePeriod:per night") ? "per night"
+                    : p.Description != null && p.Description.Contains("PricePeriod:per week") ? "per week"
+                    : "per month",
 
                     Bedrooms = p.Bedrooms ?? 0,
 

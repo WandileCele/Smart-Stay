@@ -438,7 +438,7 @@
                                 <p class="property-location"><i class="fa-solid fa-location-dot"></i> @application.Location</p>
                                 <p><i class="fa-solid fa-bed"></i> @application.Bedrooms Bedrooms</p>
                                 <p><i class="fa-solid fa-bath"></i> @application.Bathrooms Bathrooms</p>
-                                <p class="property-price"><i class="fa-solid fa-money-bill"></i> R @application.Price.ToString("N2") / Month</p>
+                                <p class="property-price"><i class="fa-solid fa-money-bill"></i> R @application.Price.ToString("N2") @application.PricePeriod</p>
                                 <p class="application-date">Applied: @application.ApplicationDate.ToString("dd MMM yyyy")</p>
                                 @if (application.LeaseStartDate.HasValue && application.LeaseEndDate.HasValue)
                                 {

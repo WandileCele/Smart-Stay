@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Smart_Stay.Data;
+using Smart_Stay.Helpers;
 using Smart_Stay.Models;
 using System.Security.Claims;
 
@@ -34,6 +35,10 @@ namespace Smart_Stay.Controllers
                     PropertyTitle = r.Property.Title,
                     Location = r.Property.Location,
                     Price = r.Property.Price,
+                    PricePeriod =
+                    r.Property.Description != null && r.Property.Description.Contains("PricePeriod:per night") ? "per night"
+                    : r.Property.Description != null && r.Property.Description.Contains("PricePeriod:per week") ? "per week"
+                    :"per month",
                     Bedrooms = r.Property.Bedrooms ?? 0,
                     Bathrooms = r.Property.Bathrooms ?? 0,
                     ImagePath = r.Property.ImagePath,
@@ -121,13 +126,6 @@ namespace Smart_Stay.Controllers
                 var tag = System.Text.RegularExpressions.Regex.Match(p.Description ?? "", @"\[PricePeriod:(.+?)\]");
                 return new PropertyCardViewModel
                 {
-                    var tag = System.Text.RegularExpressions.Regex.Match(
-                        p.Description ?? "",
-                        @"\[PricePeriod:(.+?)\]"
-                    );
-
-                    return new PropertyCardViewModel
-                    {
                         PropertyID = p.PropertyId,
 
                         Title = p.Title,
