@@ -1,6 +1,7 @@
 ﻿.rate-property-page {
     min-height: 100vh;
-    background: linear-gradient(to bottom, #1857D6 0%, #122E4D 100%);
+    background: linear-gradient(180deg, #2F7DE2 0%, #2567C9 18%, #1E4FA3 42%, #173A7A 68%, #122E4D 100%);
+    background-attachment: fixed;
     padding: 50px 20px 100px 20px;
     display: flex;
     justify-content: center;
@@ -12,10 +13,10 @@
     width: 100%;
     max-width: 650px;
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 40px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    border: 1px solid rgba(255,255,255,0.6);
 }
 
 .rate-property-header {
@@ -32,7 +33,7 @@
     margin: 0;
     font-size: 30px;
     font-weight: 700;
-    color: #222;
+    color: #1A2A4A;
 }
 
 .property-name {
@@ -40,8 +41,8 @@
     margin-top: 15px;
     padding: 10px 20px;
     border-radius: 30px;
-    background: #eef3ff;
-    color: #1857D6;
+    background: #EAF2FF;
+    color: #1E5AC5;
     font-size: 19px;
     font-weight: 600;
 }
@@ -104,16 +105,10 @@
         transform: scale(1.05);
     }
 
-    .star-rating input:focus-visible + label {
-        outline: 3px solid rgba(245, 179, 1, 0.35);
-        outline-offset: 4px;
-        border-radius: 6px;
-    }
-
 .selected-rating {
     margin-top: 12px;
     font-weight: 700;
-    color: #1857D6;
+    color: #1E5AC5;
     font-size: 16px;
     min-height: 24px;
 }
@@ -123,7 +118,6 @@
     color: #999;
     font-size: 13px;
 }
-
 
 .comment-section {
     margin-bottom: 30px;
@@ -152,8 +146,8 @@
 }
 
     .comment-section textarea:focus {
-        border-color: #1857D6;
-        box-shadow: 0 0 0 3px rgba(24, 87, 214, 0.12);
+        border-color: #2F7DE2;
+        box-shadow: 0 0 0 3px rgba(47,125,226,0.12);
     }
 
 .character-limit {
@@ -162,7 +156,6 @@
     color: #999;
     font-size: 12px;
 }
-
 
 .rating-actions {
     display: flex;
@@ -195,17 +188,17 @@
     }
 
 .submit-rating {
-    background: #1857D6;
+    background: #2F7DE2;
     color: white;
+    box-shadow: 0 4px 12px rgba(47,125,226,0.25);
 }
 
     .submit-rating:hover {
-        background: #122E4D;
+        background: #2567C9;
+        transform: translateY(-1px);
     }
 
-
 @media (max-width: 600px) {
-
     .rate-property-page {
         padding: 25px 15px 80px 15px;
     }
@@ -237,12 +230,10 @@
         align-items: stretch;
     }
 
-    .cancel-rating,
-    .submit-rating {
-        text-align: center;
+    .cancel-rating, .submit-rating {
         width: 100%;
-        box-sizing: border-box;
         justify-content: center;
         display: flex;
+        text-align: center;
     }
 }
