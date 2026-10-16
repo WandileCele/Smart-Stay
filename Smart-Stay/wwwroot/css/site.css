@@ -232,7 +232,6 @@ nav {
     }
 }
 
-
 /* ============================================================
    STARS / RATING
 ============================================================ */
@@ -275,7 +274,9 @@ nav {
 .no-rating {
     font-size: 14px;
 }
-
+.rating span, .no-rating {
+    color: #374151;
+}
 .rating .fa-star,
 .rating .fa-star-half-stroke {
     color: #f5b301;
@@ -284,7 +285,6 @@ nav {
 .rating .fa-regular.fa-star {
     color: #ccc;
 }
-
 
 /* ============================================================
    MONEY
@@ -876,35 +876,52 @@ nav {
             background: rgba(255, 255, 255, 0.14);
         }
 
-/* Tablet and phone: links stack in a small box */
+/* Tablet and phone: menu slides in from the side */
 @media (max-width: 768px) {
-    .nav-links {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-        border-radius: 14px;
-        min-width: 200px;
-    }
 
-        .nav-links a {
-            border-radius: 8px;
-        }
-}
-
-/* Very small phones: arrow sits between logo and buttons so nothing overlaps */
-@media (max-width: 600px) {
+    /* arrow sits in the normal flow between logo and buttons */
     .nav-center {
         position: static;
         transform: none;
     }
 
+    .nav-toggle {
+        position: relative;
+        z-index: 1001; /* stays clickable above the panel */
+    }
+
     .nav-links {
+        position: fixed;
+        top: 0;
+        right: 0;
         left: auto;
-        right: 20px;
-        transform: translateY(-6px);
+        height: 100vh;
+        width: 260px;
+        max-width: 80%;
+        min-width: 0;
+        margin-top: 0;
+        padding: 80px 20px 20px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        border-radius: 0;
+        border: none;
+        border-left: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: -8px 0 24px rgba(0, 0, 0, 0.4);
+        opacity: 1;
+        visibility: hidden;
+        transform: translateX(100%);
+        transition: transform 0.3s ease, visibility 0.3s;
+        z-index: 1000;
     }
 
         .nav-links.open {
-            transform: translateY(0);
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .nav-links a {
+            padding: 14px 16px;
+            border-radius: 8px;
         }
 }

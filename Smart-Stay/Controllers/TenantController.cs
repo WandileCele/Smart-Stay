@@ -322,15 +322,13 @@ namespace Smart_Stay.Controllers
 
                         ApplicationCount =
                             p.RentalApplications.Count(),
+                        AverageRating = _context.Reviews
+                       .Where(r => r.PropertyId == p.PropertyId)
+                       .Select(r => (double?)r.Rating)
+                       .Average(),
 
-                        AverageRating =
-                            p.Reviews.Any()
-                                ? p.Reviews.Average(r =>
-                                    (double)r.Rating)
-                                : null,
-
-                        ReviewCount =
-                            p.Reviews.Count()
+                        ReviewCount = _context.Reviews
+                       .Count(r => r.PropertyId == p.PropertyId)
                     };
                 })
                 .ToList();

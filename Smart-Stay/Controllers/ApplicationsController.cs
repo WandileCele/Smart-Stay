@@ -78,24 +78,100 @@ namespace Smart_Stay.Controllers
             return View(applications);
         }
 
-        // ============================================================
-        // APPROVE
-        // ============================================================
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Approve(int id)
-        {
+      
+// ============================================================
+// APPROVE RENTAL APPLICATION + EMAIL TENANT
+// ============================================================
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+          public async Task<IActionResult> Approve(int id)
+          {
             var landlordId = CurrentLandlordId();
+
             var application = await _context.RentalApplications
-                .FirstOrDefaultAsync(a => a.RentalApplicationId == id && a.LandlordId == landlordId);
+                .Include(a => a.Tenant)
+                    .ThenInclude(t => t.User)
+                .Include(a => a.Property)
+                .FirstOrDefaultAsync(a =>
+                    a.RentalApplicationId == id &&
+                    a.LandlordId == landlordId);
 
-            if (application == null) return NotFound();
+            if (application == null)
+                return NotFound();
 
+            if (application.RentalApplicationStatus != "Pending")
+            {
+                TempData["ErrorMessage"] =
+                    "Only pending applications can be approved.";
+
+                return RedirectToAction(nameof(ManageApplications));
+            }
+
+            // Update and save the application status
             application.RentalApplicationStatus = "Approved";
+
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Application approved.";
-            return RedirectToAction(nameof(ManageApplications));
+            // Get tenant and property details
+            var tenantEmail = application.Tenant.User.Email;
+            var tenantName = application.Tenant.User.FirstName;
+            var propertyTitle = application.Property.Title;
+
+            var safeTenantName =
+                System.Net.WebUtility.HtmlEncode(tenantName);
+
+            var safePropertyTitle =
+                System.Net.WebUtility.HtmlEncode(propertyTitle);
+
+            var subject = $"Rental Application Approved - {propertyTitle}";
+
+            var htmlBody = $@"
+           <div style='font-family:Arial,sans-serif;
+                    line-height:1.7;color:#333;'>
+            <h2>Smart Stay - Rental Application Approved</h2>
+
+            <p>Dear {safeTenantName},</p>
+
+            <p>
+                Congratulations! Your rental application for
+                <strong>{safePropertyTitle}</strong>
+                has been approved by the landlord.
+            </p>
+
+            <p>
+                <strong>Important payment information:</strong><br>
+                The payment method and payment arrangements
+                will be discussed face-to-face with the landlord.
+                Please arrange to discuss these details with the
+                landlord before making any payments.
+            </p>
+
+            <p>
+                Thank you for choosing Smart Stay.
+            </p>
+
+            <p>Kind regards,<br>Smart Stay Team</p>
+        </div>";
+
+            try
+            {
+                await _emailService.SendEmailAsync(
+                    tenantEmail,
+                    subject,
+                    htmlBody);
+
+                TempData["SuccessMessage"] =
+                    "Application approved successfully. The tenant has been notified by email.";
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] =
+                    "Application approved and saved, but the notification email could not be sent.";
+            }
+
+            return RedirectToAction(
+                nameof(ManageApplications),
+                new { status = "Pending" });
         }
 
         // ============================================================

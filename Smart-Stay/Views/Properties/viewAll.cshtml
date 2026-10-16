@@ -247,50 +247,50 @@
             color: #1F2937;
         }
 
+        .card p i.fa-money-bill,
+        .card #money i {
+            color: #0087c9;
+        }
 
         /* =========================================================
-                   RATING
-                ========================================================= */
+           RATING
+        ========================================================= */
 
         .rating {
+            margin-top: 4px;
+            padding: 0 20px 20px; /* 20px matches the card text and icons */
             display: flex;
             align-items: center;
-            gap: 3px;
-            margin: 15px 20px 20px;
-            min-height: 24px;
+            justify-content: flex-start;
+            font-size: 16px;
         }
 
-
-            .rating i {
-                font-size: 17px;
+            .rating .fa-star,
+            .rating .fa-star-half-stroke {
+                margin-right: 3px;
+                color: #f5b301;
             }
 
-        .star {
-            width: 18px;
-            height: 18px;
-            display: inline-block;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            background: #d1d5db; /* empty */
-        }
-
-            .star.full {
-                background: #f5b301;
+            .rating .fa-regular.fa-star {
+                color: #ccc;
             }
 
-            .star.half {
-                background: linear-gradient(90deg, #f5b301 50%, #d1d5db 50%);
+            .rating span {
+                margin-left: 7px;
+                font-size: 14px;
+                font-weight: 500;
+                color: #374151;
             }
 
-        .rating span {
-            margin-left: 7px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1F2937;
-        }
+            .rating .no-rating {
+                margin-left: 0;
+                color: #374151;
+            }
 
-        .rating .no-rating {
-            margin-left: 0;
-            color: #6b7280;
+        /* money icon blue, like the other icons */
+        .card p i.fa-money-bill,
+        .card #money i {
+            color: #0087c9;
         }
 
 
@@ -600,9 +600,7 @@
                         </p>
 
 
-
-                        <!-- RATING -->
-                        
+                            <!-- RATING -->            
                             <div class="rating">
 
                                 @if (item.AverageRating.HasValue)
@@ -614,15 +612,15 @@
                                     {
                                         if (i <= fullStars)
                                         {
-                                            <span class="star full"></span>
+                                            <i class="fa-solid fa-star"></i>
                                         }
                                         else if (i == fullStars + 1 && hasHalfStar)
                                         {
-                                            <span class="star half"></span>
+                                            <i class="fa-solid fa-star-half-stroke"></i>
                                         }
                                         else
                                         {
-                                            <span class="star"></span>
+                                            <i class="fa-regular fa-star"></i>
                                         }
                                     }
 
@@ -636,7 +634,6 @@
                                 }
 
                             </div>
-
                     </div>
 
                 </a>

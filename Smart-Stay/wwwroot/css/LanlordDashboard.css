@@ -106,8 +106,9 @@
 ========================================================= */
 .property-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(380px, 420px));
     gap: 30px;
+    justify-content: start;
     width: 100%;
 }
 /* =========================================================
@@ -175,21 +176,21 @@
 
 .card-buttons {
     display: flex;
-    gap: 10px;
-    align-items: center;
     flex-wrap: wrap;
-    margin-top: 20px;
+    gap: 10px;
 }
 
     .card-buttons .btn {
-        min-width: 120px;
-        text-align: center;
+        margin: 0; /* removes the extra top/right margin */
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .card-buttons form {
-        margin: 0;
+    .card-buttons form .btn {
+        width: 100%;
     }
-
 
 /* =========================================================
    GENERAL BUTTON
@@ -358,17 +359,24 @@
 
 .card-buttons {
     display: flex;
-    flex-wrap: nowrap; /* keep all three on one line */
+    flex-wrap: nowrap;
     gap: 10px;
+    margin-top: 20px;
+    align-items: stretch;
 }
 
     .card-buttons .btn,
-    .card-buttons form {
-        flex: 1; /* each button takes an equal share */
+    .card-buttons form:not(.delete-form) {
+        flex: 1;
+        margin: 0;
     }
 
     .card-buttons .btn {
-        padding: 8px 6px; /* less side padding so the text fits */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        padding: 8px 6px;
         font-size: 14px;
         white-space: nowrap;
         width: 100%;
